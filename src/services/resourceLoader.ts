@@ -1,6 +1,6 @@
 import { openDB } from 'idb';
 import type { RawResource, Resource } from '../types/resource';
-import { mapRawToResource } from '../types/resource';
+import { mapResource } from '../types/resource';
 
 const DB_NAME = 'algae-research-library';
 const STORE_NAME = 'resources';
@@ -18,29 +18,8 @@ const database = openDB(DB_NAME, 1, {
   },
 });
 
-function toRawResource(value: unknown): RawResource | null {
-  if (!value || typeof value !== 'object') return null;
-  const record = value as Partial<RawResource> & Record<string, unknown>;
-  const raw: RawResource = {
-    i: record.i as number ?? record.id as number,
-    t: record.t as string ?? record.title as string,
-    ta: record.ta as string ?? record.title_ar as string,
-    c: record.c as string ?? record.category as string,
-    ca: record.ca as string ?? record.category_ar as string,
-    a: record.a as string ?? record.authors as string,
-    y: record.y as number ?? record.year as number,
-    j: record.j as string ?? record.journal_publisher as string,
-    d: record.d as string ?? record.doi as string,
-    s: record.s as string ?? record.summary_ar as string,
-    u: record.u as string ?? record.url as string,
-    p: record.p as string ?? record.pdf_url as string,
-  };
-  return typeof raw.i === 'number' && typeof raw.t === 'string' &&
-    typeof raw.ta === 'string' && typeof raw.c === 'string' &&
-    typeof raw.ca === 'string' && typeof raw.a === 'string' &&
-    typeof raw.y === 'number' && typeof raw.j === 'string' &&
-    typeof raw.d === 'string' && typeof raw.s === 'string' &&
-    typeof raw.u === 'string' && typeof raw.p === 'string' ? raw : null;
+function toRawResource(value: unknown): RawResource {
+  return value && typeof value === 'object' ? value as RawResource : {};
 }
 
 export async function loadResources(onProgress?: (progress: ResourceLoadProgress) => void): Promise<Resource[]> {
@@ -51,6 +30,10 @@ export async function loadResources(onProgress?: (progress: ResourceLoadProgress
 
   const response = await fetch(`${import.meta.env.BASE_URL}resources_30000.json.gz`);
   if (!response.ok) throw new Error(`Unable to load resource database (${response.status})`);
+  const contentType = response.headers.get('content-type')?.toLowerCase() ?? '';
+  if (contentType.includes('text/html')) {
+    throw new Error('Resource database URL returned HTML instead of a gzip file');
+  }
   if (!response.body) throw new Error('Resource database response has no body');
   if (!('DecompressionStream' in globalThis)) throw new Error('This browser does not support native gzip decompression');
 
@@ -78,13 +61,17 @@ export async function loadResources(onProgress?: (progress: ResourceLoadProgress
   const decompressed = compressed.pipeThrough(new DecompressionStream('gzip'));
   const text = await new Response(decompressed).text();
   onProgress?.({ phase: 'parse' });
-  const parsed: unknown = JSON.parse(text);
-  const rawResources = Array.isArray(parsed) ? parsed.map(toRawResource) : [];
-  if (!rawResources.length || rawResources.some((resource) => resource === null)) {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    throw new Error('Resource database contains invalid JSON');
+  }
+  if (!Array.isArray(parsed)) {
     throw new Error('Resource database has an invalid format');
   }
 
-  const resources = rawResources.map((resource) => mapRawToResource(resource as RawResource));
+  const resources = parsed.map(toRawResource).map(mapResource);
   await db.put(STORE_NAME, resources, CACHE_KEY);
   return resources;
 }

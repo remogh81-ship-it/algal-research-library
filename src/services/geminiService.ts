@@ -1,6 +1,14 @@
-const ENV_KEY = import.meta.env.VITE_GEMINI_API_KEY as string | undefined;
+const ENV_KEY = (
+  import.meta.env.VITE_API_KEY as string | undefined
+)?.trim() || (
+  import.meta.env.VITE_GEMINI_API_KEY as string | undefined
+)?.trim();
 const STORAGE_KEY = 'custom_gemini_api_key';
 const endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+
+if (!ENV_KEY) {
+  console.warn('Gemini API environment variable is missing. Configure VITE_API_KEY in .env.local for development.');
+}
 
 export function getStoredGeminiKey(): string {
   return localStorage.getItem(STORAGE_KEY) ?? '';
@@ -27,6 +35,9 @@ export async function askGemini(prompt: string, signal?: AbortSignal): Promise<s
     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
   });
 
+  if (response.status === 401 || response.status === 403) {
+    throw new Error('GEMINI_API_KEY_UNAUTHORIZED');
+  }
   if (!response.ok) {
     const detail = await response.text();
     throw new Error(`Gemini request failed (${response.status}): ${detail}`);
