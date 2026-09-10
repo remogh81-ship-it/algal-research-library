@@ -58,6 +58,7 @@ footer p { max-width: 900px; margin: .4rem 0; }
 .resource-meta, .resource-summary, .resource-arabic { color: #617579; margin: 0 0 .55rem; }
 .resource-category { color: #075c62; font-size: .82rem; margin: 0 0 .7rem; font-weight: 700; }
 .resource-summary { font-size: .9rem; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.fallback-indicator { color: #698083; font-size: .72rem; font-weight: 400; }
 .resource-actions { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: auto; padding-top: .8rem; }
 .resource-actions button, .button-link { font-size: .78rem; padding: .4rem .55rem; text-decoration: none; }
 .button-link { background: #0d7c78; color: white; border-radius: 8px; display: inline-flex; align-items: center; gap: .35rem; }
