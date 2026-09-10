@@ -1,6 +1,8 @@
 import { FormEvent, useState } from 'react';
 import { Bot, Send, Settings, X } from 'lucide-react';
-import { askGemini, getStoredGeminiKey, saveGeminiKey } from '../services/geminiService';
+import { askAssistant, QUICK_PROMPTS, type AssistantMode } from '../services/aiAssistant';
+import { getStoredGeminiKey, saveGeminiKey } from '../services/geminiService';
+import { useI18n } from '../i18n';
 
 export function AiChatWidget() {
   const [open, setOpen] = useState(false);
@@ -10,6 +12,9 @@ export function AiChatWidget() {
   const [answer, setAnswer] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [mode, setMode] = useState<AssistantMode>('local');
+  const { language } = useI18n();
+  const assistantLabel = language === 'ar' ? 'المساعد الذكي' : 'AI Assistant';
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -17,15 +22,12 @@ export function AiChatWidget() {
     setBusy(true);
     setError('');
     try {
-      setAnswer(await askGemini(prompt));
+      const response = await askAssistant(prompt);
+      setAnswer(response.answer);
+      setMode(response.mode);
       setPrompt('');
     } catch (requestError) {
-      const code = requestError instanceof Error ? requestError.message : '';
-      setError(code === 'GEMINI_API_KEY_REQUIRED'
-        ? 'أضف مفتاح Gemini من الإعدادات أو عرّف VITE_API_KEY في ملف البيئة.'
-        : code === 'GEMINI_API_KEY_UNAUTHORIZED'
-          ? 'مفتاح Gemini غير صالح أو غير مصرح له. تحقق من المفتاح وإعدادات API.'
-          : 'تعذر الاتصال بالمساعد. تحقق من المفتاح واتصال الإنترنت.');
+      setError(requestError instanceof Error ? requestError.message : 'Assistant is temporarily unavailable.');
     } finally {
       setBusy(false);
     }
@@ -33,10 +35,12 @@ export function AiChatWidget() {
 
   return (
     <div className="chat-widget">
-      {!open && <button className="chat-launcher" onClick={() => setOpen(true)} aria-label="Open AI assistant"><Bot size={22} /></button>}
+      {!open && <button className="chat-launcher" onClick={() => setOpen(true)} aria-label={assistantLabel} title={assistantLabel}><Bot size={22} /><span className="chat-launcher-label">{assistantLabel}</span><i className="status-dot" /></button>}
       {open && (
-        <section className="chat-panel" aria-label="AI assistant">
-          <header><span><Bot size={18} /> مساعد أبحاث الطحالب</span><div><button onClick={() => setSettingsOpen(true)} aria-label="Settings"><Settings size={17} /></button><button onClick={() => setOpen(false)} aria-label="Close"><X size={17} /></button></div></header>
+        <section className="chat-panel" aria-label={assistantLabel}>
+          <header><span><Bot size={18} /> {assistantLabel}<i className="status-dot" title="Assistant active" /></span><div><button onClick={() => setSettingsOpen(true)} aria-label="Settings"><Settings size={17} /></button><button onClick={() => setOpen(false)} aria-label="Close"><X size={17} /></button></div></header>
+          <div className="assistant-mode-badge">{mode === 'local' ? 'الوضع المحلي المباشر / Local Smart Mode' : 'Live AI Mode'}</div>
+          <div className="quick-prompts">{QUICK_PROMPTS.map((quickPrompt) => <button key={quickPrompt} type="button" onClick={() => setPrompt(quickPrompt)}>{quickPrompt}</button>)}</div>
           <div className="chat-body"><p>{answer || 'اسأل عن أبحاث الطحالب أو استخدم الإعدادات لإضافة مفتاح Gemini.'}</p>{error && <small className="error">{error}</small>}</div>
           <form onSubmit={submit} className="chat-form"><input value={prompt} onChange={(event) => setPrompt(event.target.value)} placeholder="اكتب سؤالك..." disabled={busy} /><button disabled={busy} aria-label="Send"><Send size={17} /></button></form>
           {settingsOpen && <div className="modal-backdrop" onClick={() => setSettingsOpen(false)}><div className="modal" onClick={(event) => event.stopPropagation()}><h3>إعدادات مساعد Gemini</h3><p>يُحفظ المفتاح محلياً في هذا المتصفح فقط.</p><input type="password" value={key} onChange={(event) => setKey(event.target.value)} placeholder="Gemini API key" /><button onClick={() => { saveGeminiKey(key); setSettingsOpen(false); }}>حفظ المفتاح</button></div></div>}

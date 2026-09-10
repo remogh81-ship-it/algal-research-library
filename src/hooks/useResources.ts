@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { Resource } from '../types/resource';
-import { loadResources, type ResourceLoadProgress } from '../services/resourceLoader';
+import { getSubmittedResources, loadResources, type ResourceLoadProgress } from '../services/resourceLoader';
+import { useAuth } from '../auth';
 
 export const RESOURCE_PAGE_SIZE = 50;
 
@@ -23,6 +24,7 @@ export function formatBibTeX(resource: Resource): string {
 }
 
 export function useResources() {
+  useAuth();
   const [resources, setResources] = useState<Resource[]>([]);
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState<ResourceFilters>({ category: '', year: '' });
@@ -33,16 +35,18 @@ export function useResources() {
 
   useEffect(() => {
     let active = true;
-    void loadResources((nextProgress) => {
+    const load = () => Promise.all([loadResources((nextProgress) => {
       if (active) setProgress(nextProgress);
-    }).then((loaded) => {
-      if (active) setResources(loaded);
+    }), getSubmittedResources()]).then(([loaded, submitted]) => {
+      if (active) setResources([...submitted, ...loaded]);
     }).catch((reason: unknown) => {
       if (active) setError(reason instanceof Error ? reason.message : 'Unable to load resources');
     }).finally(() => {
       if (active) setIsLoading(false);
     });
-    return () => { active = false; };
+    void load();
+    window.addEventListener('resources-updated', load);
+    return () => { active = false; window.removeEventListener('resources-updated', load); };
   }, []);
 
   const categories = useMemo(() => [...new Set(resources.map((resource) => resource.category).filter(Boolean))].sort(), [resources]);

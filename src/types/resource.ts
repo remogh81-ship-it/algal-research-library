@@ -9,6 +9,8 @@ export interface RawResource {
   category?: string;
   ca?: string;
   category_ar?: string;
+  algae_type?: string;
+  algaeType?: string;
   a?: string;
   authors?: string;
   y?: number;
@@ -28,10 +30,12 @@ export interface RawResource {
 
 export interface Resource {
   id: number;
+  ownerId?: string;
   title: string;
   titleArabic: string;
   category: string;
   categoryArabic: string;
+  algaeType: string;
   authors: string;
   year: number;
   journal: string;
@@ -48,6 +52,7 @@ export function mapResource(raw: RawResource): Resource {
     titleArabic: raw.ta ?? raw.title_ar ?? raw.t ?? '',
     category: raw.c ?? raw.category ?? 'General',
     categoryArabic: raw.ca ?? raw.category_ar ?? '',
+    algaeType: raw.algae_type ?? raw.algaeType ?? '',
     authors: raw.a ?? raw.authors ?? 'Unknown',
     year: raw.y ?? raw.year ?? new Date().getFullYear(),
     journal: raw.j ?? raw.journal ?? raw.journal_publisher ?? '',
