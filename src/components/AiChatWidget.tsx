@@ -20,9 +20,12 @@ export function AiChatWidget() {
       setAnswer(await askGemini(prompt));
       setPrompt('');
     } catch (requestError) {
-      setError(requestError instanceof Error && requestError.message === 'GEMINI_API_KEY_REQUIRED'
-        ? 'أضف مفتاح Gemini من الإعدادات للبدء.'
-        : 'تعذر الاتصال بالمساعد. تحقق من المفتاح واتصال الإنترنت.');
+      const code = requestError instanceof Error ? requestError.message : '';
+      setError(code === 'GEMINI_API_KEY_REQUIRED'
+        ? 'أضف مفتاح Gemini من الإعدادات أو عرّف VITE_API_KEY في ملف البيئة.'
+        : code === 'GEMINI_API_KEY_UNAUTHORIZED'
+          ? 'مفتاح Gemini غير صالح أو غير مصرح له. تحقق من المفتاح وإعدادات API.'
+          : 'تعذر الاتصال بالمساعد. تحقق من المفتاح واتصال الإنترنت.');
     } finally {
       setBusy(false);
     }
