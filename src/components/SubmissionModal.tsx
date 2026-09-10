@@ -5,6 +5,7 @@ import type { Resource } from '../types/resource';
 
 type FormValues = Omit<Resource, 'id'>;
 const initial: FormValues = { title: '', titleArabic: '', category: 'Microalgae', categoryArabic: '', algaeType: 'microalgae', authors: '', year: new Date().getFullYear(), journal: '', doi: '', summary: '', url: '', pdfUrl: '' };
+const publishingYearMin = 1800;
 
 export function SubmissionModal({ onClose, onSaved }: { onClose: () => void; onSaved: () => void }) {
   const { user } = useAuth();
@@ -14,8 +15,22 @@ export function SubmissionModal({ onClose, onSaved }: { onClose: () => void; onS
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     if (!user) return;
+    const requiredFields: Array<[keyof FormValues, string]> = [
+      ['title', 'English title is required.'],
+      ['authors', 'Authors are required.'],
+      ['year', 'Publication year is required.'],
+      ['category', 'Category is required.'],
+      ['doi', 'DOI is required.'],
+      ['summary', 'Arabic summary is required.'],
+    ];
+    const missing = requiredFields.find(([key]) => !String(values[key]).trim());
+    if (missing) { setError(missing[1]); return; }
+    if (values.year <  publishingYearMin || values.year > new Date().getFullYear() + 1) {
+      setError('Enter a valid publication year.'); return;
+    }
     try {
-      await saveSubmittedResource({ ...values, id: Date.now(), ownerId: user.id });
+      const id = Number(`${Date.now()}${Math.floor(Math.random() * 1000)}`);
+      await saveSubmittedResource({ ...values, id, ownerId: user.id });
       window.dispatchEvent(new Event('resources-updated')); onSaved(); onClose();
     } catch { setError('Unable to save this submission locally.'); }
   };
