@@ -35,12 +35,17 @@ footer p { max-width: 900px; margin: .4rem 0; }
 .paper-form { background: #fff; border-radius: 12px; padding: 1.5rem; }
 .paper-form textarea { min-height: 150px; }
 .chat-widget { position: fixed; bottom: 1.25rem; left: 1.25rem; z-index: 5; }
-.chat-launcher { border-radius: 50%; width: 52px; height: 52px; box-shadow: 0 5px 16px #17324d44; }
+.chat-launcher { border-radius: 26px; min-width: 52px; height: 52px; box-shadow: 0 5px 16px #17324d44; position: relative; }
+.chat-launcher-label { font-size: .78rem; white-space: nowrap; }
+.status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #65d39b; box-shadow: 0 0 0 3px #65d39b33; margin-left: .2rem; }
 .chat-panel { width: min(360px, calc(100vw - 2rem)); background: white; border: 1px solid #d6e5e6; border-radius: 12px; box-shadow: 0 8px 30px #17324d33; overflow: hidden; }
 .chat-panel header { background: #075c62; color: white; padding: .7rem; display: flex; justify-content: space-between; align-items: center; }
 .chat-panel header span, .chat-panel header div { display: flex; align-items: center; gap: .4rem; }
 .chat-panel header button { padding: .2rem; background: transparent; }
 .chat-body { padding: 1rem; min-height: 100px; }
+.assistant-mode-badge { margin: .7rem .7rem 0; padding: .3rem .5rem; border-radius: 6px; background: #e8f5ef; color: #176c51; font-size: .72rem; text-align: center; }
+.quick-prompts { display: flex; flex-wrap: wrap; gap: .3rem; padding: .7rem .7rem 0; }
+.quick-prompts button { background: #eef6f5; color: #075c62; font-size: .7rem; padding: .3rem .45rem; }
 .chat-form { display: flex; gap: .4rem; padding: .7rem; border-top: 1px solid #e0ebec; }
 .chat-form button { width: 42px; }
 .modal-backdrop { position: absolute; inset: 0; background: #17324d55; display: grid; place-items: center; }
