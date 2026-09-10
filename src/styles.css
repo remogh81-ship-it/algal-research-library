@@ -46,6 +46,12 @@ footer p { max-width: 900px; margin: .4rem 0; }
 .assistant-mode-badge { margin: .7rem .7rem 0; padding: .3rem .5rem; border-radius: 6px; background: #e8f5ef; color: #176c51; font-size: .72rem; text-align: center; }
 .quick-prompts { display: flex; flex-wrap: wrap; gap: .3rem; padding: .7rem .7rem 0; }
 .quick-prompts button { background: #eef6f5; color: #075c62; font-size: .7rem; padding: .3rem .45rem; }
+.assistant-markdown p { margin: .3rem 0; white-space: pre-wrap; }
+.assistant-results { display: grid; gap: .45rem; margin-top: .7rem; }
+.assistant-results article { border: 1px solid #d6e5e6; border-radius: 8px; padding: .55rem; background: #f8fbfa; }
+.assistant-results strong, .assistant-results small { display: block; }
+.assistant-results small { color: #617579; font-size: .72rem; }
+.assistant-results a { color: #075c62; font-size: .75rem; font-weight: 700; margin-right: .6rem; }
 .chat-form { display: flex; gap: .4rem; padding: .7rem; border-top: 1px solid #e0ebec; }
 .chat-form button { width: 42px; }
 .modal-backdrop { position: absolute; inset: 0; background: #17324d55; display: grid; place-items: center; }
