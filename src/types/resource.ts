@@ -1,16 +1,29 @@
 export interface RawResource {
-  i: number;
-  t: string;
-  ta: string;
-  c: string;
-  ca: string;
-  a: string;
-  y: number;
-  j: string;
-  d: string;
-  s: string;
-  u: string;
-  p: string;
+  i?: number;
+  id?: number;
+  t?: string;
+  title?: string;
+  ta?: string;
+  title_ar?: string;
+  c?: string;
+  category?: string;
+  ca?: string;
+  category_ar?: string;
+  a?: string;
+  authors?: string;
+  y?: number;
+  year?: number;
+  j?: string;
+  journal?: string;
+  journal_publisher?: string;
+  d?: string;
+  doi?: string;
+  s?: string;
+  summary_ar?: string;
+  u?: string;
+  url?: string;
+  p?: string;
+  pdf_url?: string;
 }
 
 export interface Resource {
@@ -28,19 +41,21 @@ export interface Resource {
   pdfUrl: string;
 }
 
-export function mapRawToResource(raw: RawResource): Resource {
+export function mapResource(raw: RawResource): Resource {
   return {
-    id: raw.i,
-    title: raw.t,
-    titleArabic: raw.ta,
-    category: raw.c,
-    categoryArabic: raw.ca,
-    authors: raw.a,
-    year: raw.y,
-    journal: raw.j,
-    doi: raw.d,
-    summary: raw.s,
-    url: raw.u,
-    pdfUrl: raw.p,
+    id: raw.i ?? raw.id ?? 0,
+    title: raw.t ?? raw.title ?? 'Untitled',
+    titleArabic: raw.ta ?? raw.title_ar ?? raw.t ?? '',
+    category: raw.c ?? raw.category ?? 'General',
+    categoryArabic: raw.ca ?? raw.category_ar ?? '',
+    authors: raw.a ?? raw.authors ?? 'Unknown',
+    year: raw.y ?? raw.year ?? new Date().getFullYear(),
+    journal: raw.j ?? raw.journal ?? raw.journal_publisher ?? '',
+    doi: raw.d ?? raw.doi ?? '',
+    summary: raw.s ?? raw.summary_ar ?? '',
+    url: raw.u ?? raw.url ?? '',
+    pdfUrl: raw.p ?? raw.pdf_url ?? '',
   };
 }
+
+export const mapRawToResource = mapResource;
