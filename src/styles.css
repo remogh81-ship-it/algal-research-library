@@ -45,3 +45,22 @@ footer p { max-width: 900px; margin: .4rem 0; }
 .modal p { font-size: .85rem; color: #617579; }
 .modal button { margin-top: .8rem; width: 100%; }
 @media (max-width: 760px) { .topbar, .nav-actions { flex-wrap: wrap; } .layout { grid-template-columns: 1fr; } .filters { position: static; } }
+.library-main { max-width: 1240px; margin: auto; padding: 1rem; }
+.resource-search-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.resource-search-header h1 { margin-bottom: .25rem; }
+.resource-search-header p { margin: 0; color: #698083; }
+.resource-controls { display: grid; grid-template-columns: minmax(260px, 1fr) 220px 150px; gap: .7rem; margin-bottom: 1rem; }
+.resource-query { display: flex; align-items: center; gap: .5rem; padding: 0 .7rem; background: #fff; border: 1px solid #c9d9dc; border-radius: 7px; color: #617579; }
+.resource-query input { border: 0; outline: 0; padding-left: 0; }
+.resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: .9rem; }
+.resource-card { background: #fff; border: 1px solid #e0ebec; border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; min-width: 0; }
+.resource-card h2 { font-size: 1.05rem; margin-bottom: .35rem; }
+.resource-meta, .resource-summary, .resource-arabic { color: #617579; margin: 0 0 .55rem; }
+.resource-category { color: #075c62; font-size: .82rem; margin: 0 0 .7rem; font-weight: 700; }
+.resource-summary { font-size: .9rem; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.resource-actions { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: auto; padding-top: .8rem; }
+.resource-actions button, .button-link { font-size: .78rem; padding: .4rem .55rem; text-decoration: none; }
+.button-link { background: #0d7c78; color: white; border-radius: 8px; display: inline-flex; align-items: center; gap: .35rem; }
+.loading-message { background: #fff; border: 1px solid #e0ebec; border-radius: 10px; padding: 1rem; color: #617579; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+@media (max-width: 760px) { .resource-controls { grid-template-columns: 1fr; } .resource-grid { grid-template-columns: 1fr; } }
