@@ -4,6 +4,7 @@ import { mapResource } from '../types/resource';
 
 const DB_NAME = 'algae-research-library';
 const STORE_NAME = 'resources';
+const SUBMISSIONS_STORE = 'submissions';
 const CACHE_KEY = 'resources-30000-v1';
 
 export type ResourceLoadProgress = {
@@ -12,9 +13,10 @@ export type ResourceLoadProgress = {
   total?: number;
 };
 
-const database = openDB(DB_NAME, 1, {
+export const database = openDB(DB_NAME, 2, {
   upgrade(db) {
-    db.createObjectStore(STORE_NAME);
+    if (!db.objectStoreNames.contains(STORE_NAME)) db.createObjectStore(STORE_NAME);
+    if (!db.objectStoreNames.contains(SUBMISSIONS_STORE)) db.createObjectStore(SUBMISSIONS_STORE, { keyPath: 'id' });
   },
 });
 
@@ -79,4 +81,19 @@ export async function loadResources(onProgress?: (progress: ResourceLoadProgress
 export async function clearResourceCache(): Promise<void> {
   const db = await database;
   await db.delete(STORE_NAME, CACHE_KEY);
+}
+
+export async function getSubmittedResources(): Promise<Resource[]> {
+  const db = await database;
+  return db.getAll(SUBMISSIONS_STORE);
+}
+
+export async function saveSubmittedResource(resource: Resource): Promise<void> {
+  const db = await database;
+  await db.put(SUBMISSIONS_STORE, resource);
+}
+
+export async function deleteSubmittedResource(id: number): Promise<void> {
+  const db = await database;
+  await db.delete(SUBMISSIONS_STORE, id);
 }

@@ -28,6 +28,7 @@ export interface RawResource {
 
 export interface Resource {
   id: number;
+  ownerId?: string;
   title: string;
   titleArabic: string;
   category: string;
