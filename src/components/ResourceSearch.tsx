@@ -4,6 +4,7 @@ import { formatAPA, formatBibTeX, formatMLA, useResources, type ResourceFilters 
 import type { Resource } from '../types/resource';
 import { useI18n } from '../i18n';
 import { useAuth } from '../auth';
+import { getLocalizedSummary } from '../utils/translateSummary';
 
 function CitationButtons({ resource }: { resource: Resource }) {
   const { t } = useI18n();
@@ -49,7 +50,7 @@ export function ResourceSearch({ mineOnly = false }: { mineOnly?: boolean }) {
       {resource.titleArabic && resource.title !== resource.titleArabic && <p className="resource-arabic" lang="ar" dir="rtl">{resource.titleArabic}</p>}
       <p className="resource-meta">{resource.authors || t('unknownAuthors')} · {resource.year || 'n.d.'} · {resource.journal || t('unknownJournal')}</p>
       <p className="resource-category">{category(resource.category)}</p>
-      {resource.summary && <p className="resource-summary">{resource.summary}</p>}
+      <p className="resource-summary">{getLocalizedSummary(resource, language)}</p>
       <CitationButtons resource={resource} />
     </article>)}</div>
     {totalPages > 1 && <nav className="pagination" aria-label={t('page', { page, total: totalPages })}><button disabled={page === 1} onClick={() => setPage(page - 1)}>{t('previous')}</button><span>{t('page', { page, total: totalPages })}</span><button disabled={page === totalPages} onClick={() => setPage(page + 1)}>{t('next')}</button></nav>}

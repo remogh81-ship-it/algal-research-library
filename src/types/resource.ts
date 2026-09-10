@@ -22,6 +22,10 @@ export interface RawResource {
   doi?: string;
   s?: string;
   summary_ar?: string;
+  summary_en?: string;
+  summary_fr?: string;
+  summary_de?: string;
+  summary_zh?: string;
   u?: string;
   url?: string;
   p?: string;
@@ -40,7 +44,11 @@ export interface Resource {
   year: number;
   journal: string;
   doi: string;
-  summary: string;
+  summary_ar: string;
+  summary_en?: string;
+  summary_fr?: string;
+  summary_de?: string;
+  summary_zh?: string;
   url: string;
   pdfUrl: string;
 }
@@ -57,7 +65,11 @@ export function mapResource(raw: RawResource): Resource {
     year: raw.y ?? raw.year ?? new Date().getFullYear(),
     journal: raw.j ?? raw.journal ?? raw.journal_publisher ?? '',
     doi: raw.d ?? raw.doi ?? '',
-    summary: raw.s ?? raw.summary_ar ?? '',
+    summary_ar: raw.summary_ar ?? raw.s ?? '',
+    summary_en: raw.summary_en,
+    summary_fr: raw.summary_fr,
+    summary_de: raw.summary_de,
+    summary_zh: raw.summary_zh,
     url: raw.u ?? raw.url ?? '',
     pdfUrl: raw.p ?? raw.pdf_url ?? '',
   };
