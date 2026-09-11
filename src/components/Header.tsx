@@ -1,7 +1,7 @@
+import { useState } from 'react';
 import { BookOpen, FilePlus2, LogIn, Moon, Plus, Sun, UserRound } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { LanguageSwitcher } from './LanguageSwitcher';
-import logoUrl from '../assets/eps-logo.svg';
 
 type HeaderProps = {
   dark: boolean;
@@ -17,9 +17,15 @@ type HeaderProps = {
 
 export function Header({ dark, onToggleDark, user, mineOnly, onToggleMine, onLogin, onLogout, onAddResearch, onLibrary }: HeaderProps) {
   const { t } = useI18n();
+  const [logoFailed, setLogoFailed] = useState(false);
+  const handleLogoError = () => {
+    console.warn('Developer: Upload the society logo to public/eps-logo.png');
+    setLogoFailed(true);
+  };
   return <header className="topbar">
     <div className="brand">
-      <img className="society-logo" src={logoUrl} alt="" />
+      {/* Developer: Upload the society logo to public/eps-logo.png */}
+      {logoFailed ? <span className="society-logo society-logo-fallback" role="img" aria-label="Egyptian Society for Phycology">ESP</span> : <img className="society-logo" src="/eps-logo.png" alt="Egyptian Society for Phycology" onError={handleLogoError} />}
       <span className="brand-mark"><BookOpen size={23} /></span>
       <div className="brand-copy">
         <strong>{t('society_title')}</strong>
