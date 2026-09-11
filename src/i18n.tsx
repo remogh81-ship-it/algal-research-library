@@ -5,6 +5,7 @@ import fr from './locales/fr.json';
 import de from './locales/de.json';
 import zh from './locales/zh.json';
 import type { Language } from './types';
+import { getLocalizedCategory } from './utils/localization';
 
 const translations = { en, ar, fr, de, zh };
 type Translation = typeof en;
@@ -31,7 +32,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       const raw = readPath(source, key) ?? readPath(en, key) ?? key;
       return String(raw).replace(/\{\{(\w+)\}\}/g, (_, name: string) => String(values?.[name] ?? `{{${name}}}`));
     };
-    return { language, setLanguage, t, category: (value) => t(`categories.${value}`) === `categories.${value}` ? value : t(`categories.${value}`) };
+    return { language, setLanguage, t, category: (value) => getLocalizedCategory(value, language) };
   }, [language]);
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }
