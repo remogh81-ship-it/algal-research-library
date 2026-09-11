@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" role="img" aria-label="Egyptian Society for Phycology">
+  <circle cx="40" cy="40" r="37" fill="#075c62"/>
+  <path d="M40 62c-9-14-7-28 0-42 7 14 9 28 0 42Z" fill="#72d5bc"/>
+  <path d="M40 53C27 47 22 37 22 26c12 5 18 14 18 27Zm0 0c13-6 18-16 18-27-12 5-18 14-18 27Z" fill="#e3b866"/>
+  <circle cx="40" cy="40" r="4" fill="#fff"/>
+</svg>
