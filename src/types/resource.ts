@@ -26,6 +26,7 @@ export interface RawResource {
   summary_fr?: string;
   summary_de?: string;
   summary_zh?: string;
+  summary_it?: string;
   u?: string;
   url?: string;
   p?: string;
@@ -49,6 +50,7 @@ export interface Resource {
   summary_fr?: string;
   summary_de?: string;
   summary_zh?: string;
+  summary_it?: string;
   url: string;
   pdfUrl: string;
 }
@@ -70,6 +72,7 @@ export function mapResource(raw: RawResource): Resource {
     summary_fr: raw.summary_fr,
     summary_de: raw.summary_de,
     summary_zh: raw.summary_zh,
+    summary_it: raw.summary_it,
     url: raw.u ?? raw.url ?? '',
     pdfUrl: raw.p ?? raw.pdf_url ?? '',
   };
