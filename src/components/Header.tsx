@@ -28,7 +28,8 @@ export function Header({ dark, onToggleDark, user, mineOnly, onToggleMine, onLog
       {logoFailed ? <span className="society-logo society-logo-fallback" role="img" aria-label="Egyptian Society for Phycology">ESP</span> : <img className="society-logo" src="/eps-logo.png" alt="Egyptian Society for Phycology" onError={handleLogoError} />}
       <span className="brand-mark"><BookOpen size={23} /></span>
       <div className="brand-copy">
-        <strong>{t('society_title')}</strong>
+        <strong>{t('main_title')}</strong>
+        <span className="society-title">{t('society_title')}</span>
         <span className="prepared-by">{t('prepared_by')}</span>
       </div>
     </div>
