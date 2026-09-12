@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Copy, ExternalLink, FileText, Search } from 'lucide-react';
+import { ChevronDown, Copy, ExternalLink, FileText, Quote, Search } from 'lucide-react';
 import { formatAPA, formatBibTeX, formatMLA, useResources, type ResourceFilters } from '../hooks/useResources';
 import type { Resource } from '../types/resource';
 import { useI18n } from '../i18n';
@@ -8,18 +8,29 @@ import { getLocalizedSummary } from '../utils/translateSummary';
 
 function CitationButtons({ resource }: { resource: Resource }) {
   const { t } = useI18n();
+  const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState('');
   const copy = async (label: string, citation: string) => {
-    await navigator.clipboard.writeText(citation);
-    setCopied(label);
+    try {
+      await navigator.clipboard.writeText(citation);
+      setCopied(label);
+    } catch {
+      setCopied('');
+    }
     window.setTimeout(() => setCopied(''), 1600);
   };
   return <div className="resource-actions">
     {resource.doi && <a className="button-link" href={resource.doi.startsWith('http') ? resource.doi : `https://doi.org/${resource.doi}`} target="_blank" rel="noreferrer"><ExternalLink size={15} /> {t('doi')}</a>}
     {resource.pdfUrl && <a className="button-link" href={resource.pdfUrl} target="_blank" rel="noreferrer"><FileText size={15} /> {t('pdf')}</a>}
-    <button type="button" onClick={() => void copy('APA', formatAPA(resource))}><Copy size={15} /> {copied === 'APA' ? t('copied') : t('apa')}</button>
-    <button type="button" onClick={() => void copy('MLA', formatMLA(resource))}><Copy size={15} /> {copied === 'MLA' ? t('copied') : t('mla')}</button>
-    <button type="button" onClick={() => void copy('BibTeX', formatBibTeX(resource))}><Copy size={15} /> {copied === 'BibTeX' ? t('copied') : t('bibtex')}</button>
+    <div className="citation-menu">
+      <button type="button" aria-expanded={open} onClick={() => setOpen(!open)}><Quote size={15} /> {t('citation')} <ChevronDown size={14} /></button>
+      {open && <div className="citation-dropdown" role="menu">
+        <button type="button" role="menuitem" onClick={() => void copy('APA', formatAPA(resource))}><Copy size={14} /> {copied === 'APA' ? t('citationCopied') : t('apaFormat')}</button>
+        <button type="button" role="menuitem" onClick={() => void copy('MLA', formatMLA(resource))}><Copy size={14} /> {copied === 'MLA' ? t('citationCopied') : t('mlaFormat')}</button>
+        <button type="button" role="menuitem" onClick={() => void copy('BibTeX', formatBibTeX(resource))}><Copy size={14} /> {copied === 'BibTeX' ? t('citationCopied') : t('bibtexFormat')}</button>
+      </div>}
+      {copied && <span className="citation-toast" role="status">{t('citationCopied')}</span>}
+    </div>
   </div>;
 }
 
