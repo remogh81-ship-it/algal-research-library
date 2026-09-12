@@ -5,7 +5,7 @@ import { mapResource } from '../types/resource';
 const DB_NAME = 'algae-research-library';
 const STORE_NAME = 'resources';
 const SUBMISSIONS_STORE = 'submissions';
-const CACHE_KEY = 'resources-30000-v1';
+const CACHE_KEY = 'resources-library-v2';
 
 export type ResourceLoadProgress = {
   phase: 'cache' | 'download' | 'decompress' | 'parse';
@@ -30,50 +30,51 @@ export async function loadResources(onProgress?: (progress: ResourceLoadProgress
   const cached = await db.get(STORE_NAME, CACHE_KEY) as Resource[] | undefined;
   if (cached?.length) return cached;
 
-  const response = await fetch(`${import.meta.env.BASE_URL}resources_30000.json.gz`);
-  if (!response.ok) throw new Error(`Unable to load resource database (${response.status})`);
-  const contentType = response.headers.get('content-type')?.toLowerCase() ?? '';
-  if (contentType.includes('text/html')) {
-    throw new Error('Resource database URL returned HTML instead of a gzip file');
-  }
-  if (!response.body) throw new Error('Resource database response has no body');
   if (!('DecompressionStream' in globalThis)) throw new Error('This browser does not support native gzip decompression');
-
-  const total = Number(response.headers.get('content-length')) || undefined;
-  onProgress?.({ phase: 'download', loaded: 0, total });
-  const reader = response.body.getReader();
-  const chunks: Uint8Array[] = [];
-  let loaded = 0;
-  while (true) {
-    const chunk = await reader.read();
-    if (chunk.done) break;
-    chunks.push(chunk.value);
-    loaded += chunk.value.byteLength;
-    onProgress?.({ phase: 'download', loaded, total });
-  }
-
-  onProgress?.({ phase: 'decompress' });
-  const bytes = new Uint8Array(loaded);
-  let offset = 0;
-  for (const chunk of chunks) {
-    bytes.set(chunk, offset);
-    offset += chunk.byteLength;
-  }
-  const compressed = new Blob([bytes.buffer as ArrayBuffer]).stream();
-  const decompressed = compressed.pipeThrough(new DecompressionStream('gzip'));
-  const text = await new Response(decompressed).text();
+  const loadGzipJson = async (path: string, progress?: (loaded: number, total?: number) => void): Promise<unknown[]> => {
+    const response = await fetch(`${import.meta.env.BASE_URL}${path}`);
+    if (!response.ok) throw new Error(`Unable to load resource database (${response.status})`);
+    const contentType = response.headers.get('content-type')?.toLowerCase() ?? '';
+    if (contentType.includes('text/html') || !response.body) throw new Error('Resource database URL returned an invalid response');
+    const total = Number(response.headers.get('content-length')) || undefined;
+    const reader = response.body.getReader();
+    const chunks: Uint8Array[] = [];
+    let loaded = 0;
+    while (true) {
+      const chunk = await reader.read();
+      if (chunk.done) break;
+      chunks.push(chunk.value);
+      loaded += chunk.value.byteLength;
+      progress?.(loaded, total);
+    }
+    const bytes = new Uint8Array(loaded);
+    let offset = 0;
+    for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+    const decompressed = new Blob([bytes.buffer as ArrayBuffer]).stream().pipeThrough(new DecompressionStream('gzip'));
+    const parsed: unknown = JSON.parse(await new Response(decompressed).text());
+    if (!Array.isArray(parsed)) throw new Error('Resource database has an invalid format');
+    return parsed;
+  };
+  onProgress?.({ phase: 'download', loaded: 0 });
+  const [primary, journal] = await Promise.all([
+    loadGzipJson('resources_30000.json.gz', (loaded, total) => onProgress?.({ phase: 'download', loaded, total })),
+    loadGzipJson('data/egyptian_journal_phycology_classified.json.gz'),
+  ]);
   onProgress?.({ phase: 'parse' });
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(text);
-  } catch {
-    throw new Error('Resource database contains invalid JSON');
-  }
-  if (!Array.isArray(parsed)) {
-    throw new Error('Resource database has an invalid format');
-  }
-
-  const resources = parsed.map(toRawResource).map(mapResource);
+  const resources = [
+    ...primary.map(toRawResource).map((raw) => mapResource(raw)),
+    ...journal.map((value, index) => {
+      const raw = toRawResource(value);
+      return mapResource({
+        ...raw,
+        id: 100000000 + index,
+        issue: raw.i,
+        i: undefined,
+        pages: raw.p,
+        p: undefined,
+      }, 100000000 + index);
+    }),
+  ];
   await db.put(STORE_NAME, resources, CACHE_KEY);
   return resources;
 }
