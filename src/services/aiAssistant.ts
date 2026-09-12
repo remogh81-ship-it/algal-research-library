@@ -2,6 +2,7 @@ import { loadResources } from './resourceLoader';
 import { askGemini } from './geminiService';
 import type { Resource } from '../types/resource';
 import { formatAPA, formatBibTeX, formatMLA } from '../hooks/useResources';
+import type { Language } from '../types';
 
 export type AssistantMode = 'live' | 'local';
 export type AssistantIntent = 'search' | 'analysis' | 'citation' | 'general';
@@ -13,6 +14,32 @@ export type AssistantResponse = {
   results?: AssistantResult[];
   citations?: { apa: string; mla: string; bibtex: string };
 };
+
+const languageNames: Record<Language, string> = { ar: 'Arabic', en: 'English', fr: 'French', de: 'German', zh: 'Chinese', it: 'Italian' };
+const languagePatterns: Array<[Language, RegExp]> = [
+  ['ar', /(?:بالعربية|بالعربي|للغة العربية|ترجم للعربية|in arabic)/i],
+  ['en', /(?:بالإنجليزية|بالانجليزية|للإنجليزية|ترجم للإنجليزية|in english|answer in english)/i],
+  ['fr', /(?:بالفرنسية|للغة الفرنسية|ترجم للفرنسية|in french|answer in french)/i],
+  ['de', /(?:بالألمانية|للغة الألمانية|ترجم للألمانية|in german|answer in german)/i],
+  ['zh', /(?:بالصينية|للغة الصينية|ترجم للصينية|in chinese|answer in chinese)/i],
+  ['it', /(?:بالإيطالية|للغة الإيطالية|ترجم للإيطالية|in italian|answer in italian)/i],
+];
+
+function resolveResponseLanguage(prompt: string, currentLanguage: Language): Language {
+  return languagePatterns.find(([, pattern]) => pattern.test(prompt))?.[0] ?? currentLanguage;
+}
+
+function languageText(language: Language, key: 'metrics' | 'search' | 'noMatch' | 'citation' | 'unavailable'): string {
+  const messages: Record<Language, Record<typeof key, string>> = {
+    ar: { metrics: 'إحصائيات المكتبة', search: 'نتائج البحث', noMatch: 'لم يتم العثور على أبحاث مطابقة.', citation: 'التوثيق العلمي', unavailable: 'الوضع المحلي نشط، لكن قاعدة بيانات الأبحاث غير متاحة حالياً.' },
+    en: { metrics: 'Library metrics', search: 'Search results', noMatch: 'No matching papers were found.', citation: 'Citation', unavailable: 'Local Smart Mode is active, but the research database is unavailable.' },
+    fr: { metrics: 'Statistiques de la bibliothèque', search: 'Résultats de recherche', noMatch: 'Aucun article correspondant trouvé.', citation: 'Citation', unavailable: 'Le mode local est actif, mais la base de recherche est indisponible.' },
+    de: { metrics: 'Bibliotheksstatistik', search: 'Suchergebnisse', noMatch: 'Keine passenden Arbeiten gefunden.', citation: 'Zitation', unavailable: 'Der lokale Modus ist aktiv, aber die Forschungsdatenbank ist nicht verfügbar.' },
+    zh: { metrics: '图书馆统计', search: '搜索结果', noMatch: '未找到匹配的论文。', citation: '引用', unavailable: '本地智能模式已启用，但研究数据库暂时不可用。' },
+    it: { metrics: 'Statistiche della biblioteca', search: 'Risultati della ricerca', noMatch: 'Non sono stati trovati articoli corrispondenti.', citation: 'Citazione', unavailable: 'La modalità locale è attiva, ma il database di ricerca non è disponibile.' },
+  };
+  return messages[language][key];
+}
 
 const QUICK_PROMPTS = ['Latest biofuel research', 'Microalgae applications', 'Library statistics'];
 
@@ -33,7 +60,7 @@ function rankResources(prompt: string, resources: Resource[]): AssistantResult[]
   }).filter((match) => match.relevance > 0).sort((a, b) => b.relevance - a.relevance || b.resource.year - a.resource.year).slice(0, 5);
 }
 
-function localAnswer(prompt: string, resources: Resource[]): AssistantResponse {
+function localAnswer(prompt: string, resources: Resource[], language: Language): AssistantResponse {
   const intent = classifyIntent(prompt);
   const yearMatch = prompt.match(/\b(19|20)\d{2}\b/);
   if (intent === 'analysis') {
@@ -46,28 +73,30 @@ function localAnswer(prompt: string, resources: Resource[]): AssistantResponse {
     }, {});
     const topJournals = Object.entries(journalCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
     const answer = year
-      ? `## ${year} research metrics\n\n- **Papers found:** ${scoped.length.toLocaleString()}\n- **Top journals:**\n${topJournals.map(([journal, count]) => `  - ${journal}: ${count}`).join('\n') || '  - No journal data available.'}`
-      : `## Library metrics\n\n- **Total resources:** ${resources.length.toLocaleString()}\n- **Publication years:** ${Math.min(...resources.map((resource) => resource.year))} to ${Math.max(...resources.map((resource) => resource.year))}\n- **Unique journals:** ${Object.keys(journalCounts).length.toLocaleString()}`;
+      ? `## ${year} ${languageText(language, 'metrics')}\n\n- **${language === 'ar' ? 'الأبحاث' : 'Papers found'}:** ${scoped.length.toLocaleString()}\n- **${language === 'ar' ? 'أهم المجلات' : 'Top journals'}:**\n${topJournals.map(([journal, count]) => `  - ${journal}: ${count}`).join('\n') || `  - ${languageText(language, 'noMatch')}`}`
+      : `## ${languageText(language, 'metrics')}\n\n- **${language === 'ar' ? 'إجمالي الموارد' : 'Total resources'}:** ${resources.length.toLocaleString()}\n- **${language === 'ar' ? 'سنوات النشر' : 'Publication years'}:** ${Math.min(...resources.map((resource) => resource.year))} to ${Math.max(...resources.map((resource) => resource.year))}\n- **${language === 'ar' ? 'المجلات الفريدة' : 'Unique journals'}:** ${Object.keys(journalCounts).length.toLocaleString()}`;
     return { answer, mode: 'local', intent };
   }
   const results = rankResources(prompt, resources);
   if (intent === 'citation') {
     const selected = results[0]?.resource;
-    if (!selected) return { answer: 'No matching paper was found for citation generation.', mode: 'local', intent };
-    return { answer: `## Citation for ${selected.title}\n\n**APA**\n\`\`\`\n${formatAPA(selected)}\n\`\`\`\n\n**MLA**\n\`\`\`\n${formatMLA(selected)}\n\`\`\`\n\n**BibTeX**\n\`\`\`bibtex\n${formatBibTeX(selected)}\n\`\`\``, mode: 'local', intent, results: [{ resource: selected, relevance: results[0].relevance }], citations: { apa: formatAPA(selected), mla: formatMLA(selected), bibtex: formatBibTeX(selected) } };
+    if (!selected) return { answer: languageText(language, 'noMatch'), mode: 'local', intent };
+    return { answer: `## ${languageText(language, 'citation')}: ${selected.title}\n\n**APA**\n\`\`\`\n${formatAPA(selected)}\n\`\`\`\n\n**MLA**\n\`\`\`\n${formatMLA(selected)}\n\`\`\`\n\n**BibTeX**\n\`\`\`bibtex\n${formatBibTeX(selected)}\n\`\`\``, mode: 'local', intent, results: [{ resource: selected, relevance: results[0].relevance }], citations: { apa: formatAPA(selected), mla: formatMLA(selected), bibtex: formatBibTeX(selected) } };
   }
-  if (!results.length) return { answer: `Local Smart Mode searched ${resources.length.toLocaleString()} resources but found no close matches. Try a topic, author, category, or year.`, mode: 'local', intent };
-  return { answer: `## Search results\n\nFound **${results.length} top matches** from the local database.`, mode: 'local', intent, results };
+  if (!results.length) return { answer: `${languageText(language, 'noMatch')} (${resources.length.toLocaleString()} resources searched).`, mode: 'local', intent };
+  return { answer: `## ${languageText(language, 'search')}\n\nFound **${results.length} top matches** from the local database.`, mode: 'local', intent, results };
 }
 
-export async function askAssistant(prompt: string, signal?: AbortSignal): Promise<AssistantResponse> {
+export async function askAssistant(prompt: string, currentLanguage: Language = 'en', signal?: AbortSignal): Promise<AssistantResponse> {
+  const responseLanguage = resolveResponseLanguage(prompt, currentLanguage);
+  const languageInstruction = `Respond entirely in ${languageNames[responseLanguage]}. The active UI language is ${languageNames[currentLanguage]}; an explicit language request in the user query takes priority. Keep tables, summaries, labels, and insights in the response language.`;
   try {
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), 5000);
     const onAbort = () => controller.abort();
     signal?.addEventListener('abort', onAbort, { once: true });
     try {
-      const answer = await askGemini(prompt, controller.signal);
+      const answer = await askGemini(`${languageInstruction}\n\nUser request:\n${prompt}`, controller.signal);
       return { answer, mode: 'live', intent: classifyIntent(prompt) };
     } finally {
       window.clearTimeout(timeout);
@@ -78,9 +107,9 @@ export async function askAssistant(prompt: string, signal?: AbortSignal): Promis
     try {
       resources = await loadResources();
     } catch {
-      return { answer: 'Local Smart Mode is active, but the research database is still unavailable. Please try again shortly.', mode: 'local', intent: classifyIntent(prompt) };
+      return { answer: `${languageText(responseLanguage, 'unavailable')} Please try again shortly.`, mode: 'local', intent: classifyIntent(prompt) };
     }
-    return localAnswer(prompt, resources);
+    return localAnswer(prompt, resources, responseLanguage);
   }
 }
 

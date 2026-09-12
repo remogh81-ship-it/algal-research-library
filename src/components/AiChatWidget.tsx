@@ -34,7 +34,7 @@ export function AiChatWidget() {
     setBusy(true);
     setError('');
     try {
-      const response = await askAssistant(prompt);
+      const response = await askAssistant(prompt, language);
       setAnswer(response.answer);
       setResults(response.results ?? []);
       const isComparison = /(compare|comparison|matrix|synthesis|قارن|مقارنة|جدول مقارنة)/i.test(prompt);
