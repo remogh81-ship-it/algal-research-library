@@ -1,6 +1,6 @@
 export interface RawResource {
-  i?: number;
-  id?: number;
+  i?: number | string;
+  id?: number | string;
   t?: string;
   title?: string;
   ta?: string;
@@ -17,6 +17,11 @@ export interface RawResource {
   year?: number;
   j?: string;
   journal?: string;
+  volume?: string | number;
+  issue?: string | number;
+  pages?: string | number;
+  v?: string | number;
+  issue_number?: string | number;
   journal_publisher?: string;
   d?: string;
   doi?: string;
@@ -29,7 +34,7 @@ export interface RawResource {
   summary_it?: string;
   u?: string;
   url?: string;
-  p?: string;
+  p?: string | number;
   pdf_url?: string;
 }
 
@@ -44,6 +49,9 @@ export interface Resource {
   authors: string;
   year: number;
   journal: string;
+  volume: string;
+  issue: string;
+  pages: string;
   doi: string;
   summary_ar: string;
   summary_en?: string;
@@ -55,9 +63,9 @@ export interface Resource {
   pdfUrl: string;
 }
 
-export function mapResource(raw: RawResource): Resource {
+export function mapResource(raw: RawResource, fallbackId = 0): Resource {
   return {
-    id: raw.i ?? raw.id ?? 0,
+    id: typeof raw.i === 'number' ? raw.i : (typeof raw.id === 'number' ? raw.id : fallbackId),
     title: raw.t ?? raw.title ?? 'Untitled',
     titleArabic: raw.ta ?? raw.title_ar ?? raw.t ?? '',
     category: raw.c ?? raw.category ?? 'General',
@@ -66,6 +74,9 @@ export function mapResource(raw: RawResource): Resource {
     authors: raw.a ?? raw.authors ?? 'Unknown',
     year: raw.y ?? raw.year ?? new Date().getFullYear(),
     journal: raw.j ?? raw.journal ?? raw.journal_publisher ?? '',
+    volume: String(raw.v ?? raw.volume ?? ''),
+    issue: String(raw.i ?? raw.issue ?? raw.issue_number ?? ''),
+    pages: String(raw.p ?? raw.pages ?? ''),
     doi: raw.d ?? raw.doi ?? '',
     summary_ar: raw.summary_ar ?? raw.s ?? '',
     summary_en: raw.summary_en,
@@ -74,7 +85,7 @@ export function mapResource(raw: RawResource): Resource {
     summary_zh: raw.summary_zh,
     summary_it: raw.summary_it,
     url: raw.u ?? raw.url ?? '',
-    pdfUrl: raw.p ?? raw.pdf_url ?? '',
+    pdfUrl: String(raw.pdf_url ?? (typeof raw.p === 'string' && /^https?:\/\//i.test(raw.p) ? raw.p : '')),
   };
 }
 

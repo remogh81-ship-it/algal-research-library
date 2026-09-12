@@ -5,7 +5,7 @@ import type { Resource } from '../types/resource';
 import { useI18n } from '../i18n';
 
 type FormValues = Omit<Resource, 'id'>;
-const initial: FormValues = { title: '', titleArabic: '', category: 'Microalgae', categoryArabic: '', algaeType: 'microalgae', authors: '', year: new Date().getFullYear(), journal: '', doi: '', summary_ar: '', url: '', pdfUrl: '' };
+const initial: FormValues = { title: '', titleArabic: '', category: 'Microalgae', categoryArabic: '', algaeType: 'microalgae', authors: '', year: new Date().getFullYear(), journal: '', volume: '', issue: '', pages: '', doi: '', summary_ar: '', url: '', pdfUrl: '' };
 const publishingYearMin = 1800;
 
 export function SubmissionModal({ onClose, onSaved }: { onClose: () => void; onSaved: () => void }) {
