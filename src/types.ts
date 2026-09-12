@@ -1,4 +1,4 @@
-export type Language = 'ar' | 'en' | 'fr' | 'de' | 'zh';
+export type Language = 'ar' | 'en' | 'fr' | 'de' | 'zh' | 'it';
 
 export type Paper = {
   id: string;

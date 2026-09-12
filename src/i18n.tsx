@@ -4,10 +4,11 @@ import ar from './locales/ar.json';
 import fr from './locales/fr.json';
 import de from './locales/de.json';
 import zh from './locales/zh.json';
+import it from './locales/it.json';
 import type { Language } from './types';
 import { getLocalizedCategory } from './utils/localization';
 
-const translations = { en, ar, fr, de, zh };
+const translations = { en, ar, fr, de, zh, it } as unknown as Record<Language, Translation>;
 type Translation = typeof en;
 type I18nContextValue = { language: Language; setLanguage: (language: Language) => void; t: (key: string, values?: Record<string, string | number>) => string; category: (value: string) => string };
 const I18nContext = createContext<I18nContextValue | null>(null);

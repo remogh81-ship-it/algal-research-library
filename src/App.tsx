@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
 import { AdSlot } from './components/AdSlot';
+import { TopAdBanner } from './components/TopAdBanner';
 import { AiChatWidget } from './components/AiChatWidget';
 import { Footer } from './components/Footer';
 import { ResourceSearch } from './components/ResourceSearch';
@@ -34,6 +35,7 @@ export default function App() {
   return <div>
     <Header dark={dark} onToggleDark={() => setDark(!dark)} user={user} mineOnly={mineOnly} onToggleMine={() => setMineOnly(!mineOnly)} onLogin={() => setAuthOpen(true)} onLogout={logout} onAddResearch={() => user ? setSubmissionOpen(true) : setAuthOpen(true)} onLibrary={() => setSubmit(false)} />
     <section className="portal-hero"><div><span className="eyebrow">{t('hero.motto')}</span><h1 className="hero-heading">{t('hero.heading')}</h1><p>{t('hero.description')}</p><button className="primary-action" onClick={() => document.querySelector('.resource-query input')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>{t('hero.cta')} <Plus size={16} /></button></div><div className="hero-stat"><strong>{resources.length > 0 ? resources.length.toLocaleString(language) : '30,000+'}</strong><span>{t('hero.resources_label')}</span><strong>{totalCategories}</strong><span>{t('hero.categories_label')}</span></div></section>
+    <TopAdBanner />
     <AdSlot />
     <div className="quick-filters"><span>Quick filters</span>{['Microalgae', 'Biofuel', 'Wastewater Treatment', 'Carbon Capture'].map((filter) => <button key={filter} onClick={() => { setMineOnly(false); document.querySelector('.resource-query input')?.setAttribute('value', filter); }}>{filter}</button>)}</div>
     <main className="library-main"><ResourceSearch mineOnly={mineOnly} /></main>
