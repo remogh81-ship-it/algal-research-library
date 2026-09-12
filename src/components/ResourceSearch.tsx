@@ -34,7 +34,7 @@ function CitationButtons({ resource }: { resource: Resource }) {
   </div>;
 }
 
-export function ResourceSearch({ mineOnly = false }: { mineOnly?: boolean }) {
+export function ResourceSearch({ mineOnly = false, selectedPaperIds = [], onTogglePaper }: { mineOnly?: boolean; selectedPaperIds?: number[]; onTogglePaper?: (id: number) => void }) {
   const { t, category, language } = useI18n();
   const { user } = useAuth();
   const { visibleResources, filteredResources, categories, years, search, filters, isLoading, error, progress, page, totalPages, setSearch, setFilters, setPage } = useResources();
@@ -57,6 +57,7 @@ export function ResourceSearch({ mineOnly = false }: { mineOnly?: boolean }) {
     {error && <p className="error">{error}</p>}
     {!isLoading && !error && scopedResources.length === 0 && <p className="loading-message">{t('noResults')}</p>}
     <div className="resource-grid">{visibleResources.filter((resource) => !mineOnly || resource.ownerId === user?.id).map((resource) => <article className="resource-card" key={resource.id}>
+      {onTogglePaper && <label><input type="checkbox" checked={selectedPaperIds.includes(resource.id)} onChange={() => onTogglePaper(resource.id)} /> Select for AI summary</label>}
       <h2>{resource.title || resource.titleArabic} {language !== 'en' && language !== 'ar' && resource.title && <small className="fallback-indicator">({t('fallback')})</small>}</h2>
       {resource.titleArabic && resource.title !== resource.titleArabic && <p className="resource-arabic" lang="ar" dir="rtl">{resource.titleArabic}</p>}
       <p className="resource-meta">{resource.authors || t('unknownAuthors')} · {resource.year || 'n.d.'} · {resource.journal || t('unknownJournal')}</p>

@@ -15,6 +15,11 @@ export type AssistantResponse = {
   citations?: { apa: string; mla: string; bibtex: string };
 };
 
+export async function generatePaperSummary(abstract: string, language: Language, signal?: AbortSignal): Promise<string> {
+  const languageName = languageNames[language];
+  return askGemini(`Respond entirely in ${languageName}. Return a 4-bullet point structured academic summary in the active language (${languageName}) based strictly on the provided abstract text. Do not add facts not present in the abstract.\n\nAbstract:\n${abstract}`, signal);
+}
+
 const languageNames: Record<Language, string> = { ar: 'Arabic', en: 'English', fr: 'French', de: 'German', zh: 'Chinese', it: 'Italian' };
 const languagePatterns: Array<[Language, RegExp]> = [
   ['ar', /(?:بالعربية|بالعربي|للغة العربية|ترجم للعربية|in arabic)/i],
