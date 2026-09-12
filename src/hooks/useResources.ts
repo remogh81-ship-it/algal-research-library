@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { Resource } from '../types/resource';
 import { getSubmittedResources, loadResources, type ResourceLoadProgress } from '../services/resourceLoader';
 import { useAuth } from '../auth';
+import { MASTER_CATEGORIES, normalizeCategory } from '../data/categories';
 
 export const RESOURCE_PAGE_SIZE = 50;
 
@@ -49,14 +50,14 @@ export function useResources() {
     return () => { active = false; window.removeEventListener('resources-updated', load); };
   }, []);
 
-  const categories = useMemo(() => [...new Set(resources.flatMap((resource) => [resource.category, resource.categoryArabic]).filter(Boolean))].sort(), [resources]);
+  const categories = MASTER_CATEGORIES.slice();
   const years = useMemo(() => [...new Set(resources.map((resource) => resource.year).filter(Boolean))].sort((a, b) => b - a), [resources]);
   const filteredResources = useMemo(() => {
     const query = search.trim().toLocaleLowerCase();
     return resources.filter((resource) => {
-      const searchable = [resource.title, resource.titleArabic, resource.authors, resource.category, resource.categoryArabic, resource.doi].join(' ').toLocaleLowerCase();
+      const searchable = [resource.title, resource.titleArabic, resource.authors, resource.category, resource.categoryArabic, normalizeCategory(resource.category) ?? '', normalizeCategory(resource.categoryArabic) ?? '', resource.doi].join(' ').toLocaleLowerCase();
       return (!query || searchable.includes(query)) &&
-        (!filters.category || resource.category === filters.category || resource.categoryArabic === filters.category) &&
+        (!filters.category || normalizeCategory(resource.category) === filters.category || normalizeCategory(resource.categoryArabic) === filters.category) &&
         (!filters.year || String(resource.year) === filters.year);
     });
   }, [filters, resources, search]);
