@@ -1,1 +1,26 @@
 {"siteTitle":"المكتبة المتكاملة لأبحاث الطحالب","society_title":"الجمعية المصرية للطحالب","prepared_by":"إعداد أ.د/ رضا محمد مغازي — عضو مجلس إدارة الجمعية المصرية للطحالب","login":"تسجيل الدخول","logout":"تسجيل الخروج","mySubmissions":"أبحاثي","tagline":"الجمعية المصرية للطحالب","library":"المكتبة","submit":"إرسال بحث","explore":"استكشف أبحاث الطحالب","indexed":"{{count}} دراسة مفهرسة","searchPlaceholder":"ابحث في العناوين والمؤلفين والتصنيفات أو DOI...","searchLabel":"البحث في العنوان والمؤلفين والتصنيف أو DOI","allCategories":"كل التصنيفات","allYears":"كل السنوات","loading":"جار تحميل قاعدة البيانات المضغوطة ({{phase}})...","noResults":"لا توجد موارد مطابقة للفلاتر الحالية.","previous":"السابق","next":"التالي","page":"صفحة {{page}} من {{total}}","unknownAuthors":"مؤلفون غير معروفين","unknownJournal":"مجلة غير معروفة","fallback":"النص البديل بالإنجليزية","doi":"عرض DOI","pdf":"تنزيل PDF","apa":"نسخ APA","mla":"نسخ MLA","bibtex":"نسخ BibTeX","citation":"التوثيق العلمي","apaFormat":"صيغة APA","mlaFormat":"صيغة MLA","bibtexFormat":"صيغة BibTeX","citationCopied":"تم نسخ التوثيق العلمي إلى الحافظة!","copied":"تم النسخ","categories":{"Biofuel":"الوقود الحيوي","Bioremediation":"المعالجة الحيوية","Wastewater Treatment":"معالجة مياه الصرف","Microalgae":"الطحالب الدقيقة","Carbon Capture":"احتجاز الكربون","Wastewater Bioremediation":"المعالجة الحيوية لمياه الصرف","Microalgae Cultivation":"استزراع الطحالب الدقيقة","Carbon Bio-fixation":"التثبيت الحيوي للكربون","Heavy Metals Biosorption":"الامتزاز الحيوي للمعادن الثقيلة","Applied Phycology":"علم الطحالب التطبيقي"},"footer":{"copyright":"© أ.د/ رضا محمد مغازي — أستاذ علم الطحالب بالمركز القومي للبحوث وعضو مجلس إدارة الجمعية المصرية للطحالب."},"main_title":"المكتبة المتكاملة لأبحاث الطحالب","hero":{"motto":"دليل. إكتشاف. أثر.","heading":"حيث تتقدم أبحاث الطحالب نحو المستقبل.","description":"استكشف أكثر من 30,000 دراسة موثقة، واكتشف أحدث العلوم، وشارك أبحاثك مع مجتمع أكاديمي متخصص لتعزيز انتشارك العلمي وزيادة معدل الاستشهادات المرجعية (Citations) لأعمالك البحثية.","cta":"ابدأ الاستكشاف","resources_label":"مصدر موثق","categories_label":"مجالات بحثية"},"submission":{"eyebrow":"بحث جديد","title":"إضافة بحث","intro":"تُحفظ جميع الحقول محلياً وتظهر في مكتبتك فوراً.","englishTitle":"العنوان بالإنجليزية","arabicTitle":"العنوان بالعربية","authors":"المؤلفون","year":"سنة النشر","category":"التصنيف","algaeType":"نوع الطحالب","journal":"اسم المجلة","url":"رابط صفحة البحث","pdf":"رابط ملف PDF","summary":"الملخص بالعربية","save":"حفظ البحث"}}
+{
+  "growthCalculator": {
+    "title": "حاسبة معدل نمو الطحالب",
+    "subtitle": "Specific Growth Rate",
+    "description": "حساب معدل النمو النوعي (μ) وزمن المضاعفة (t_d) لإنماء الطحالب الدقيقة بالاعتماد على الكثافة الضوئية (OD_600).",
+    "unitDays": "بالأيام (Days)",
+    "unitHours": "بالساعات (Hours)",
+    "tableTitle": "جدول القراءات المخبرية",
+    "addPoint": "إضافة قراءة",
+    "colTime": "الزمن",
+    "colOd": "الكثافة (OD)",
+    "colDelete": "حذف",
+    "phaseSelection": "تحديد مرحلة النمو اللوغاريتمي:",
+    "startPhase": "بداية الطور (t_1)",
+    "endPhase": "نهاية الطور (t_2)",
+    "specificRate": "معدل النمو النوعي (μ)",
+    "doublingTime": "زمن المضاعفة (t_d)",
+    "unitDayInverse": "day⁻¹",
+    "unitHourInverse": "h⁻¹",
+    "unitDaysText": "أيام",
+    "unitHoursText": "ساعات",
+    "timeLabel": "الزمن",
+    "chartTitle": "منحنى النمو الحيوي (Growth Curve)"
+  }
+}
