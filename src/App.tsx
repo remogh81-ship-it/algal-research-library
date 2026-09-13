@@ -45,7 +45,9 @@ export default function App() {
 
     <AboutSocietySection />
     <Footer />
-  </div>
+  </div className="my-12 px-4 max-w-7xl mx-auto">
+  <GrowthRateCalculator />
+</div>
 );
     <div>
     <Header dark={dark} onToggleDark={() => setDark(!dark)} user={user} mineOnly={mineOnly} onToggleMine={() => setMineOnly(!mineOnly)} onLogin={() => setAuthOpen(true)} onLogout={logout} onAddResearch={() => user ? setSubmissionOpen(true) : setAuthOpen(true)} onLibrary={() => setSubmit(false)} />
