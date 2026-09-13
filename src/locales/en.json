@@ -1,1 +1,26 @@
 {"siteTitle":"Integrated Algae Research Library","society_title":"Egyptian Phycological Society","prepared_by":"Prepared by Prof. Dr. Reda Mohamed Moghazy — Board Member of the Egyptian Phycological Society","login":"Login","logout":"Logout","mySubmissions":"My submissions","tagline":"Egyptian Phycological Society","library":"Library","submit":"Submit research","explore":"Explore algae research","indexed":"{{count}} indexed resources","searchPlaceholder":"Search titles, authors, categories, or DOI...","searchLabel":"Search title, authors, category, or DOI","allCategories":"All categories","allYears":"All years","loading":"Loading the compressed research database ({{phase}})...","noResults":"No resources match the current filters.","previous":"Previous","next":"Next","page":"Page {{page}} of {{total}}","unknownAuthors":"Unknown authors","unknownJournal":"Unknown journal","fallback":"English fallback","doi":"View DOI","pdf":"Download PDF","apa":"Copy APA","mla":"Copy MLA","bibtex":"Copy BibTeX","citation":"Citation","apaFormat":"APA Format","mlaFormat":"MLA Format","bibtexFormat":"BibTeX Format","citationCopied":"Citation copied to clipboard!","copied":"Copied","categories":{"Biofuel":"Biofuel","Bioremediation":"Bioremediation","Wastewater Treatment":"Wastewater Treatment","Microalgae":"Microalgae","Carbon Capture":"Carbon Capture","Wastewater Bioremediation":"Wastewater Bioremediation","Microalgae Cultivation":"Microalgae Cultivation","Carbon Bio-fixation":"Carbon Bio-fixation","Heavy Metals Biosorption":"Heavy Metals Biosorption","Applied Phycology":"Applied Phycology"},"footer":{"copyright":"© Prof. Dr. Reda Mohamed Moghazy — Professor of Phycology at the National Research Centre & Board Member of the Egyptian Society for Phycology."},"main_title":"Integrated Algae Research Library","hero":{"motto":"EVIDENCE. DISCOVERY. IMPACT.","heading":"Where algae research moves forward.","description":"Explore 30,000+ indexed studies, discover emerging science, and publish your work with a dedicated academic community to maximize scientific reach and boost your research citation impact.","cta":"Start exploring","resources_label":"Indexed resources","categories_label":"Research areas"},"submission":{"eyebrow":"NEW RESEARCH","title":"Add research paper","intro":"All fields are saved locally and appear in your library immediately.","englishTitle":"English title","arabicTitle":"Arabic title","authors":"Authors","year":"Publication year","category":"Category","algaeType":"Algae type","journal":"Journal name","url":"Landing page URL","pdf":"PDF URL","summary":"Arabic summary","save":"Save research"}}
+{
+  "growthCalculator": {
+    "title": "Microalgae Growth Rate Calculator",
+    "subtitle": "Specific Growth Rate",
+    "description": "Calculate specific growth rate (μ) and doubling time (t_d) of microalgae cultures based on optical density (OD_600).",
+    "unitDays": "In Days",
+    "unitHours": "In Hours",
+    "tableTitle": "Experimental Data Table",
+    "addPoint": "Add Reading",
+    "colTime": "Time",
+    "colOd": "Density (OD)",
+    "colDelete": "Delete",
+    "phaseSelection": "Select Exponential Growth Phase:",
+    "startPhase": "Start Phase (t_1)",
+    "endPhase": "End Phase (t_2)",
+    "specificRate": "Specific Growth Rate (μ)",
+    "doublingTime": "Doubling Time (t_d)",
+    "unitDayInverse": "day⁻¹",
+    "unitHourInverse": "h⁻¹",
+    "unitDaysText": "days",
+    "unitHoursText": "hours",
+    "timeLabel": "Time",
+    "chartTitle": "Biological Growth Curve"
+  }
+}
