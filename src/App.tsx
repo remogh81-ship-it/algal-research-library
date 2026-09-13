@@ -34,7 +34,20 @@ export default function App() {
   }, [language, t]);
   useEffect(() => { document.documentElement.dataset.theme = dark ? 'dark' : 'light'; localStorage.setItem('library-theme', dark ? 'dark' : 'light'); }, [dark]);
   if (submit) return <><Header dark={dark} onToggleDark={() => setDark(!dark)} user={user} mineOnly={mineOnly} onToggleMine={() => setMineOnly(!mineOnly)} onLogin={() => setAuthOpen(true)} onLogout={logout} onAddResearch={() => setSubmissionOpen(true)} onLibrary={() => setSubmit(false)} /><button className="library-return" onClick={() => setSubmit(false)}>{t('library')}</button><SubmitResearch /><Footer /></>;
-  return <div>
+  return <div className="min-h-screen bg-slate-950">
+    <HeroSection />
+    <ResearchCardsSection />
+
+    {/* إدراج حاسبة نمو الطحالب هنا كقسم مستقل */}
+    <section className="py-12 px-4 bg-slate-900/50 border-y border-slate-800">
+      <GrowthRateCalculator />
+    </section>
+
+    <AboutSocietySection />
+    <Footer />
+  </div>
+);
+    <div>
     <Header dark={dark} onToggleDark={() => setDark(!dark)} user={user} mineOnly={mineOnly} onToggleMine={() => setMineOnly(!mineOnly)} onLogin={() => setAuthOpen(true)} onLogout={logout} onAddResearch={() => user ? setSubmissionOpen(true) : setAuthOpen(true)} onLibrary={() => setSubmit(false)} />
     <section className="portal-hero"><div className="hero-content"><span className="eyebrow">{t('hero.motto')}</span><h1 className="hero-heading">{t('hero.heading')}</h1><p>{t('hero.description')}</p><button className="primary-action" onClick={() => document.querySelector('.resource-query input')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>{t('hero.cta')} <Plus size={16} /></button></div><div className="hero-visual"><div className="hero-image-card"><img src="/assets/hero-photobioreactor.jpg" alt="Futuristic photobioreactor research laboratory for microalgae biotechnology" /><span className="visual-badge">Microalgae research</span></div><div className="hero-image-card hero-image-card--secondary"><img src="/assets/microscope-chlorella.jpg" alt="Fluorescence microscopy of microalgae cells" /><span className="visual-badge">Bioenergy lab</span></div></div><div className="hero-stat"><strong>{resources.length > 0 ? resources.length.toLocaleString(language) : '30,000+'}</strong><span>{t('hero.resources_label')}</span><strong>{totalCategories}</strong><span>{t('hero.categories_label')}</span></div></section>
     <TopAdBanner />
