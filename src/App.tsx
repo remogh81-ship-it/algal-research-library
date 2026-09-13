@@ -12,6 +12,7 @@ import { SubmissionModal } from './components/SubmissionModal';
 import { useAuth } from './auth';
 import { Header } from './components/Header';
 import { useResources } from './hooks/useResources';
+import GrowthRateCalculator from './components/GrowthRateCalculator';
 export default function App() {
   const [submit, setSubmit] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
@@ -39,7 +40,7 @@ export default function App() {
     <TopAdBanner />
     <AdSlot />
     <div className="quick-filters"><span>Quick filters</span>{['Microalgae', 'Biofuel', 'Wastewater Treatment', 'Carbon Capture'].map((filter) => <button key={filter} onClick={() => { setMineOnly(false); document.querySelector('.resource-query input')?.setAttribute('value', filter); }}>{filter}</button>)}</div>
-    <main className="library-main"><ResourceSearch mineOnly={mineOnly} selectedPaperIds={selectedPaperIds} onTogglePaper={(id) => setSelectedPaperIds((ids) => ids.includes(id) ? ids.filter((selectedId) => selectedId !== id) : [...ids, id])} /></main>
+    <main className="library-main"><ResourceSearch mineOnly={mineOnly} selectedPaperIds={selectedPaperIds} onTogglePaper={(id) => setSelectedPaperIds((ids) => ids.includes(id) ? ids.filter((selectedId) => selectedId !== id) : [...ids, id])} /><GrowthRateCalculator /></main>
     <AdSlot /><Footer /><AiChatWidget selectedPapers={resources.filter((resource) => selectedPaperIds.includes(resource.id))} />
     {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}{submissionOpen && <SubmissionModal onClose={() => setSubmissionOpen(false)} onSaved={() => setMineOnly(true)} />}
   </div>;
