@@ -1,4 +1,3 @@
-import GrowthRateCalculator from 'src/components/GrowthRateCalculator';
 import { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
 import { AdSlot } from './components/AdSlot';
@@ -13,6 +12,7 @@ import { SubmissionModal } from './components/SubmissionModal';
 import { useAuth } from './auth';
 import { Header } from './components/Header';
 import { useResources } from './hooks/useResources';
+import GrowthRateCalculator from './components/GrowthRateCalculator';
 export default function App() {
   const [submit, setSubmit] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
@@ -34,28 +34,13 @@ export default function App() {
   }, [language, t]);
   useEffect(() => { document.documentElement.dataset.theme = dark ? 'dark' : 'light'; localStorage.setItem('library-theme', dark ? 'dark' : 'light'); }, [dark]);
   if (submit) return <><Header dark={dark} onToggleDark={() => setDark(!dark)} user={user} mineOnly={mineOnly} onToggleMine={() => setMineOnly(!mineOnly)} onLogin={() => setAuthOpen(true)} onLogout={logout} onAddResearch={() => setSubmissionOpen(true)} onLibrary={() => setSubmit(false)} /><button className="library-return" onClick={() => setSubmit(false)}>{t('library')}</button><SubmitResearch /><Footer /></>;
-  return <div className="min-h-screen bg-slate-950">
-    <HeroSection />
-    <ResearchCardsSection />
-
-    {/* إدراج حاسبة نمو الطحالب هنا كقسم مستقل */}
-    <section className="py-12 px-4 bg-slate-900/50 border-y border-slate-800">
-      <GrowthRateCalculator />
-    </section>
-
-    <AboutSocietySection />
-    <Footer />
-  </div className="my-12 px-4 max-w-7xl mx-auto">
-  <GrowthRateCalculator />
-</div>
-);
-    <div>
+  return <div>
     <Header dark={dark} onToggleDark={() => setDark(!dark)} user={user} mineOnly={mineOnly} onToggleMine={() => setMineOnly(!mineOnly)} onLogin={() => setAuthOpen(true)} onLogout={logout} onAddResearch={() => user ? setSubmissionOpen(true) : setAuthOpen(true)} onLibrary={() => setSubmit(false)} />
     <section className="portal-hero"><div className="hero-content"><span className="eyebrow">{t('hero.motto')}</span><h1 className="hero-heading">{t('hero.heading')}</h1><p>{t('hero.description')}</p><button className="primary-action" onClick={() => document.querySelector('.resource-query input')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>{t('hero.cta')} <Plus size={16} /></button></div><div className="hero-visual"><div className="hero-image-card"><img src="/assets/hero-photobioreactor.jpg" alt="Futuristic photobioreactor research laboratory for microalgae biotechnology" /><span className="visual-badge">Microalgae research</span></div><div className="hero-image-card hero-image-card--secondary"><img src="/assets/microscope-chlorella.jpg" alt="Fluorescence microscopy of microalgae cells" /><span className="visual-badge">Bioenergy lab</span></div></div><div className="hero-stat"><strong>{resources.length > 0 ? resources.length.toLocaleString(language) : '30,000+'}</strong><span>{t('hero.resources_label')}</span><strong>{totalCategories}</strong><span>{t('hero.categories_label')}</span></div></section>
     <TopAdBanner />
     <AdSlot />
     <div className="quick-filters"><span>Quick filters</span>{['Microalgae', 'Biofuel', 'Wastewater Treatment', 'Carbon Capture'].map((filter) => <button key={filter} onClick={() => { setMineOnly(false); document.querySelector('.resource-query input')?.setAttribute('value', filter); }}>{filter}</button>)}</div>
-    <main className="library-main"><ResourceSearch mineOnly={mineOnly} selectedPaperIds={selectedPaperIds} onTogglePaper={(id) => setSelectedPaperIds((ids) => ids.includes(id) ? ids.filter((selectedId) => selectedId !== id) : [...ids, id])} /></main>
+    <main className="library-main"><ResourceSearch mineOnly={mineOnly} selectedPaperIds={selectedPaperIds} onTogglePaper={(id) => setSelectedPaperIds((ids) => ids.includes(id) ? ids.filter((selectedId) => selectedId !== id) : [...ids, id])} /><GrowthRateCalculator /></main>
     <AdSlot /><Footer /><AiChatWidget selectedPapers={resources.filter((resource) => selectedPaperIds.includes(resource.id))} />
     {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}{submissionOpen && <SubmissionModal onClose={() => setSubmissionOpen(false)} onSaved={() => setMineOnly(true)} />}
   </div>;
