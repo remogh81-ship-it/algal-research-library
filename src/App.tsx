@@ -1,3 +1,4 @@
+import GrowthRateCalculator from './components/GrowthRateCalculator';
 import { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
 import { AdSlot } from './components/AdSlot';
