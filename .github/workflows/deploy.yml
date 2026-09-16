@@ -2,7 +2,10 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - remogh81-ship-it-integrated-algae-library-updates
+      - '**'
   workflow_dispatch:
 
 permissions:
