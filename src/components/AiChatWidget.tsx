@@ -1,6 +1,39 @@
-import { FormEvent, useEffect, useMemo, useState } from 'react';
-import { BarChart3, Bot, ChevronDown, Copy, Download, FileDown, GitCompare, Send, Settings, Search, Table2, X } from 'lucide-react';
-import { askAssistant, generatePaperSummary, QUICK_PROMPTS, type AssistantMode, type AssistantResult } from '../services/aiAssistant';
+import React, { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { 
+  Bot, 
+  ChevronDown, 
+  Copy, 
+  Download, 
+  FileDown, 
+  GitCompare, 
+  Send, 
+  Settings, 
+  Search, 
+  Table2, 
+  X,
+  Dna,
+  FileSpreadsheet,
+  FlaskConical,
+  Sparkles,
+  LineChart,
+  BookOpen,
+  RotateCcw,
+  Check,
+  Cpu,
+  Layers,
+  Sparkle
+} from 'lucide-react';
+import { 
+  askAssistant, 
+  generatePaperSummary, 
+  RESEARCH_TOOLS,
+  QUICK_PROMPTS_AR,
+  QUICK_PROMPTS_EN,
+  type AssistantMode, 
+  type AssistantResult,
+  type ChatHistoryItem,
+  type ResearchToolDefinition
+} from '../services/aiAssistant';
 import { getStoredGeminiKey, saveGeminiKey } from '../services/geminiService';
 import { useI18n } from '../i18n';
 import { formatAPA, formatBibTeX, formatMLA } from '../hooks/useResources';
@@ -10,17 +43,24 @@ import { getLocalizedSummary } from '../utils/translateSummary';
 type SummaryRecord = { paper: Resource; findings: string; abstract: string };
 type SummaryTool = 'findings' | 'methodology' | 'applications' | 'citation';
 
+interface MessageBubble {
+  id: string;
+  sender: 'user' | 'assistant';
+  text: string;
+  mode?: AssistantMode;
+  results?: AssistantResult[];
+  time: string;
+}
+
 export function AiChatWidget({ selectedPapers = [] }: { selectedPapers?: Resource[] }) {
   const [open, setOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [key, setKey] = useState(getStoredGeminiKey);
   const [prompt, setPrompt] = useState('');
-  const [answer, setAnswer] = useState('');
-  const [results, setResults] = useState<AssistantResult[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [mode, setMode] = useState<AssistantMode>('local');
-  const [tool, setTool] = useState<'search' | 'compare' | 'analytics' | 'citations'>('search');
+  const [activeTab, setActiveTab] = useState<'chat' | 'tools' | 'synthesis'>('chat');
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [summaryRecords, setSummaryRecords] = useState<SummaryRecord[]>([]);
   const [activeSummaryTab, setActiveSummaryTab] = useState(0);
@@ -28,121 +68,659 @@ export function AiChatWidget({ selectedPapers = [] }: { selectedPapers?: Resourc
   const [summaryView, setSummaryView] = useState<'single' | 'matrix'>('single');
   const [summaryTool, setSummaryTool] = useState<SummaryTool>('findings');
   const [summaryBusy, setSummaryBusy] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
   const { language } = useI18n();
-  const assistantLabel = language === 'ar' ? 'المساعد الذكي' : 'AI Assistant';
+  const isArabic = language === 'ar';
+  const assistantLabel = isArabic ? 'المساعد العلمي الذكي للطحالب' : 'Algal AI Research Assistant';
+  
+  const initialGreeting = isArabic 
+    ? `مرحباً بك في **المساعد الذكي المتخصص في علوم وتطبيقات الطحالب**! 🌿🔬\n\nأنا هنا لمساعدتك في:\n- 🧬 **تشخيص وتصنيف الأنواع** (*Chlorella*, *Spirulina*, *Scenedesmus*...)\n- 🧪 **تحديد وملاءمة البيئات الغذائية** (BG-11, Zarrouk, BBM...)\n- 📋 **تصميم بروتوكولات التجارب** لإنتاج الوقود الحيوي ومعالجة مياه الصرف\n- 🔍 **البحث والتحليل المقارن** في أكثر من 31,000 بحث علمي\n\nاختر إحدى الأدوات أدناه أو اكتب استفسارك مباشرة!`
+    : `Welcome to the **Algal Research AI Companion**! 🌿🔬\n\nI can assist you with:\n- 🧬 **Species Taxonomy & Identification** (*Chlorella*, *Spirulina*, *Scenedesmus*...)\n- 🧪 **Formulating Culture Media** (BG-11, Zarrouk, BBM, f/2...)\n- 📋 **Generating Lab Protocols** for Biofuels, Pigments & Phycoremediation\n- 🔍 **Synthesizing Evidence** across 31,000+ indexed research papers\n\nPick a specialized research tool below or ask any question!`;
+
+  const [messages, setMessages] = useState<MessageBubble[]>([
+    {
+      id: 'welcome',
+      sender: 'assistant',
+      text: initialGreeting,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    }
+  ]);
+
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (open) {
+      chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, open, busy]);
+
   useEffect(() => {
     if (!open) return;
-    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') setOpen(false); };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
     document.addEventListener('keydown', closeOnEscape);
-    const previousOverflow = document.body.style.overflow;
+    const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    return () => { document.removeEventListener('keydown', closeOnEscape); document.body.style.overflow = previousOverflow; };
+    return () => {
+      document.removeEventListener('keydown', closeOnEscape);
+      document.body.style.overflow = prevOverflow;
+    };
   }, [open]);
 
-  async function submit(event: FormEvent) {
-    event.preventDefault();
-    if (!prompt.trim()) return;
+  // Handle icon mapping for tools
+  const renderToolIcon = (icon: string) => {
+    switch (icon) {
+      case 'Dna': return <Dna size={16} />;
+      case 'FileSpreadsheet': return <FileSpreadsheet size={16} />;
+      case 'FlaskConical': return <FlaskConical size={16} />;
+      case 'Sparkles': return <Sparkles size={16} />;
+      case 'LineChart': return <LineChart size={16} />;
+      case 'BookOpen': return <BookOpen size={16} />;
+      default: return <Cpu size={16} />;
+    }
+  };
+
+  async function submit(event?: FormEvent) {
+    event?.preventDefault();
+    const query = prompt.trim();
+    if (!query) return;
+
+    const userMsg: MessageBubble = {
+      id: String(Date.now()),
+      sender: 'user',
+      text: query,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    };
+
+    setMessages((prev) => [...prev, userMsg]);
+    setPrompt('');
     setBusy(true);
     setError('');
+
+    // Prepare history
+    const historyPayload: ChatHistoryItem[] = messages.slice(-6).map(m => ({
+      sender: m.sender,
+      text: m.text,
+    }));
+
     try {
-      const response = await askAssistant(prompt, language);
-      setAnswer(response.answer);
-      setResults(response.results ?? []);
-      const isComparison = /(compare|comparison|matrix|synthesis|قارن|مقارنة|جدول مقارنة)/i.test(prompt);
-      setSelectedIds(isComparison ? (response.results ?? []).map(({ resource }) => resource.id) : []);
-      if (isComparison) setTool('compare');
+      const response = await askAssistant(query, language, historyPayload);
       setMode(response.mode);
-      setPrompt('');
+
+      const assistantMsg: MessageBubble = {
+        id: String(Date.now() + 1),
+        sender: 'assistant',
+        text: response.answer,
+        mode: response.mode,
+        results: response.results,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+
+      setMessages((prev) => [...prev, assistantMsg]);
+
+      // If comparison query, auto-check items
+      const isComparison = /(compare|comparison|matrix|synthesis|قارن|مقارنة|جدول مقارنة)/i.test(query);
+      if (isComparison && response.results?.length) {
+        setSelectedIds(response.results.map((r) => r.resource.id));
+      }
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : 'Assistant is temporarily unavailable.');
     } finally {
       setBusy(false);
     }
   }
-  const selectedResults = useMemo(() => results.filter(({ resource }) => selectedIds.includes(resource.id)), [results, selectedIds]);
-  const copyAnswer = async () => { if (answer) await navigator.clipboard.writeText(answer); };
+
+  const handleToolSelect = (tool: ResearchToolDefinition) => {
+    const template = isArabic ? tool.promptTemplateAr : tool.promptTemplateEn;
+    setPrompt(template);
+    setActiveTab('chat');
+  };
+
+  const copyText = async (id: string, text: string) => {
+    if (!text) return;
+    await navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const clearChat = () => {
+    setMessages([
+      {
+        id: 'welcome-reset',
+        sender: 'assistant',
+        text: initialGreeting,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      }
+    ]);
+  };
+
   const downloadConversation = () => {
-    const blob = new Blob([`# ${assistantLabel}\n\n${answer}\n\n${results.map(({ resource }) => `- ${resource.title} (${resource.year})`).join('\n')}`], { type: 'text/markdown' });
+    const markdown = `# ${assistantLabel}\n*${new Date().toLocaleString()}*\n\n` +
+      messages.map((m) => `### ${m.sender === 'user' ? '👤 ' + (isArabic ? 'الباحث' : 'Researcher') : '🤖 ' + (isArabic ? 'المساعد الذكي' : 'Algal Assistant')}\n${m.text}\n`).join('\n---\n\n');
+    
+    const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8' });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a'); link.href = url; link.download = 'assistant-conversation.md'; link.click(); URL.revokeObjectURL(url);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `algae-assistant-${Date.now()}.md`;
+    link.click();
+    URL.revokeObjectURL(url);
   };
-  const exportSelected = (format: 'apa' | 'mla' | 'bibtex') => {
-    const citations = selectedResults.map(({ resource }) => format === 'apa' ? formatAPA(resource) : format === 'mla' ? formatMLA(resource) : formatBibTeX(resource)).join('\n\n');
-    if (!citations) return;
-    const blob = new Blob([citations], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a'); link.href = url; link.download = `algae-references.${format === 'bibtex' ? 'bib' : 'txt'}`; link.click(); URL.revokeObjectURL(url);
-  };
-  const exportSynthesis = (format: 'csv' | 'md') => {
-    const rows = selectedResults.map(({ resource }) => [resource.title, resource.algaeType || 'Algae', resource.summary_en || resource.summary_ar || 'Key findings unavailable', resource.category, String(resource.year), resource.doi || resource.url]);
-    if (!rows.length) return;
-    const content = format === 'csv'
-      ? [['Paper Title', 'Species / Strain', 'Key Findings & Efficiency', 'Category', 'Year', 'Citation / Link'], ...rows].map((row) => row.map((value) => `"${value.replace(/"/g, '""')}"`).join(',')).join('\n')
-      : `| Paper Title | Species / Strain | Key Findings & Efficiency | Category | Year | Citation / Link |\n| --- | --- | --- | --- | --- | --- |\n${rows.map((row) => `| ${row.join(' | ')} |`).join('\n')}`;
-    const blob = new Blob([content], { type: format === 'csv' ? 'text/csv;charset=utf-8' : 'text/markdown;charset=utf-8' });
-    const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = `algae-synthesis.${format}`; link.click(); URL.revokeObjectURL(url);
-  };
-  const promptChips = language === 'ar'
-    ? ['استخلاص النتائج الرئيسية لأبحاث الوقود الحيوي', 'جدول مقارنة لمعالجة العناصر الثقيلة بالطحالب', 'أحدث أبحاث Spirulina و Chlorella', 'صياغة مراجعة مرجعية لأبحاث تثبيت الكربون']
-    : ['Extract key findings on biofuel', 'Generate synthesis matrix for heavy metal removal', 'Latest research on Spirulina & Chlorella', 'Synthesize literature review on CO2 bio-fixation'];
+
+  // Quick prompt selection
+  const promptChips = isArabic ? QUICK_PROMPTS_AR : QUICK_PROMPTS_EN;
+
+  // Multi-paper summary generator
   const generateSelectedSummary = async () => {
     if (!selectedPapers.length) return;
     setSummaryBusy(true);
-    const summaries = await Promise.all(selectedPapers.map(async (paper): Promise<SummaryRecord> => {
-      const abstract = getLocalizedSummary(paper, language) || 'No abstract is available.';
-      let findings = abstract;
-      try { findings = await generatePaperSummary(abstract, language); } catch { /* local structured fallback below */ }
-      return { paper, findings, abstract };
-    }));
+    setActiveTab('synthesis');
+    const summaries = await Promise.all(
+      selectedPapers.map(async (paper): Promise<SummaryRecord> => {
+        const abstract = getLocalizedSummary(paper, language) || 'No abstract available.';
+        let findings = abstract;
+        try {
+          findings = await generatePaperSummary(abstract, language);
+        } catch {
+          // fallback keeps localized summary
+        }
+        return { paper, findings, abstract };
+      })
+    );
     setSummaryRecords(summaries);
     setActiveSummaryTab(0);
     setExpandedSummaryIds(summaries.map(({ paper }) => paper.id));
     setSummaryBusy(false);
   };
+
   const activeSummary = summaryRecords[activeSummaryTab];
-  const species = (summary: SummaryRecord) => summary.abstract.match(/\b(?:Scenedesmus|Chlorella|Spirulina|Nannochloropsis|Dunaliella|Haematococcus)\b/gi)?.filter((value, index, values) => values.indexOf(value) === index).join(', ') || summary.paper.algaeType || 'Species not specified';
+  
+  const species = (summary: SummaryRecord) =>
+    summary.abstract.match(/\b(?:Scenedesmus|Chlorella|Spirulina|Arthrospira|Nannochloropsis|Dunaliella|Haematococcus|Anabaena|Nostoc)\b/gi)?.filter((v, i, a) => a.indexOf(v) === i).join(', ') ||
+    summary.paper.algaeType || (isArabic ? 'نوع عام' : 'Unspecified species');
+
   const summaryToolText = (summary: SummaryRecord) => {
-    if (summaryTool === 'methodology') return `${species(summary)}. ${summary.paper.algaeType || summary.abstract}`;
-    if (summaryTool === 'applications') return `${summary.paper.category || summary.paper.categoryArabic}. ${summary.abstract}`;
-    if (summaryTool === 'citation') return `${formatAPA(summary.paper)}\n${formatBibTeX(summary.paper)}\n${summary.paper.doi ? `https://doi.org/${summary.paper.doi.replace(/^https?:\/\/doi.org\//, '')}` : 'DOI unavailable.'}`;
+    if (summaryTool === 'methodology') return `🔬 ${species(summary)}. ${summary.paper.algaeType || summary.abstract}`;
+    if (summaryTool === 'applications') return `🌱 ${summary.paper.category || summary.paper.categoryArabic}. ${summary.abstract}`;
+    if (summaryTool === 'citation') {
+      return `${formatAPA(summary.paper)}\n\n${formatBibTeX(summary.paper)}`;
+    }
     return summary.findings;
   };
-  const copySynthesis = async () => {
-    const content = summaryRecords.map((summary) => `${summary.paper.title}\n${summaryToolText(summary)}`).join('\n\n');
-    if (content) await navigator.clipboard.writeText(content);
+
+  const toggleSummary = (id: number) => {
+    setExpandedSummaryIds((ids) => (ids.includes(id) ? ids.filter((sId) => sId !== id) : [...ids, id]));
   };
-  const clearSummaries = () => {
-    setSummaryRecords([]);
-    setExpandedSummaryIds([]);
-    setActiveSummaryTab(0);
+
+  // Helper to format simple markdown lines into styled elements
+  const renderMarkdown = (text: string) => {
+    const lines = text.split('\n');
+    return lines.map((line, idx) => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('### ')) {
+        return <h4 key={idx} className="md-h4">{trimmed.replace('### ', '')}</h4>;
+      }
+      if (trimmed.startsWith('## ')) {
+        return <h3 key={idx} className="md-h3">{trimmed.replace('## ', '')}</h3>;
+      }
+      if (trimmed.startsWith('# ')) {
+        return <h2 key={idx} className="md-h2">{trimmed.replace('# ', '')}</h2>;
+      }
+      if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+        const itemContent = trimmed.substring(2);
+        return (
+          <li key={idx} className="md-li" dangerouslySetInnerHTML={{
+            __html: itemContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>')
+          }} />
+        );
+      }
+      if (trimmed.startsWith('> [!NOTE]')) {
+        return (
+          <div key={idx} className="md-callout-note">
+            <strong>ℹ️ {isArabic ? 'تنبيه' : 'Note'}</strong>
+          </div>
+        );
+      }
+      if (trimmed.startsWith('> ')) {
+        return <blockquote key={idx} className="md-quote">{trimmed.substring(2)}</blockquote>;
+      }
+      if (!trimmed) {
+        return <div key={idx} className="md-spacing" />;
+      }
+      return (
+        <p key={idx} className="md-p" dangerouslySetInnerHTML={{
+          __html: trimmed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>')
+        }} />
+      );
+    });
   };
-  const toggleSummary = (id: number) => setExpandedSummaryIds((ids) => ids.includes(id) ? ids.filter((summaryId) => summaryId !== id) : [...ids, id]);
-  const summaryDoi = (paper: Resource) => paper.doi ? (paper.doi.startsWith('http') ? paper.doi : `https://doi.org/${paper.doi}`) : '';
 
   return (
     <div className="chat-widget">
-      {!open && <button className="chat-launcher" onClick={() => setOpen(true)} aria-label={assistantLabel} title={assistantLabel}><Bot size={22} /><span className="chat-launcher-label">{assistantLabel}</span><i className="status-dot" /></button>}
+      {!open && (
+        <button 
+          className="chat-launcher" 
+          onClick={() => setOpen(true)} 
+          aria-label={assistantLabel} 
+          title={assistantLabel}
+        >
+          <Bot size={24} />
+          <span className="chat-launcher-label">{isArabic ? 'المساعد العلمي' : 'AI Assistant'}</span>
+          <span className="pulse-indicator" />
+        </button>
+      )}
+
       {open && (
-        <div className="chat-overlay" onClick={() => setOpen(false)}><section className="chat-panel" aria-label={assistantLabel} onClick={(event) => event.stopPropagation()}>
-          <style>{`.custom-scrollbar::-webkit-scrollbar{width:6px}.custom-scrollbar::-webkit-scrollbar-thumb{background:#7bbdb2;border-radius:999px}`}</style>
-          <header><span><Bot size={18} /> {assistantLabel}<i className="status-dot" title="Assistant active" /></span><div><button onClick={() => setSettingsOpen(true)} aria-label="Settings"><Settings size={17} /></button><button onClick={() => setOpen(false)} aria-label="Close"><X size={17} /></button></div></header>
-          <div className="assistant-mode-badge">{mode === 'local' ? 'الوضع المحلي المباشر / Local Smart Mode' : 'Live AI Mode'}</div>
-          {selectedPapers.length > 0 && <div className="assistant-actions"><button type="button" onClick={() => void generateSelectedSummary()} disabled={summaryBusy}>{summaryBusy ? 'Generating...' : `Generate Detailed Summary (${selectedPapers.length})`}</button></div>}
-          {summaryRecords.length > 0 && <div className="assistant-summary-drawer">
-            <div className="assistant-summary-toolbar"><strong>{summaryRecords.length} Papers Selected</strong><span><button type="button" className={summaryView === 'single' ? 'active' : ''} onClick={() => setSummaryView('single')}>Single Paper View</button><button type="button" className={summaryView === 'matrix' ? 'active' : ''} onClick={() => setSummaryView('matrix')}>Comparative Matrix View</button></span></div>
-            <div className="assistant-actions">{([['findings', '📊 Key Findings'], ['methodology', '🔬 Methodology & Microalgae Species'], ['applications', '🌱 Environmental & Industrial Applications'], ['citation', '🔗 Export & Citation']] as [SummaryTool, string][]).map(([name, label]) => <button type="button" key={name} className={summaryTool === name ? 'active' : ''} onClick={() => { setSummaryTool(name); setSummaryView('single'); }}>{label}</button>)}</div>
-            <div className="assistant-summary-tabs"><button type="button" className={activeSummaryTab === -1 ? 'active' : ''} onClick={() => setActiveSummaryTab(-1)}>Combined Synthesis</button>{summaryRecords.map(({ paper }, index) => <button type="button" key={paper.id} className={activeSummaryTab === index ? 'active' : ''} onClick={() => setActiveSummaryTab(index)}>Paper #{index + 1}</button>)}</div>
-            <div className="assistant-summary-scroll custom-scrollbar" style={{ maxHeight: '70vh', overflowY: 'auto', paddingRight: '0.5rem', scrollbarWidth: 'thin', scrollbarColor: '#7bbdb2 transparent' }}>
-              {summaryView === 'matrix' ? <table className="comparison-table"><thead><tr><th>Paper</th><th>Species</th><th>Category</th><th>Year</th><th>Findings</th></tr></thead><tbody>{summaryRecords.map((summary) => <tr key={summary.paper.id}><td>{summary.paper.title}</td><td>{species(summary)}</td><td>{summary.paper.category || summary.paper.categoryArabic}</td><td>{summary.paper.year}</td><td>{summary.findings}</td></tr>)}</tbody></table> : activeSummaryTab === -1 ? <div className="assistant-markdown">{summaryRecords.map((summary) => <p key={summary.paper.id}><strong>{summary.paper.title}</strong><br />{summaryToolText(summary)}</p>)}</div> : activeSummary && <div className="assistant-accordion"><article key={activeSummary.paper.id}><button type="button" onClick={() => toggleSummary(activeSummary.paper.id)}><strong>{activeSummary.paper.title}</strong><ChevronDown size={15} /></button>{expandedSummaryIds.includes(activeSummary.paper.id) && <div className="assistant-markdown"><p><strong>Objective & Research Scope:</strong> {activeSummary.paper.title} ({activeSummary.paper.category || activeSummary.paper.categoryArabic}).</p><p><strong>{summaryTool === 'findings' ? 'Main Findings & Significance' : summaryTool === 'methodology' ? 'Methodology & Microalgae Species' : summaryTool === 'applications' ? 'Environmental & Industrial Applications' : 'Export & Citation'}:</strong> {summaryToolText(activeSummary)}</p><p><strong>Citation & Direct DOI:</strong> {activeSummary.paper.authors} ({activeSummary.paper.year}). {summaryDoi(activeSummary.paper) ? <a href={summaryDoi(activeSummary.paper)} target="_blank" rel="noreferrer">{summaryDoi(activeSummary.paper)}</a> : 'DOI unavailable.'}</p></div>}</article></div>}
+        <div className="chat-overlay" onClick={() => setOpen(false)}>
+          <section className="chat-panel" aria-label={assistantLabel} onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <header className="assistant-header">
+              <div className="header-info">
+                <div className="bot-avatar">
+                  <Bot size={20} />
+                </div>
+                <div>
+                  <h3 className="header-title">{assistantLabel}</h3>
+                  <span className="header-badge">
+                    {mode === 'live' ? (
+                      <><span className="status-live" /> Gemini 2.0 Flash</>
+                    ) : (
+                      <><span className="status-local" /> {isArabic ? 'الوضع المحلي الذكي' : 'Local Smart Mode'}</>
+                    )}
+                  </span>
+                </div>
+              </div>
+              <div className="header-actions">
+                <button 
+                  type="button"
+                  onClick={clearChat} 
+                  title={isArabic ? 'مسح المحادثة' : 'Clear chat'} 
+                  aria-label="Clear chat"
+                >
+                  <RotateCcw size={16} />
+                </button>
+                <button 
+                  type="button"
+                  onClick={downloadConversation} 
+                  title={isArabic ? 'تحميل المحادثة (Markdown)' : 'Export Markdown'} 
+                  aria-label="Export Markdown"
+                >
+                  <Download size={16} />
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => setSettingsOpen(true)} 
+                  title={isArabic ? 'إعدادات المفتاح' : 'API Key Settings'} 
+                  aria-label="Settings"
+                >
+                  <Settings size={16} />
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => setOpen(false)} 
+                  title={isArabic ? 'إغلاق' : 'Close'} 
+                  aria-label="Close"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            </header>
+
+            {/* Navigation Tabs */}
+            <div className="assistant-tabs-nav">
+              <button 
+                type="button"
+                className={activeTab === 'chat' ? 'active' : ''} 
+                onClick={() => setActiveTab('chat')}
+              >
+                💬 {isArabic ? 'المحادثة الذكية' : 'Research Chat'}
+              </button>
+              <button 
+                type="button"
+                className={activeTab === 'tools' ? 'active' : ''} 
+                onClick={() => setActiveTab('tools')}
+              >
+                🔬 {isArabic ? 'الأدوات المتخصصة (6)' : 'Specialized Tools'}
+              </button>
+              {selectedPapers.length > 0 && (
+                <button 
+                  type="button"
+                  className={activeTab === 'synthesis' ? 'active' : ''} 
+                  onClick={() => setActiveTab('synthesis')}
+                >
+                  📊 {isArabic ? `تخليص الأبحاث (${selectedPapers.length})` : `Synthesis (${selectedPapers.length})`}
+                </button>
+              )}
             </div>
-            <div className="assistant-actions"><button type="button" onClick={() => void copySynthesis()}><Copy size={14} /> Copy Synthesis</button><button type="button" onClick={clearSummaries}>Clear All</button></div>
-          </div>}
-          <div className="assistant-tools"><button className={tool === 'search' ? 'active' : ''} onClick={() => setTool('search')} title="Deep search"><Search size={14} /> Search</button><button className={tool === 'compare' ? 'active' : ''} onClick={() => setTool('compare')} title="Compare selected"><GitCompare size={14} /> Compare</button><button className={tool === 'analytics' ? 'active' : ''} onClick={() => { setTool('analytics'); setPrompt('Library statistics'); }} title="Bibliometric analytics"><BarChart3 size={14} /> Analytics</button><button className={tool === 'citations' ? 'active' : ''} onClick={() => setTool('citations')} title="Export citations"><FileDown size={14} /> Export</button></div>
-          <div className="quick-prompts">{[...promptChips, ...QUICK_PROMPTS].map((quickPrompt) => <button key={quickPrompt} type="button" onClick={() => setPrompt(quickPrompt)}>{quickPrompt}</button>)}</div>
-          <div className="chat-body"><div className="assistant-actions"><button onClick={() => void copyAnswer()} title="Copy answer"><Copy size={14} /> Copy</button><button onClick={downloadConversation} title="Download Markdown"><Download size={14} /> Markdown</button></div><div className="assistant-markdown">{answer ? answer.split('\n').map((line, index) => <p key={`${line}-${index}`}>{line.replace(/^#+\s|^\-\s/, '').replace(/\*\*/g, '')}</p>) : <p>اسأل عن أبحاث الطحالب أو استخدم الإعدادات لإضافة مفتاح Gemini.</p>}</div>{tool === 'compare' && selectedResults.length > 0 && <div className="comparison-table"><div className="comparison-heading"><strong><Table2 size={15} /> Synthesis matrix</strong><span><button onClick={() => exportSynthesis('csv')}>CSV</button><button onClick={() => exportSynthesis('md')}>Markdown</button></span></div><table><thead><tr><th>Paper Title</th><th>Species / Strain</th><th>Key Findings & Efficiency</th><th>Category</th><th>Year</th><th>Citation / Link</th></tr></thead><tbody>{selectedResults.map(({ resource }) => <tr key={resource.id}><td>{resource.title}</td><td>{resource.algaeType || 'Algae'}</td><td>{resource.summary_en || resource.summary_ar || 'Key findings unavailable'}</td><td>{resource.category}</td><td>{resource.year}</td><td>{resource.doi || resource.url || '—'}</td></tr>)}</tbody></table></div>}{tool === 'citations' && selectedResults.length > 0 && <div className="assistant-actions"><button onClick={() => exportSelected('apa')}>Download APA</button><button onClick={() => exportSelected('mla')}>Download MLA</button><button onClick={() => exportSelected('bibtex')}>Download BibTeX</button></div>}{results.length > 0 && <div className="assistant-results">{results.map(({ resource }) => <article key={resource.id}><label><input type="checkbox" checked={selectedIds.includes(resource.id)} onChange={() => setSelectedIds((ids) => ids.includes(resource.id) ? ids.filter((id) => id !== resource.id) : [...ids, resource.id])} /><strong>{resource.title}</strong></label><small>{resource.authors} · {resource.year} · {resource.journal}</small><div className="insight-list"><span>🎯 <b>Main Objective / Target:</b> {resource.category}</span><span>🧪 <b>Methodology & Algae Species:</b> {resource.algaeType || 'Algae not specified'}</span><span>📊 <b>Key Results & Findings:</b> {resource.summary_en || resource.summary_ar || 'Summary unavailable'}</span><span>💡 <b>Practical Application / Impact:</b> {resource.category} research and applied biotechnology</span></div><div>{resource.pdfUrl && <a href={resource.pdfUrl} target="_blank" rel="noreferrer">PDF</a>}{resource.doi && <a href={resource.doi.startsWith('http') ? resource.doi : `https://doi.org/${resource.doi}`} target="_blank" rel="noreferrer">DOI</a>}</div></article>)}</div>}{error && <small className="error">{error}</small>}</div>
-          <form onSubmit={submit} className="chat-form"><input value={prompt} onChange={(event) => setPrompt(event.target.value)} placeholder="اكتب سؤالك..." disabled={busy} /><button disabled={busy} aria-label="Send"><Send size={17} /></button></form>
-          {settingsOpen && <div className="modal-backdrop" onClick={() => setSettingsOpen(false)}><div className="modal" onClick={(event) => event.stopPropagation()}><h3>إعدادات مساعد Gemini</h3><p>يُحفظ المفتاح محلياً في هذا المتصفح فقط.</p><input type="password" value={key} onChange={(event) => setKey(event.target.value)} placeholder="Gemini API key" /><button onClick={() => { saveGeminiKey(key); setSettingsOpen(false); }}>حفظ المفتاح</button></div></div>}
-        </section></div>
+
+            {/* TAB 1: Chat Stream */}
+            {activeTab === 'chat' && (
+              <div className="assistant-chat-stream">
+                {/* Selected papers badge if any */}
+                {selectedPapers.length > 0 && (
+                  <div className="selected-papers-banner">
+                    <span>
+                      📋 {isArabic ? `تم تحديد ${selectedPapers.length} بحث علمي` : `${selectedPapers.length} papers selected`}
+                    </span>
+                    <button 
+                      type="button" 
+                      onClick={() => void generateSelectedSummary()} 
+                      disabled={summaryBusy}
+                    >
+                      {summaryBusy ? (isArabic ? 'جاري التلخيص...' : 'Summarizing...') : (isArabic ? 'توليد مراجعة تجميعية' : 'Synthesize Matrix')}
+                    </button>
+                  </div>
+                )}
+
+                {/* Messages Bubbles */}
+                <div className="chat-messages-container">
+                  {messages.map((msg) => (
+                    <div key={msg.id} className={`chat-bubble-row ${msg.sender}`}>
+                      <div className="bubble-avatar">
+                        {msg.sender === 'user' ? '👤' : <Bot size={16} />}
+                      </div>
+                      <div className="bubble-content">
+                        <div className="bubble-meta">
+                          <span className="bubble-author">
+                            {msg.sender === 'user' ? (isArabic ? 'الباحث' : 'Researcher') : (isArabic ? 'المستشار العلمي' : 'Algae Advisor')}
+                          </span>
+                          <span className="bubble-time">{msg.time}</span>
+                          {msg.sender === 'assistant' && (
+                            <button 
+                              type="button" 
+                              className="copy-bubble-btn"
+                              onClick={() => void copyText(msg.id, msg.text)}
+                              title={isArabic ? 'نسخ الإجابة' : 'Copy'}
+                            >
+                              {copiedId === msg.id ? <Check size={12} /> : <Copy size={12} />}
+                            </button>
+                          )}
+                        </div>
+                        <div className="bubble-body">
+                          {renderMarkdown(msg.text)}
+                        </div>
+
+                        {/* Associated Papers if any */}
+                        {msg.results && msg.results.length > 0 && (
+                          <div className="bubble-paper-results">
+                            <h5>📚 {isArabic ? 'أوراق علمية ذات صلة من قاعدة البيانات:' : 'Indexed Relevant Papers:'}</h5>
+                            {msg.results.map(({ resource }) => (
+                              <div key={resource.id} className="mini-paper-card">
+                                <div className="paper-card-top">
+                                  <strong>{resource.title}</strong>
+                                  <span className="paper-year">{resource.year}</span>
+                                </div>
+                                <p className="paper-authors">{resource.authors} · <em>{resource.journal}</em></p>
+                                <div className="paper-tags">
+                                  <span className="tag-strain">{resource.algaeType || 'Algae'}</span>
+                                  <span className="tag-cat">{resource.category}</span>
+                                </div>
+                                {resource.doi && (
+                                  <a 
+                                    href={resource.doi.startsWith('http') ? resource.doi : `https://doi.org/${resource.doi}`} 
+                                    target="_blank" 
+                                    rel="noreferrer" 
+                                    className="doi-link"
+                                  >
+                                    DOI Link ↗
+                                  </a>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Typing Indicator when busy */}
+                  {busy && (
+                    <div className="chat-bubble-row assistant typing-row">
+                      <div className="bubble-avatar"><Bot size={16} /></div>
+                      <div className="bubble-content typing-box">
+                        <span className="typing-dot" />
+                        <span className="typing-dot" />
+                        <span className="typing-dot" />
+                        <span className="typing-text">
+                          {isArabic ? 'المساعد يحلل البيانات الفيكولوجية...' : 'Analyzing phycological datasets...'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  <div ref={chatEndRef} />
+                </div>
+
+                {/* Quick Prompts Carousel */}
+                <div className="quick-chips-bar">
+                  <span className="chips-title">{isArabic ? 'نماذج استفسارات:' : 'Quick Prompts:'}</span>
+                  {promptChips.map((chip, i) => (
+                    <button 
+                      key={i} 
+                      type="button" 
+                      className="quick-chip"
+                      onClick={() => setPrompt(chip)}
+                    >
+                      <Sparkle size={12} /> {chip}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Input Bar */}
+                <form onSubmit={submit} className="chat-input-bar">
+                  <textarea
+                    rows={1}
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        void submit();
+                      }
+                    }}
+                    placeholder={isArabic ? 'اطرح سؤالاً علمياً عن الطحالب، أو اطلب بروتوكولاً... (Enter للإرسال)' : 'Ask any phycology question or request a protocol... (Enter to send)'}
+                    disabled={busy}
+                  />
+                  <button type="submit" disabled={busy || !prompt.trim()} className="send-btn" aria-label="Send">
+                    <Send size={18} />
+                  </button>
+                </form>
+              </div>
+            )}
+
+            {/* TAB 2: Specialized Research Tools (6 Tools Grid) */}
+            {activeTab === 'tools' && (
+              <div className="assistant-tools-view">
+                <div className="tools-intro">
+                  <h4>🔬 {isArabic ? 'الجناح الاستشاري للبحوث المتقدمة' : 'Specialized Phycology Advisory Suite'}</h4>
+                  <p>
+                    {isArabic 
+                      ? 'اختر إحدى الأدوات المتخصصة لتطبيق نماذج بروتوكولية دقيقة معتمدة من الجمعية المصرية للطحالب.'
+                      : 'Select a specialized module to trigger standardized scientific workflows tailored for phycologists.'}
+                  </p>
+                </div>
+                <div className="tools-grid-cards">
+                  {RESEARCH_TOOLS.map((tool) => (
+                    <div 
+                      key={tool.id} 
+                      className="tool-card"
+                      onClick={() => handleToolSelect(tool)}
+                    >
+                      <div className="tool-card-header">
+                        <div className="tool-icon-wrapper">
+                          {renderToolIcon(tool.icon)}
+                        </div>
+                        <h5>{isArabic ? tool.nameAr : tool.nameEn}</h5>
+                      </div>
+                      <p className="tool-card-desc">
+                        {isArabic ? tool.descriptionAr : tool.descriptionEn}
+                      </p>
+                      <button type="button" className="use-tool-btn">
+                        {isArabic ? 'استخدام الأداة ↗' : 'Launch Module ↗'}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* TAB 3: Multi-Paper Synthesis Matrix */}
+            {activeTab === 'synthesis' && (
+              <div className="assistant-synthesis-view">
+                {summaryRecords.length === 0 ? (
+                  <div className="synthesis-empty">
+                    <Layers size={36} />
+                    <p>{isArabic ? 'لم يتم توليد تلخيص بعد. حدد أوراقاً علمية ثم اضغط زر التلخيص.' : 'No papers synthesized yet. Select papers from search and click Summarize.'}</p>
+                    <button 
+                      type="button" 
+                      onClick={() => void generateSelectedSummary()}
+                      disabled={summaryBusy || selectedPapers.length === 0}
+                    >
+                      {isArabic ? 'بدء التلخيص الآن' : 'Start Synthesis'}
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <div className="synthesis-toolbar">
+                      <strong>{isArabic ? `${summaryRecords.length} أبحاث محددة` : `${summaryRecords.length} Selected Papers`}</strong>
+                      <div className="view-toggle">
+                        <button 
+                          type="button" 
+                          className={summaryView === 'single' ? 'active' : ''} 
+                          onClick={() => setSummaryView('single')}
+                        >
+                          {isArabic ? 'عرض تفصيلي' : 'Detailed View'}
+                        </button>
+                        <button 
+                          type="button" 
+                          className={summaryView === 'matrix' ? 'active' : ''} 
+                          onClick={() => setSummaryView('matrix')}
+                        >
+                          {isArabic ? 'مصفوفة مقارنة' : 'Matrix View'}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="synthesis-dimension-selector">
+                      {([
+                        ['findings', isArabic ? '📊 النتائج الرئيسية' : '📊 Key Findings'],
+                        ['methodology', isArabic ? '🔬 المنهجية والسلالات' : '🔬 Methodology & Strains'],
+                        ['applications', isArabic ? '🌱 التطبيقات البيئية' : '🌱 Applications'],
+                        ['citation', isArabic ? '🔗 التوثيق المرجعي' : '🔗 Citations']
+                      ] as [SummaryTool, string][]).map(([val, label]) => (
+                        <button 
+                          key={val} 
+                          type="button" 
+                          className={summaryTool === val ? 'active' : ''}
+                          onClick={() => setSummaryTool(val)}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="synthesis-content-scroll">
+                      {summaryView === 'matrix' ? (
+                        <div className="matrix-table-wrapper">
+                          <table className="synthesis-matrix-table">
+                            <thead>
+                              <tr>
+                                <th>{isArabic ? 'البحث' : 'Paper'}</th>
+                                <th>{isArabic ? 'السلالة' : 'Species / Strain'}</th>
+                                <th>{isArabic ? 'التصنيف' : 'Category'}</th>
+                                <th>{isArabic ? 'السنة' : 'Year'}</th>
+                                <th>{isArabic ? 'التحليل' : 'Analysis'}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {summaryRecords.map((s) => (
+                                <tr key={s.paper.id}>
+                                  <td><strong>{s.paper.title}</strong></td>
+                                  <td><em>{species(s)}</em></td>
+                                  <td>{s.paper.category}</td>
+                                  <td>{s.paper.year}</td>
+                                  <td>{s.findings}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : (
+                        <div className="single-accordion-list">
+                          {summaryRecords.map((s) => (
+                            <div key={s.paper.id} className="synthesis-paper-card">
+                              <button 
+                                type="button" 
+                                className="paper-card-header-btn"
+                                onClick={() => toggleSummary(s.paper.id)}
+                              >
+                                <span><strong>{s.paper.title}</strong> ({s.paper.year})</span>
+                                <ChevronDown size={16} />
+                              </button>
+                              {expandedSummaryIds.includes(s.paper.id) && (
+                                <div className="paper-card-expanded-body">
+                                  <p><strong>{isArabic ? 'السلالات:' : 'Species:'}</strong> <em>{species(s)}</em></p>
+                                  <p><strong>{isArabic ? 'المحتوى والنتائج:' : 'Analysis:'}</strong></p>
+                                  <div className="expanded-text">{renderMarkdown(summaryToolText(s))}</div>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Gemini API Key Modal */}
+            {settingsOpen && (
+              <div className="modal-backdrop" onClick={() => setSettingsOpen(false)}>
+                <div className="modal api-key-modal" onClick={(e) => e.stopPropagation()}>
+                  <div className="modal-header">
+                    <Settings size={20} />
+                    <h3>{isArabic ? 'إعدادات محرك Gemini 2.0 الذكي' : 'Gemini 2.0 AI Settings'}</h3>
+                  </div>
+                  <p className="modal-desc">
+                    {isArabic 
+                      ? 'يمكنك إضافة مفتاح Gemini API المجاني الخاص بك لتفعيل القدرات التوليدية المتقدمة (Gemini 2.0 Flash) لإنتاج بروتوكولات تفاعلية فورية. يُحفظ المفتاح محلياً في متصفحك فقط.'
+                      : 'Provide your personal Google Gemini API key to unlock the Gemini 2.0 Flash reasoning engine. The key is securely stored in your local browser only.'}
+                  </p>
+                  <input 
+                    type="password" 
+                    value={key} 
+                    onChange={(e) => setKey(e.target.value)} 
+                    placeholder="AIzaSy..." 
+                    className="api-key-input"
+                  />
+                  <div className="modal-actions">
+                    <a 
+                      href="https://aistudio.google.com/app/apikey" 
+                      target="_blank" 
+                      rel="noreferrer"
+                      className="get-key-link"
+                    >
+                      {isArabic ? 'احصل على مفتاح مجاني من Google ↗' : 'Get free Gemini API Key ↗'}
+                    </a>
+                    <button 
+                      type="button" 
+                      className="save-key-btn"
+                      onClick={() => {
+                        saveGeminiKey(key);
+                        setSettingsOpen(false);
+                      }}
+                    >
+                      {isArabic ? 'حفظ المفتاح' : 'Save Key'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </section>
+        </div>
       )}
     </div>
   );
