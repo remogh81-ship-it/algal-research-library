@@ -1,14 +1,10 @@
-const ENV_KEY = (
-  import.meta.env.VITE_API_KEY as string | undefined
-)?.trim() || (
-  import.meta.env.VITE_GEMINI_API_KEY as string | undefined
-)?.trim();
 const STORAGE_KEY = 'custom_gemini_api_key';
-const endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
-if (!ENV_KEY) {
-  console.warn('Gemini API environment variable is missing. Configure VITE_API_KEY in .env.local for development or set custom key.');
-}
+// Server-side proxy endpoint (Vercel Serverless Function)
+const PROXY_ENDPOINT = '/api/gemini';
+
+// Direct Gemini endpoint (fallback for local dev or when user provides own key)
+const DIRECT_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
 export function getStoredGeminiKey(): string {
   return localStorage.getItem(STORAGE_KEY) ?? '';
@@ -21,7 +17,12 @@ export function saveGeminiKey(key: string): void {
 }
 
 export function resolveGeminiKey(): string {
-  return ENV_KEY?.trim() || getStoredGeminiKey();
+  const envKey = (
+    import.meta.env.VITE_API_KEY as string | undefined
+  )?.trim() || (
+    import.meta.env.VITE_GEMINI_API_KEY as string | undefined
+  )?.trim();
+  return envKey || getStoredGeminiKey();
 }
 
 export interface ChatMessagePayload {
@@ -29,14 +30,15 @@ export interface ChatMessagePayload {
   parts: [{ text: string }];
 }
 
+/**
+ * Primary entry point: tries the secure server proxy first (/api/gemini),
+ * then falls back to a direct Gemini call if a client-side key exists.
+ */
 export async function askGeminiChat(
   messages: ChatMessagePayload[],
   systemInstruction?: string,
   signal?: AbortSignal
 ): Promise<string> {
-  const key = resolveGeminiKey();
-  if (!key) throw new Error('GEMINI_API_KEY_REQUIRED');
-
   const bodyPayload: Record<string, any> = {
     contents: messages,
   };
@@ -47,7 +49,40 @@ export async function askGeminiChat(
     };
   }
 
-  const response = await fetch(`${endpoint}?key=${encodeURIComponent(key)}`, {
+  // Strategy 1: Use server-side proxy (no API key needed on the client)
+  try {
+    const proxyResponse = await fetch(PROXY_ENDPOINT, {
+      method: 'POST',
+      signal,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(bodyPayload),
+    });
+
+    // If proxy responded (even with an error status), parse it
+    if (proxyResponse.ok) {
+      const data = await proxyResponse.json();
+      const text = data.candidates?.[0]?.content?.parts
+        ?.map((part: { text?: string }) => part.text ?? '')
+        .join('')
+        .trim();
+      if (text) return text;
+    }
+
+    // If proxy returned 500 (key not configured), fall through to direct
+    const proxyError = await proxyResponse.json().catch(() => null);
+    console.warn('Proxy returned error, trying direct fallback:', proxyError);
+  } catch (proxyErr) {
+    // Network error, proxy not available (e.g., local dev), fall through
+    console.warn('Server proxy unavailable, trying direct Gemini call:', proxyErr);
+  }
+
+  // Strategy 2: Direct API call with client-side key (fallback)
+  const clientKey = resolveGeminiKey();
+  if (!clientKey) {
+    throw new Error('GEMINI_API_KEY_REQUIRED');
+  }
+
+  const response = await fetch(`${DIRECT_ENDPOINT}?key=${encodeURIComponent(clientKey)}`, {
     method: 'POST',
     signal,
     headers: { 'Content-Type': 'application/json' },
@@ -73,4 +108,3 @@ export async function askGeminiChat(
 export async function askGemini(prompt: string, signal?: AbortSignal, systemInstruction?: string): Promise<string> {
   return askGeminiChat([{ role: 'user', parts: [{ text: prompt }] }], systemInstruction, signal);
 }
-
