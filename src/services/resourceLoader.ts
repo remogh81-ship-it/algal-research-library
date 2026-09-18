@@ -5,7 +5,7 @@ import { mapResource } from '../types/resource';
 const DB_NAME = 'algae-research-library';
 const STORE_NAME = 'resources';
 const SUBMISSIONS_STORE = 'submissions';
-const CACHE_KEY = 'resources-library-v2';
+const CACHE_KEY = 'resources-library-v3-reclassified';
 
 export type ResourceLoadProgress = {
   phase: 'cache' | 'download' | 'decompress' | 'parse';

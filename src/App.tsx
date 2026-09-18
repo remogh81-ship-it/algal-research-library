@@ -43,7 +43,16 @@ export default function App() {
     <AdSlot />
     <div className="quick-filters">
       <span>{t('quickFilters')}</span>
-      {['Microalgae', 'Biofuel', 'Wastewater Treatment', 'Carbon Capture'].map((filter) => (
+      {[
+        'Biofuels & Bioenergy',
+        'Wastewater Treatment & Bioremediation',
+        'Carbon Capture & Bio-fixation',
+        'Food & Functional Nutrition',
+        'Pharmaceuticals & Bioactive Compounds',
+        'Agriculture & Biofertilizers',
+        'Bioplastics & Biomaterials',
+        'Ecology, Taxonomy & Blooms',
+      ].map((filter) => (
         <button
           key={filter}
           className={searchQuery === filter ? 'active' : ''}

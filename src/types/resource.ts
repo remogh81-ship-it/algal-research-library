@@ -1,3 +1,5 @@
+import { classifyPhycologyPaper, CATEGORY_ARABIC_MAP } from '../data/categories';
+
 export interface RawResource {
   i?: number | string;
   id?: number | string;
@@ -64,12 +66,20 @@ export interface Resource {
 }
 
 export function mapResource(raw: RawResource, fallbackId = 0): Resource {
+  const title = raw.t ?? raw.title ?? 'Untitled';
+  const summary = raw.summary_en ?? raw.summary_ar ?? raw.s ?? '';
+  const rawCategory = raw.c ?? raw.category ?? '';
+  
+  // Reclassify paper scientifically into standard phycology domains
+  const standardCategory = classifyPhycologyPaper(title, summary, rawCategory);
+  const standardCategoryArabic = CATEGORY_ARABIC_MAP[standardCategory] || raw.ca || raw.category_ar || '';
+
   return {
     id: typeof raw.i === 'number' ? raw.i : (typeof raw.id === 'number' ? raw.id : fallbackId),
-    title: raw.t ?? raw.title ?? 'Untitled',
+    title,
     titleArabic: raw.ta ?? raw.title_ar ?? raw.t ?? '',
-    category: raw.c ?? raw.category ?? 'General',
-    categoryArabic: raw.ca ?? raw.category_ar ?? '',
+    category: standardCategory,
+    categoryArabic: standardCategoryArabic,
     algaeType: raw.algae_type ?? raw.algaeType ?? '',
     authors: raw.a ?? raw.authors ?? 'Unknown',
     year: raw.y ?? raw.year ?? new Date().getFullYear(),
