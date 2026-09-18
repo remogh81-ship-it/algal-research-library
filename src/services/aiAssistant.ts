@@ -55,21 +55,51 @@ function resolveResponseLanguage(prompt: string, currentLanguage: Language): Lan
 }
 
 export const ALGAE_EXPERT_SYSTEM_PROMPT = `
-You are the world-class Phycology & Algal Biotechnology AI Research Companion for the Integrated Algae Research Library (المكتبة المتكاملة لأبحاث الطحالب) under the Egyptian Phycological Society (الجمعية المصرية للطحالب), under academic supervision of Prof. Dr. Reda Mohamed Moghazi.
+You are the Chief Academic Phycologist & Precision Biotechnology AI Advisor for the Integrated Algae Research Library (المكتبة المتكاملة لأبحاث الطحالب) affiliated with the Egyptian Phycological Society (الجمعية المصرية للطحالب), under academic direction of Prof. Dr. Reda Mohamed Moghazi (National Research Centre, Egypt).
 
-Your expertise includes:
-1. Taxonomy & Phycological Systematics (Cyanobacteria/Blue-green algae, Chlorophyta, Rhodophyta, Phaeophyceae, Bacillariophyceae/Diatoms).
-2. Cultivation Systems (Open raceway ponds, Tubular & Flat-panel photobioreactors, fermenters, mixotrophic/heterotrophic growth).
-3. Culture Media & Formulations (BG-11, BBM, Zarrouk, Walne, Guillard f/2, Chu-10).
-4. Bioremediation & Environmental applications (Heavy metal biosorption, wastewater phycoremediation, CO2 biofixation rates).
-5. Bioactive Compounds & High-value products (Astaxanthin, Phycocyanin, EPA/DHA, Lipids, Biofuel, Biofertilizers).
-6. Analytical & Kinetics Metrics (Specific growth rate μ, Doubling time td, Biomass productivity, Langmuir/Freundlich isotherms).
+Your scientific and technological capabilities cover:
+1. Systematic Taxonomy & Strain Identification:
+   - Cyanobacteria (*Arthrospira platensis*, *Anabaena*, *Nostoc*, *Spirulina*, *Microcystis*).
+   - Chlorophyta (*Chlorella vulgaris*, *Scenedesmus obliquus*, *Dunaliella salina*, *Haematococcus pluvialis*).
+   - Bacillariophyceae/Diatoms (*Phaeodactylum tricornutum*, *Skeletonema costatum*, *Chaetoceros*).
+   - Phaeophyceae & Rhodophyta macroalgae (*Sargassum*, *Ulva*, *Gracilaria*).
+   Always output biological binomial nomenclature in *italics* with author citations when relevant.
 
-Response Rules:
-- Answer with academic rigor, structured Markdown, clear headings, bullet points, and actionable scientific recommendations.
-- When generating protocols, provide explicit parameters (pH, temperature, light intensity in μmol photons m⁻² s⁻¹, photoperiod, aeration/CO2 flow).
-- Provide taxonomic scientific names in *italics* (e.g., *Chlorella vulgaris*, *Arthrospira platensis*).
-- Maintain responsiveness in the target language specified by user context.
+2. Precision Culture Formulations & Media Chemistry:
+   - BG-11 (freshwater cyanobacteria/microalgae): NaNO3 (1.5 g/L), K2HPO4 (0.04 g/L), MgSO4·7H2O (0.075 g/L), CaCl2·2H2O (0.036 g/L), Citric acid (0.006 g/L), Ferric ammonium citrate (0.006 g/L), EDTA (0.001 g/L), A6 trace elements.
+   - Zarrouk's Medium (Spirulina/Arthrospira): NaHCO3 (16.8 g/L), NaNO3 (2.5 g/L), K2HPO4 (0.5 g/L), K2SO4 (1.0 g/L), NaCl (1.0 g/L), MgSO4·7H2O (0.2 g/L), CaCl2 (0.04 g/L), FeSO4·7H2O (0.01 g/L), EDTA (0.08 g/L), Micronutrients A5+B6. pH strictly 9.0 - 9.8.
+   - Bold's Basal Medium (BBM), Guillard's f/2 (marine diatoms and flagellates), Walne, Chu-10.
+   - Provide exact stock solution preparation, autoclaving vs. sterile-filtration warnings, and pH adjusting protocols.
+
+3. Bioreactor Engineering & Kinetics:
+   - Specific growth rate: μ = (ln X2 - ln X1) / (t2 - t1) [day⁻¹ or h⁻¹].
+   - Doubling time: td = ln(2) / μ.
+   - Volumetric biomass productivity: P_vol = (X2 - X1) / (t2 - t1) [g L⁻¹ day⁻¹].
+   - Areal biomass productivity: P_area = P_vol × (V / A) [g m⁻² day⁻¹].
+   - CO2 Biofixation kinetics: R_CO2 = C_carbon × P_vol × (44 / 12) (typically ~1.83 g CO2 per g dry algal biomass).
+   - Optimal photosynthetically active radiation (PAR): 50 - 250 μmol photons m⁻² s⁻¹, dark:light photoperiods (16:8 or 12:12), aerated with 0.04% - 5% CO2 at 0.1 - 0.5 vvm.
+
+4. Bioremediation & Phycoremediation Protocols:
+   - Heavy metal biosorption (Pb²⁺, Cd²⁺, Cr⁶⁺, Cu²⁺, Ni²⁺, Zn²⁺): Biosorption capacity q_e = ((C0 - Ce) × V) / m [mg/g].
+   - Langmuir isotherm: q_e = (q_max × K_L × C_e) / (1 + K_L × C_e).
+   - Freundlich isotherm: q_e = K_F × (C_e)^(1/n).
+   - Municipal, industrial & dairy wastewater polishing: Removal percentages (R%) for Total Nitrogen (TN), Nitrate (NO3⁻), Ammonium (NH4⁺), Total Phosphorus (TP), and Chemical Oxygen Demand (COD).
+
+5. High-Value Natural Bioactive Extraction Protocols:
+   - Astaxanthin from *Haematococcus pluvialis*: Two-phase green-to-red stress induction (N/P depletion, high irradiance >400 μmol m⁻² s⁻¹, salt stress), cell wall disruption (bead milling, enzymatic lysis), extraction via supercritical CO2 or ethyl acetate/ethanol.
+   - Phycobiliproteins (C-Phycocyanin) from *Arthrospira*: Repeated freeze-thaw cycles (-20°C to 25°C) or ultrasonic disintegration in phosphate buffer (0.1 M, pH 7.0), purity ratio calculation: EP = A620 / A280 (Food grade: >0.7, Cosmetic: >1.5, Analytical/Reagent: >4.0).
+   - Lipids & FAME for Biodiesel: Bligh & Dyer / Folch chloroform-methanol or Soxhlet n-hexane extraction, transesterification using methanol + 1% H2SO4 or KOH at 60°C.
+
+Response Formatting Rules:
+- Provide exhaustive, publication-grade academic answers.
+- Use clean hierarchical Markdown (#, ##, ###, bullet points, bolding, scientific units).
+- When providing protocols, use numbered step-by-step Standard Operating Procedure (SOP) format with:
+  1. Objectives & Principles
+  2. Required Reagents & Equipment
+  3. Step-by-Step Execution Guide
+  4. Critical Quality Control (QC) & Pitfalls
+  5. Mathematical Formulas & Calculation Examples
+- Always respond in the target language of the prompt or context (Arabic or English).
 `;
 
 function languageText(language: Language, key: 'metrics' | 'search' | 'noMatch' | 'citation' | 'unavailable'): string {
@@ -231,26 +261,98 @@ function localAnswer(prompt: string, resources: Resource[], language: Language):
 
   if (intent === 'species_id' || intent === 'protocol' || intent === 'media_advisor' || intent === 'gaps' || intent === 'interpretation') {
     const relatedText = results.length > 0 
-      ? `\n\n### ${language === 'ar' ? 'أبحاث ذات صلة من قاعدة البيانات' : 'Related Papers from Library'}:\n` + results.map(r => `- **${r.resource.title}** (${r.resource.year}) - *${r.resource.algaeType || 'Algae'}*`).join('\n')
+      ? `\n\n### ${language === 'ar' ? 'أبحاث موثقة ذات صلة من قاعدة بيانات المكتبة:' : 'Documented Benchmark Papers from Library Database:'}\n` + results.map(r => `- **${r.resource.title}** (${r.resource.year}) — *${r.resource.algaeType || 'Algae'}* · *${r.resource.journal}*${r.resource.doi ? ` [DOI: ${r.resource.doi}]` : ''}`).join('\n')
       : '';
+
+    // Smart strain detection
+    const isSpirulina = /(spirulina|arthrospira|سبيرولينا|أرثروسبيرا)/i.test(prompt);
+    const isChlorella = /(chlorella|كلوريلا)/i.test(prompt);
+    const isScenedesmus = /(scenedesmus|سينيديسموس)/i.test(prompt);
+    const isDunaliella = /(dunaliella|دوناليلا)/i.test(prompt);
+    const isHaematococcus = /(haematococcus|هيماتوكوكس)/i.test(prompt);
+    const isBiofuel = /(lipid|biofuel|biodiesel|وقود|دهون|ديزل حيوي)/i.test(prompt);
+    const isBioremediation = /(remediation|heavy metal|wastewater|صرف|معالجة|معادن ثقيلة)/i.test(prompt);
 
     let guidance = '';
     if (language === 'ar') {
-      guidance = `## 🔬 إرشادات المستشار العلمي المحلي\n\n` +
-        `**المعايير الفيزيوكيميائية الأساسية:**\n` +
-        `- 🌡️ درجة الحرارة المثلى: **22-26°م** (حسب السلالة)\n` +
-        `- 💡 شدة الإضاءة: **50-100 μmol photons m⁻² s⁻¹** (فترة ضوئية 16:8 ساعة)\n` +
-        `- 🫧 تدفق الهواء: **1-2% CO₂** (0.5-1.0 vvm)\n` +
-        `- ⚗️ الأس الهيدروجيني: **pH 6.8-7.5** (حسب الوسط الغذائي)\n\n` +
-        `> يمكنك أيضاً استخدام **الجناح الحاسوبي العلمي المتخصص** في الصفحة الرئيسية لحساب معدلات النمو والإنتاجية.`;
+      if (isSpirulina) {
+        guidance = `## 🔬 استشارة متخصصة: استزراع وإنتاجية *Arthrospira platensis* (السبيرولينا)
+
+### 1. بيئة الاستزراع الكيميائية الموصى بها: **بيئة زاروك (Zarrouk's Medium)**
+- **بيكربونات الصوديوم (NaHCO₃):** 16.8 جم/لتر (لتوفير الكربون غير العضوي وضبط الأس الهيدروجيني).
+- **نترات الصوديوم (NaNO₃):** 2.5 جم/لتر (كمصدر نيتروجين رئيسي).
+- **فوسفات ثنائي البوتاسيوم (K₂HPO₄):** 0.5 جم/لتر.
+- **كبريتات البوتاسيوم (K₂SO₄):** 1.0 جم/لتر | **كلوريد الصوديوم (NaCl):** 1.0 جم/لتر.
+- **محلول العناصر النادرة (Trace Elements A5+B6):** 1 مل/لتر.
+
+### 2. الظروف الفيزيوكيميائية المثلى:
+- **الأس الهيدروجيني (pH):** 9.2 – 9.8 (قلوية عالية تمنع التلوث بالميكروبات الأخرى).
+- **درجة الحرارة:** 30 – 35°م (الحد الأدنى 20°م، والحد الحرج 38°م).
+- **الإضاءة (PAR):** 60 – 120 μmol photons m⁻² s⁻¹ مع دورة ضوئية 16:8 ساعة.
+- **التهوية والخلط:** تقليب مستمر (سرعة تدفق 20-30 سم/ث في الأحواض المفتوحة Raceway Ponds).
+
+### 3. استخلاص صبغة الفيكوسيانين (C-Phycocyanin):
+- تكسير الكتلة الحيوية الرطبة عبر دورات التجميد والذوبان المتكررة (-20°م ثم 25°م).
+- الاستخلاص في دارئ الفوسفات (Sodium phosphate buffer 0.1 M, pH 7.0).
+- معامل النقاء المطلوب: $EP = A_{620} / A_{280}$ (أكبر من 0.7 للدرجة الغذائية، وأكبر من 4.0 للدرجة التحليلية).`;
+      } else if (isChlorella) {
+        guidance = `## 🔬 استشارة متخصصة: استزراع وإنتاجية *Chlorella vulgaris*
+
+### 1. بيئة الاستزراع: **بيئة BG-11 أو BBM (Bold's Basal Medium)**
+- **نترات الصوديوم (NaNO₃):** 1.5 جم/لتر (للنمو الخضري السريع).
+- **فوسفات ثنائي البوتاسيوم (K₂HPO₄):** 0.04 جم/لتر | **كبريتات المغنيسيوم:** 0.075 جم/لتر.
+- **سترات الحديد والأمونيوم:** 0.006 جم/لتر لتعزيز تصنيع الكلوروفيل.
+
+### 2. بروتوكول حث تراكم الدهون للوقود الحيوي:
+- **المرحلة 1 (تراكم الكتلة الحيوية):** نمو كامل في BG-11 لمدة 8-10 أيام (تركيز نيتروجين كامل).
+- **المرحلة 2 (الإجهاد النيتروجيني):** نقل الخلايا لبيئة خالية من النيتروجين (Nitrogen-free BG-11) مع زيادة الإضاءة (>180 μmol m⁻² s⁻¹). يؤدي ذلك لتراكم الدهون المحايدة (TAGs) بنسبة تفوق 40-50% من الوزن الجاف.
+- **معدل النمو النوعي المتوقع (μ):** 0.65 – 1.1 day⁻¹.`;
+      } else if (isScenedesmus || isBioremediation) {
+        guidance = `## 🔬 استشارة متخصصة: المعالجة الحيوية بمساعدة الطحالب (*Phycoremediation*)
+
+### 1. السلالات الأكثر كفاءة:
+- *Scenedesmus obliquus* و *Chlorella pyrenoidosa*.
+
+### 2. كفاءة إزالة المغذيات والملوثات:
+- **إزالة النيتروجين الكلي (TN) والأمونيوم (NH₄⁺):** 80% – 95% خلال 6-8 أيام.
+- **إزالة الفوسفور الكلي (TP):** 75% – 90% عبر الامتزاز والتخزين الفائض (Polyphosphate accumulation).
+- **خفض الأكسجين الحيوي الممتص (BOD/COD):** خفض بنسبة تصل إلى 70-85%.
+
+### 3. الامتزاز الحيوي للمعادن الثقيلة (Biosorption):
+- حساب سعة الامتزاز عند الاتزان: $q_e = \\frac{(C_0 - C_e) \\times V}{m}$ (مجم معدن/جم طحلب جاف).
+- التوافق مع نموذج لانجمير (Langmuir Isotherm) لتحديد أقصى سعة تشبع أحادية الطبقة $q_{max}$.`;
+      } else {
+        guidance = `## 🔬 الإرشادات المعيارية الشاملة لأبحاث واستزراع الطحالب
+
+### 1. المعايير الفيزيوكيميائية الدقيقة:
+- 🌡️ **درجة الحرارة:** 22-26°م للمزارع النقية، 28-32°م للطحالب الخضراء المزرقة.
+- 💡 **شدة الإضاءة:** 50-120 μmol photons m⁻² s⁻¹ مع نظام إضاءة 16:8 ضوء:ظلام.
+- 🫧 **إمداد ثاني أكسيد الكربون:** تهوية بهواء مدعم بـ 1-2% CO₂ عند معدل تدفق 0.2-0.5 vvm لضبط الـ pH وتجنب استنزاف الكربون.
+- ⚗️ **الأس الهيدروجيني (pH):** 6.8-7.8 لمعظم الطحالب الخضراء، و9.0-10.0 للسيانوباكتيريا القلوية.
+
+### 2. المعادلات الحركية القياسية:
+- **معدل النمو النوعي:** $\\mu = \\frac{\\ln(OD_2) - \\ln(OD_1)}{t_2 - t_1}$
+- **الزمن المضاعف:** $t_d = \\frac{\\ln(2)}{\\mu}$
+- **الإنتاجية الحجمية:** $P_{vol} = \\frac{X_2 - X_1}{\\Delta t}$ (جم كتلة جافة / لتر / يوم).
+
+> يمكنك الانتقال إلى **الجناح الحاسوبي المخبري** بالصفحة الرئيسية لإجراء هذه الحسابات الرياضية فورياً.`;
+      }
     } else {
-      guidance = `## 🔬 Local Scientific Advisory\n\n` +
-        `**Standard Phycological Parameters:**\n` +
-        `- 🌡️ Optimal temperature: **22-26°C** (species-dependent)\n` +
-        `- 💡 Light intensity: **50-100 μmol photons m⁻² s⁻¹** (16:8 h photoperiod)\n` +
-        `- 🫧 Aeration: **1-2% CO₂** (0.5-1.0 vvm)\n` +
-        `- ⚗️ pH range: **6.8-7.5** (medium-dependent)\n\n` +
-        `> Use the built-in **Scientific Lab Calculators** on the main portal for growth rate (μ), biomass productivity, and CO₂ fixation kinetics.`;
+      guidance = `## 🔬 Phycological Advisory & Standard Scientific Parameters
+
+### 1. Key Physicochemical Operational Benchmarks:
+- 🌡️ **Culture Temperature:** 22–26°C for standard Chlorophyta; 30–35°C for thermophilic Cyanobacteria (*Arthrospira*).
+- 💡 **Irradiance (PAR):** 50–120 μmol photons m⁻² s⁻¹ under a 16:8 h light:dark cycle.
+- 🫧 **Gas Sparging:** Continuous bubbling with 1–2% CO₂ enriched air at 0.2–0.5 vvm.
+- ⚗️ **pH Regulation:** 6.8–7.5 for freshwater green microalgae; 9.0–9.8 for alkaliphilic cyanobacteria.
+
+### 2. Fundamental Kinetic Formulations:
+- **Specific Growth Rate:** $\\mu = \\frac{\\ln(OD_2) - \\ln(OD_1)}{t_2 - t_1}$ [day⁻¹]
+- **Doubling Time:** $t_d = \\frac{\\ln(2)}{\\mu}$ [days or hours]
+- **Volumetric Productivity:** $P_{vol} = \\frac{X_2 - X_1}{\\Delta t}$ [g L⁻¹ day⁻¹]
+- **CO₂ Biofixation Rate:** $R_{CO_2} = C_{carbon} \\times P_{vol} \\times \\frac{44}{12}$ (~1.83 g CO₂ per g dry algae).
+
+> Leverage the built-in **Scientific Lab Calculators** on the portal home page for real-time automated computations.`;
     }
 
     return {

@@ -666,8 +666,20 @@ footer p { max-width: 900px; margin: .4rem 0; }
 [data-theme="dark"] .toggle-advanced-btn:hover { background: #1a3a4a; color: #5eead4; }
 .export-all-btn { background: #075c62; color: white; font-size: .78rem; padding: .4rem .65rem; border-radius: 7px; display: inline-flex; align-items: center; gap: .3rem; }
 .export-all-btn:hover { background: #0d7c78; }
-.advanced-filters-panel { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; margin-bottom: 1rem; padding: .8rem; background: #f8fffe; border: 1px solid #d6e5e6; border-radius: 10px; }
+.advanced-filters-panel { display: flex; flex-direction: column; gap: .8rem; margin-bottom: 1rem; padding: 1rem; background: #f8fffe; border: 1px solid #d6e5e6; border-radius: 10px; }
 [data-theme="dark"] .advanced-filters-panel { background: #172733; border-color: #2d4856; }
+.filter-selects-row { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+.boolean-helper-box { background: #ffffff; border: 1px dashed #b9d8d6; border-radius: 8px; padding: .75rem; display: flex; flex-direction: column; gap: .5rem; }
+[data-theme="dark"] .boolean-helper-box { background: #12202b; border-color: #254050; }
+.boolean-chips-title { font-size: .8rem; font-weight: 700; color: #075c62; }
+[data-theme="dark"] .boolean-chips-title { color: #5eead4; }
+.boolean-chips-group { display: flex; flex-wrap: wrap; gap: .4rem; }
+.boolean-chip { background: #e6f4f2; color: #075c62; font-size: .75rem; font-weight: 700; font-family: monospace; padding: .25rem .55rem; border-radius: 6px; border: 1px solid #b2dedb; cursor: pointer; transition: background .15s; }
+.boolean-chip:hover { background: #0d7c78; color: white; border-color: #0d7c78; }
+[data-theme="dark"] .boolean-chip { background: #1d3340; color: #5eead4; border-color: #2d4c5e; }
+[data-theme="dark"] .boolean-chip:hover { background: #14b8a6; color: #042f2e; }
+.boolean-example-text { font-size: .75rem; color: #64748b; margin: 0; font-family: monospace; }
+[data-theme="dark"] .boolean-example-text { color: #94a3b8; }
 .algae-type-badge { display: inline-block; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; font-size: .72rem; font-weight: 700; padding: .15rem .45rem; border-radius: 999px; margin-bottom: .4rem; }
 [data-theme="dark"] .algae-type-badge { background: #064e3b; color: #a7f3d0; border-color: #065f4680; }
 .resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: .9rem; }

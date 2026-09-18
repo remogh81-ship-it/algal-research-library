@@ -100,6 +100,90 @@ function sortResources(resources: Resource[], sortBy: SortOption, searchQuery: s
   }
 }
 
+/* ---- Advanced Boolean & Field-Specific Search Engine ---- */
+
+export function matchesBooleanQuery(resource: Resource, rawQuery: string): boolean {
+  const query = rawQuery.trim();
+  if (!query) return true;
+
+  // Check if query uses Boolean operators or field prefixes
+  const hasOperators = /\b(AND|OR|NOT)\b|[":]/i.test(query);
+
+  const titleFull = `${resource.title || ''} ${resource.titleArabic || ''}`.toLowerCase();
+  const authorFull = (resource.authors || '').toLowerCase();
+  const journalFull = (resource.journal || '').toLowerCase();
+  const doiFull = (resource.doi || '').toLowerCase();
+  const algaeFull = (resource.algaeType || '').toLowerCase();
+  const categoryFull = `${resource.category || ''} ${resource.categoryArabic || ''}`.toLowerCase();
+  const summaryFull = `${resource.summary_ar || ''} ${resource.summary_en || ''}`.toLowerCase();
+
+  const allText = `${titleFull} ${authorFull} ${journalFull} ${doiFull} ${algaeFull} ${categoryFull} ${summaryFull}`;
+
+  if (!hasOperators) {
+    // Normal multi-term search (all terms match anywhere)
+    const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+    return terms.every((term) => allText.includes(term));
+  }
+
+  // Handle OR split first (highest level disjunction)
+  const orClauses = query.split(/\s+\bOR\b\s+/i);
+  if (orClauses.length > 1) {
+    return orClauses.some((clause) => matchesBooleanQuery(resource, clause));
+  }
+
+  // Handle AND split
+  const andClauses = query.split(/\s+\bAND\b\s+/i);
+  if (andClauses.length > 1) {
+    return andClauses.every((clause) => matchesBooleanQuery(resource, clause));
+  }
+
+  // Handle single clause with possible NOT, field prefixes, or exact phrases
+  // Extract tokens: matches "exact phrase", NOT word, field:value, or plain words
+  const tokenRegex = /(?:NOT\s+)?(?:"([^"]+)"|(\w+):"([^"]+)"|(\w+):(\S+)|(\S+))/gi;
+  let match: RegExpExecArray | null;
+  
+  while ((match = tokenRegex.exec(query)) !== null) {
+    const fullToken = match[0];
+    const isNot = /^NOT\s+/i.test(fullToken) || fullToken.startsWith('-');
+    
+    // Field-specific search
+    const fieldName = (match[2] || match[4] || '').toLowerCase();
+    const fieldValue = (match[3] || match[5] || '').toLowerCase();
+    const exactPhrase = match[1]?.toLowerCase();
+    const plainWord = match[6]?.toLowerCase().replace(/^[-+]/, '');
+
+    let tokenMatches = false;
+
+    if (fieldName && fieldValue) {
+      if (fieldName === 'author' || fieldName === 'authors') {
+        tokenMatches = authorFull.includes(fieldValue);
+      } else if (fieldName === 'title') {
+        tokenMatches = titleFull.includes(fieldValue);
+      } else if (fieldName === 'doi') {
+        tokenMatches = doiFull.includes(fieldValue);
+      } else if (fieldName === 'journal') {
+        tokenMatches = journalFull.includes(fieldValue);
+      } else if (fieldName === 'algae' || fieldName === 'strain' || fieldName === 'species') {
+        tokenMatches = algaeFull.includes(fieldValue);
+      } else if (fieldName === 'year') {
+        tokenMatches = String(resource.year) === fieldValue;
+      } else {
+        tokenMatches = allText.includes(fieldValue);
+      }
+    } else if (exactPhrase) {
+      tokenMatches = allText.includes(exactPhrase);
+    } else if (plainWord) {
+      if (plainWord === 'and' || plainWord === 'or' || plainWord === 'not') continue;
+      tokenMatches = allText.includes(plainWord);
+    }
+
+    if (isNot && tokenMatches) return false;
+    if (!isNot && !tokenMatches) return false;
+  }
+
+  return true;
+}
+
 /* ---- Main Hook ---- */
 
 export function useResources() {
@@ -138,14 +222,17 @@ export function useResources() {
   const algaeTypes = useMemo(() => [...new Set(resources.map((r) => r.algaeType).filter(Boolean))].sort(), [resources]);
 
   const filteredResources = useMemo(() => {
-    const query = search.trim().toLocaleLowerCase();
+    const query = search.trim();
     const filtered = resources.filter((resource) => {
-      const searchable = [resource.title, resource.titleArabic, resource.authors, resource.category, resource.categoryArabic, normalizeCategory(resource.category) ?? '', normalizeCategory(resource.categoryArabic) ?? '', resource.doi].join(' ').toLocaleLowerCase();
-      return (!query || searchable.includes(query)) &&
-        (!filters.category || normalizeCategory(resource.category) === filters.category || normalizeCategory(resource.categoryArabic) === filters.category) &&
-        (!filters.year || String(resource.year) === filters.year) &&
-        (!filters.journal || resource.journal === filters.journal) &&
-        (!filters.algaeType || resource.algaeType === filters.algaeType);
+      const matchSearch = matchesBooleanQuery(resource, query);
+      const matchCategory = !filters.category || 
+        normalizeCategory(resource.category) === filters.category || 
+        normalizeCategory(resource.categoryArabic) === filters.category;
+      const matchYear = !filters.year || String(resource.year) === filters.year;
+      const matchJournal = !filters.journal || resource.journal === filters.journal;
+      const matchAlgae = !filters.algaeType || resource.algaeType === filters.algaeType;
+
+      return matchSearch && matchCategory && matchYear && matchJournal && matchAlgae;
     });
     return sortResources(filtered, sortBy, search);
   }, [filters, resources, search, sortBy]);

@@ -111,16 +111,38 @@ export function ResourceSearch({
       )}
     </div>
 
-    {/* Advanced Filters Panel */}
+    {/* Advanced Filters & Boolean Search Panel */}
     {showAdvanced && <div className="advanced-filters-panel">
-      <select value={filters.journal} onChange={(event) => updateFilter('journal', event.target.value)} aria-label={t('allJournals')}>
-        <option value="">{t('allJournals')}</option>
-        {journals.slice(0, 100).map((j) => <option key={j} value={j}>{j}</option>)}
-      </select>
-      <select value={filters.algaeType} onChange={(event) => updateFilter('algaeType', event.target.value)} aria-label={t('allAlgaeTypes')}>
-        <option value="">{t('allAlgaeTypes')}</option>
-        {algaeTypes.map((at) => <option key={at} value={at}>{at}</option>)}
-      </select>
+      <div className="filter-selects-row">
+        <select value={filters.journal} onChange={(event) => updateFilter('journal', event.target.value)} aria-label={t('allJournals')}>
+          <option value="">{t('allJournals')}</option>
+          {journals.slice(0, 100).map((j) => <option key={j} value={j}>{j}</option>)}
+        </select>
+        <select value={filters.algaeType} onChange={(event) => updateFilter('algaeType', event.target.value)} aria-label={t('allAlgaeTypes')}>
+          <option value="">{t('allAlgaeTypes')}</option>
+          {algaeTypes.map((at) => <option key={at} value={at}>{at}</option>)}
+        </select>
+      </div>
+
+      <div className="boolean-helper-box">
+        <div className="boolean-chips-title">
+          <span>🧠 {language === 'ar' ? 'مساعد البحث المنطقي المتقدم (Boolean Syntax):' : 'Academic Boolean Query Operators:'}</span>
+        </div>
+        <div className="boolean-chips-group">
+          <button type="button" className="boolean-chip" onClick={() => setSearchInput((prev) => `${prev} AND `)}>AND</button>
+          <button type="button" className="boolean-chip" onClick={() => setSearchInput((prev) => `${prev} OR `)}>OR</button>
+          <button type="button" className="boolean-chip" onClick={() => setSearchInput((prev) => `${prev} NOT `)}>NOT</button>
+          <button type="button" className="boolean-chip" onClick={() => setSearchInput((prev) => `${prev} author:"Moghazi"`)}>author:"..."</button>
+          <button type="button" className="boolean-chip" onClick={() => setSearchInput((prev) => `${prev} title:"Chlorella"`)}>title:"..."</button>
+          <button type="button" className="boolean-chip" onClick={() => setSearchInput((prev) => `${prev} algae:"Spirulina"`)}>algae:"..."</button>
+          <button type="button" className="boolean-chip" onClick={() => setSearchInput((prev) => `${prev} journal:"Algal"`)}>journal:"..."</button>
+        </div>
+        <p className="boolean-example-text">
+          {language === 'ar' 
+            ? 'أمثلة: Chlorella AND Biofuel | author:"Moghazi" | Spirulina NOT "Open Pond" | "heavy metals" OR biosorption'
+            : 'Examples: Chlorella AND Biofuel | author:"Moghazi" | Spirulina NOT "Open Pond" | "heavy metals" OR biosorption'}
+        </p>
+      </div>
     </div>}
 
     {isLoading && <p className="loading-message">{t('loading', { phase: progress?.phase ?? 'cache' })}</p>}

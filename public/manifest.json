@@ -1,0 +1,27 @@
+{
+  "short_name": "Algae Library",
+  "name": "المكتبة المتكاملة لأبحاث الطحالب | Integrated Algae Research Library",
+  "description": "قاعدة بحثية متخصصة تضم أكثر من 30,000 دراسة في علوم الطحالب وتطبيقاتها — الجمعية المصرية للطحالب",
+  "icons": [
+    {
+      "src": "/eps-logo.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/eps-logo.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#ffffff",
+  "theme_color": "#0d7c78",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "dir": "rtl",
+  "lang": "ar",
+  "categories": ["education", "science", "books", "research"]
+}
