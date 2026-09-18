@@ -236,11 +236,21 @@ function localAnswer(prompt: string, resources: Resource[], language: Language):
 
     let guidance = '';
     if (language === 'ar') {
-      guidance = `> [!NOTE]\n> يعمل المساعد حالياً بـ **الوضع المحلي الذكي**. لتفعيل الذكاء الاصطناعي التوليدي التفاعلي (Gemini 2.0 Flash) واستخراج بروتوكولات تفصيلية، يرجى تزويد مفتاح API في الإعدادات ⚙️.\n\n` +
-        `**ملخص إرشادي محلي:**\n- يُرجى فحص المعايير الفيزيوكيميائية (درجة الحرارة 22-26°م، الإضاءة 50-100 μmol photons m⁻² s⁻¹، وتدفق الهواء المدعم بـ 1-2% CO₂).\n- لمعالجة البيانات وحساب الحركية، يمكنك أيضاً استخدام **الجناح الحاسوبي العلمي المتخصص** في الصفحة الرئيسية.`;
+      guidance = `## 🔬 إرشادات المستشار العلمي المحلي\n\n` +
+        `**المعايير الفيزيوكيميائية الأساسية:**\n` +
+        `- 🌡️ درجة الحرارة المثلى: **22-26°م** (حسب السلالة)\n` +
+        `- 💡 شدة الإضاءة: **50-100 μmol photons m⁻² s⁻¹** (فترة ضوئية 16:8 ساعة)\n` +
+        `- 🫧 تدفق الهواء: **1-2% CO₂** (0.5-1.0 vvm)\n` +
+        `- ⚗️ الأس الهيدروجيني: **pH 6.8-7.5** (حسب الوسط الغذائي)\n\n` +
+        `> يمكنك أيضاً استخدام **الجناح الحاسوبي العلمي المتخصص** في الصفحة الرئيسية لحساب معدلات النمو والإنتاجية.`;
     } else {
-      guidance = `> [!NOTE]\n> The Assistant is running in **Local Smart Mode**. To unlock real-time generative protocols and diagnostics (powered by Gemini 2.0 Flash), configure your Gemini API Key in settings ⚙️.\n\n` +
-        `**Local Expert Guideline:**\n- Verify standard culture parameters (22-26°C, 50-100 μmol photons m⁻² s⁻¹, 1-2% CO2 aerated flow).\n- For kinetics and calculations, leverage the built-in **Scientific Lab Calculators** in the main portal.`;
+      guidance = `## 🔬 Local Scientific Advisory\n\n` +
+        `**Standard Phycological Parameters:**\n` +
+        `- 🌡️ Optimal temperature: **22-26°C** (species-dependent)\n` +
+        `- 💡 Light intensity: **50-100 μmol photons m⁻² s⁻¹** (16:8 h photoperiod)\n` +
+        `- 🫧 Aeration: **1-2% CO₂** (0.5-1.0 vvm)\n` +
+        `- ⚗️ pH range: **6.8-7.5** (medium-dependent)\n\n` +
+        `> Use the built-in **Scientific Lab Calculators** on the main portal for growth rate (μ), biomass productivity, and CO₂ fixation kinetics.`;
     }
 
     return {
