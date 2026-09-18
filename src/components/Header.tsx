@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BookOpen, FilePlus2, GraduationCap, LogIn, Moon, Plus, Sun, UserRound, Youtube } from 'lucide-react';
+import { BookOpen, FilePlus2, GraduationCap, LogIn, Mail, Moon, Plus, Sun, UserRound, Youtube } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
@@ -16,9 +16,10 @@ type HeaderProps = {
   onAddResearch: () => void;
   onLibrary: () => void;
   onOpenProfile?: () => void;
+  onOpenContact?: () => void;
 };
 
-export function Header({ dark, onToggleDark, user, mineOnly, onToggleMine, onLogin, onLogout, onAddResearch, onLibrary, onOpenProfile }: HeaderProps) {
+export function Header({ dark, onToggleDark, user, mineOnly, onToggleMine, onLogin, onLogout, onAddResearch, onLibrary, onOpenProfile, onOpenContact }: HeaderProps) {
   const { t } = useI18n();
   const [logoFailed, setLogoFailed] = useState(false);
   const handleLogoError = () => {
@@ -49,6 +50,16 @@ export function Header({ dark, onToggleDark, user, mineOnly, onToggleMine, onLog
       >
         <Youtube size={19} />
       </a>
+      {onOpenContact && (
+        <button 
+          className="icon-button header-contact-btn" 
+          onClick={onOpenContact} 
+          title={t('contactUs') || 'تواصل معنا'} 
+          aria-label={t('contactUs') || 'تواصل معنا'}
+        >
+          <Mail size={18} />
+        </button>
+      )}
       <button className="icon-button" onClick={onToggleDark} aria-label="Toggle theme">{dark ? <Sun size={18} /> : <Moon size={18} />}</button>
       <LanguageSwitcher />
       {user ? <div className="account-menu">

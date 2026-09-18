@@ -6,6 +6,7 @@
   "logout": "Logout",
   "mySubmissions": "My submissions",
   "academicProfile": "Academic Profile",
+  "contactUs": "Contact Us",
   "tagline": "Egyptian Phycological Society",
   "library": "Library",
   "submit": "Submit research",
@@ -241,5 +242,15 @@
     "pe": "Phycoerythrin (PE)",
     "purityRatio": "Phycocyanin Purity Ratio (A₆₂₀/A₂₈₀)",
     "grade": "Purity Grade"
+  },
+  "footer": {
+    "academicResources": "Academic Resources & Links",
+    "journalLink": "Egyptian Journal of Phycology (EKB)",
+    "ekbLink": "Egyptian Knowledge Bank",
+    "youtubeLink": "Society YouTube Channel",
+    "facebookLink": "Society Facebook Group",
+    "contactTitle": "Contact Us",
+    "copyright": "© 2026 Egyptian Phycological Society - All rights reserved.",
+    "officialBadge": "Verified Academic Portal"
   }
 }

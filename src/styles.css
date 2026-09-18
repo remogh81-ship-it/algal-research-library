@@ -1093,19 +1093,50 @@ footer p { max-width: 900px; margin: .4rem 0; }
    Portal Footer Enhancements
    ========================================================================== */
 .portal-footer { background: #0f172a; color: #cbd5e1; border-top: 1px solid #1e293b; padding: 3rem clamp(1rem, 5vw, 5rem) 1.5rem; margin-top: 4rem; }
-.footer-content { display: grid; grid-template-columns: 2fr 1fr; gap: 3rem; margin-bottom: 2.5rem; }
-@media (max-width: 800px) { .footer-content { grid-template-columns: 1fr; gap: 2rem; } }
+.footer-content { display: grid; grid-template-columns: 1.4fr 1fr 1.3fr; gap: 2.5rem; margin-bottom: 2.5rem; }
+@media (max-width: 990px) { .footer-content { grid-template-columns: 1fr 1fr; gap: 2rem; } }
+@media (max-width: 650px) { .footer-content { grid-template-columns: 1fr; gap: 2rem; } }
 
 .footer-logo-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
 .footer-society-logo { width: 52px; height: 52px; object-fit: contain; border-radius: 50%; background: #ffffff; padding: 2px; }
 .footer-title { font-size: 1.25rem; font-weight: 800; color: #f8fafc; display: block; }
 .footer-society { font-size: .9rem; color: #5eead4; font-weight: 600; display: block; }
-.footer-attribution { font-size: .88rem; color: #94a3b8; line-height: 1.6; max-width: 600px; margin: 0; }
+.footer-attribution { font-size: .88rem; color: #94a3b8; line-height: 1.6; max-width: 600px; margin: 0 0 0.8rem; }
+.footer-society-badges { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.footer-soc-badge { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #ccfbf1; font-size: 0.72rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 999px; }
 
-.footer-links h4 { font-size: .95rem; font-weight: 700; color: #f8fafc; margin: 0 0 1rem; }
+.footer-links h4, .footer-contact-col h4 { font-size: .95rem; font-weight: 700; color: #f8fafc; margin: 0 0 1rem; }
 .footer-links ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .6rem; }
 .footer-links a { color: #94a3b8; text-decoration: none; font-size: .85rem; display: inline-flex; align-items: center; gap: .5rem; transition: color .2s; }
 .footer-links a:hover { color: #5eead4; }
+.footer-fb-link:hover { color: #60a5fa !important; }
+
+/* Footer Contact Column */
+.footer-contact-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.footer-contact-title-row h4 { margin: 0; }
+.footer-open-contact-btn { background: rgba(94, 234, 212, 0.15); color: #5eead4; border: 1px solid rgba(94, 234, 212, 0.3); border-radius: 6px; padding: 0.2rem 0.55rem; font-size: 0.72rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.footer-open-contact-btn:hover { background: rgba(94, 234, 212, 0.3); color: #ffffff; }
+
+.footer-contact-items { display: flex; flex-direction: column; gap: 0.75rem; }
+.footer-contact-item { display: flex; align-items: flex-start; gap: 0.65rem; }
+.footer-contact-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+.footer-contact-icon.whatsapp { background: rgba(37, 211, 102, 0.2); color: #25d366; }
+.footer-contact-icon.email { background: rgba(13, 124, 120, 0.25); color: #5eead4; }
+.footer-contact-icon.email-soc { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+.footer-contact-icon.fb { background: rgba(24, 119, 242, 0.2); color: #60a5fa; }
+
+.footer-contact-text { display: flex; flex-direction: column; min-width: 0; }
+.contact-label { font-size: 0.72rem; color: #64748b; font-weight: 600; margin-bottom: 0.1rem; }
+.contact-value-link { font-size: 0.82rem; color: #e2e8f0; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.35rem; transition: color 0.15s; }
+.contact-value-link:hover { color: #5eead4; }
+.contact-value-link.whatsapp-text { color: #34d399; font-weight: 700; letter-spacing: 0.02em; }
+.contact-value-link.whatsapp-text:hover { color: #6ee7b7; }
+.contact-value-link.fb-text { color: #93c5fd; }
+.contact-value-link.fb-text:hover { color: #bfdbfe; }
+
+.email-copy-row { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+.footer-copy-btn { background: transparent; border: none; color: #64748b; cursor: pointer; padding: 2px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; transition: color 0.15s; }
+.footer-copy-btn:hover { color: #e2e8f0; }
 
 .footer-bottom { border-top: 1px solid #1e293b; padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: .8rem; color: #64748b; }
 .footer-bottom p { margin: 0; }
@@ -1924,4 +1955,443 @@ footer p { max-width: 900px; margin: .4rem 0; }
   border-color: #0284c7;
   color: #38bdf8;
 }
+
+/* Header Contact Button */
+.header-contact-btn {
+  background: #e6f6f2;
+  color: #075c62;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.header-contact-btn:hover {
+  background: #075c62;
+  color: #ffffff;
+  border-color: #075c62;
+  transform: translateY(-1px);
+}
+[data-theme="dark"] .header-contact-btn {
+  background: #134e4a;
+  color: #5eead4;
+  border-color: rgba(45, 212, 191, 0.3);
+}
+[data-theme="dark"] .header-contact-btn:hover {
+  background: #0f766e;
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   Contact Modal Styles (WhatsApp, Emails, Facebook)
+   ========================================================================== */
+.contact-modal-card {
+  max-width: 820px;
+  width: 95%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 1.75rem;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 25px 70px rgba(15, 23, 42, 0.35);
+  position: relative;
+}
+.contact-modal-card button {
+  width: auto;
+  margin-top: 0;
+}
+[data-theme="dark"] .contact-modal-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+}
+
+.contact-modal-header {
+  margin-bottom: 1.5rem;
+}
+.contact-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #e6f6f2;
+  color: #075c62;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  margin-bottom: 0.6rem;
+}
+[data-theme="dark"] .contact-header-badge {
+  background: rgba(13, 124, 120, 0.25);
+  color: #5eead4;
+}
+.contact-modal-title {
+  font-size: clamp(1.3rem, 2.8vw, 1.75rem);
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0 0 0.35rem;
+}
+[data-theme="dark"] .contact-modal-title {
+  color: #f8fafc;
+}
+.contact-modal-subtitle {
+  font-size: 0.88rem;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+}
+[data-theme="dark"] .contact-modal-subtitle {
+  color: #94a3b8;
+}
+
+/* Channels Grid */
+.contact-channels-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+@media (max-width: 680px) {
+  .contact-channels-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.contact-channel-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+.contact-channel-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+[data-theme="dark"] .contact-channel-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+.channel-icon-col {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.whatsapp-bg { background: rgba(37, 211, 102, 0.15); color: #16a34a; }
+.facebook-bg { background: rgba(24, 119, 242, 0.15); color: #1877f2; }
+.email-bg { background: rgba(13, 124, 120, 0.15); color: #0d7c78; }
+.email-society-bg { background: rgba(245, 158, 11, 0.15); color: #d97706; }
+
+.channel-info-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.channel-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.35rem;
+}
+.channel-type-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.15rem 0.55rem;
+  border-radius: 6px;
+}
+.whatsapp-badge { background: #dcfce7; color: #166534; }
+.facebook-badge { background: #dbeafe; color: #1e40af; }
+.email-badge { background: #ccfbf1; color: #0f766e; }
+[data-theme="dark"] .whatsapp-badge { background: rgba(22, 101, 52, 0.4); color: #86efac; }
+[data-theme="dark"] .facebook-badge { background: rgba(30, 64, 175, 0.4); color: #93c5fd; }
+[data-theme="dark"] .email-badge { background: rgba(15, 118, 110, 0.4); color: #5eead4; }
+
+.channel-status-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #16a34a;
+}
+.dot-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3);
+}
+
+.channel-primary-val {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 0.25rem;
+  letter-spacing: -0.01em;
+  word-break: break-word;
+}
+[data-theme="dark"] .channel-primary-val {
+  color: #f8fafc;
+}
+.channel-desc {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0 0 0.85rem;
+  line-height: 1.45;
+}
+[data-theme="dark"] .channel-desc {
+  color: #94a3b8;
+}
+
+.channel-actions-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.channel-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  border: none;
+}
+.whatsapp-btn {
+  background: #25d366;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
+}
+.whatsapp-btn:hover {
+  background: #128c7e;
+  transform: translateY(-1px);
+}
+.facebook-btn {
+  background: #1877f2;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.25);
+}
+.facebook-btn:hover {
+  background: #0c63d4;
+  transform: translateY(-1px);
+}
+.email-btn {
+  background: #0f766e;
+  color: #ffffff;
+}
+.email-btn:hover {
+  background: #0d5959;
+  transform: translateY(-1px);
+}
+.copy-btn {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+}
+.copy-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+[data-theme="dark"] .copy-btn {
+  background: #0f172a;
+  border-color: #475569;
+  color: #cbd5e1;
+}
+
+/* Quick Inquiry Form */
+.contact-quick-form {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+[data-theme="dark"] .contact-quick-form {
+  background: #1e293b;
+  border-color: #334155;
+}
+.quick-form-header {
+  margin-bottom: 1rem;
+}
+.quick-form-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f766e;
+  margin: 0 0 0.2rem;
+}
+[data-theme="dark"] .quick-form-title {
+  color: #2dd4bf;
+}
+.quick-form-note {
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 500;
+}
+[data-theme="dark"] .quick-form-note {
+  color: #94a3b8;
+}
+
+.quick-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.quick-form-fields input,
+.quick-form-fields textarea {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.84rem;
+  background: #ffffff;
+  color: #0f172a;
+}
+[data-theme="dark"] .quick-form-fields input,
+[data-theme="dark"] .quick-form-fields textarea {
+  background: #0f172a;
+  border-color: #475569;
+  color: #f8fafc;
+}
+.form-two-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+@media (max-width: 600px) {
+  .form-two-cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+.quick-form-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.quick-send-email-btn {
+  background: #0f766e;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.quick-send-email-btn:hover {
+  background: #0d5959;
+  transform: translateY(-1px);
+}
+.quick-send-wa-btn {
+  background: #25d366;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.quick-send-wa-btn:hover {
+  background: #128c7e;
+  transform: translateY(-1px);
+}
+
+/* Modal Footer Media Chips */
+.contact-modal-footer-media {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+[data-theme="dark"] .contact-modal-footer-media {
+  border-color: #334155;
+}
+.footer-media-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #64748b;
+}
+[data-theme="dark"] .footer-media-label {
+  color: #94a3b8;
+}
+.footer-media-chips {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.media-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 7px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.youtube-chip {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+.youtube-chip:hover {
+  background: #dc2626;
+  color: #ffffff;
+}
+.journal-chip {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+.journal-chip:hover {
+  background: #166534;
+  color: #ffffff;
+}
+[data-theme="dark"] .youtube-chip {
+  background: rgba(220, 38, 38, 0.2);
+  color: #f87171;
+  border-color: rgba(220, 38, 38, 0.4);
+}
+[data-theme="dark"] .journal-chip {
+  background: rgba(22, 101, 52, 0.25);
+  color: #86efac;
+  border-color: rgba(22, 101, 52, 0.45);
+}
+
 

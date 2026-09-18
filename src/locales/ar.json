@@ -6,6 +6,7 @@
   "logout": "تسجيل الخروج",
   "mySubmissions": "أبحاثي",
   "academicProfile": "الملف الأكاديمي",
+  "contactUs": "تواصل معنا",
   "tagline": "الجمعية المصرية للطحالب",
   "library": "المكتبة",
   "submit": "إرسال بحث",
@@ -241,5 +242,15 @@
     "pe": "فيكوإريثرين (PE)",
     "purityRatio": "معامل نقاء الفيكوسيانين (A₆₂₀/A₂₈₀)",
     "grade": "درجة النقاء"
+  },
+  "footer": {
+    "academicResources": "المصادر والروابط الأكاديمية",
+    "journalLink": "المجلة المصرية لعلم الطحالب (EKB)",
+    "ekbLink": "بنك المعرفة المصري",
+    "youtubeLink": "قناة الجمعية على YouTube",
+    "facebookLink": "مجموعة الجمعية على Facebook",
+    "contactTitle": "تواصل معنا",
+    "copyright": "© 2026 الجمعية المصرية للطحالب - جميع الحقوق محفوظة.",
+    "officialBadge": "بوابة أكاديمية موثقة"
   }
 }
