@@ -18,11 +18,23 @@ import {
   Save, 
   Quote,
   Flame,
-  Globe
+  Globe,
+  RefreshCw,
+  Upload,
+  AlertCircle,
+  CheckCircle2,
+  FileCode
 } from 'lucide-react';
 import { useAuth } from '../auth';
 import { useI18n } from '../i18n';
 import { useResources, formatAPA, formatMLA, formatBibTeX, downloadRIS } from '../hooks/useResources';
+import { 
+  cleanOrcid, 
+  fetchWorksFromOrcid, 
+  parseScholarBibTeX, 
+  syncAndClassifyPapers 
+} from '../services/academicSync';
+import { saveSubmittedResourcesBatch } from '../services/resourceLoader';
 
 interface ResearcherProfileModalProps {
   isOpen: boolean;
@@ -40,6 +52,13 @@ export function ResearcherProfileModal({ isOpen, onClose, onAddPaper }: Research
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [profileLinkCopied, setProfileLinkCopied] = useState(false);
 
+  // Sync & Import states
+  const [isSyncingOrcid, setIsSyncingOrcid] = useState(false);
+  const [syncNotification, setSyncNotification] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
+  const [isScholarModalOpen, setIsScholarModalOpen] = useState(false);
+  const [scholarBibText, setScholarBibText] = useState('');
+  const [isImportingScholar, setIsImportingScholar] = useState(false);
+
   // Edit form state
   const [editTitle, setEditTitle] = useState(user?.title || '');
   const [editInstitution, setEditInstitution] = useState(user?.institution || '');
@@ -50,78 +69,14 @@ export function ResearcherProfileModal({ isOpen, onClose, onAddPaper }: Research
   const [editBio, setEditBio] = useState(user?.bio || '');
   const [editSpecialties, setEditSpecialties] = useState((user?.specialties || []).join(', '));
 
-  if (!isOpen || !user) return null;
-
-const DEMO_BENCHMARK_PAPERS = [
-  {
-    id: 999001,
-    title: 'Optimization of Biomass and Phycocyanin Production from Arthrospira platensis Using Low-Cost Zarrouk Medium',
-    titleArabic: 'تحسين إنتاجية الكتلة الحيوية والفيكوسيانين من طحلب السبيرولينا باستخدام بيئة زاروك الاقتصادية',
-    authors: 'Moghazy, R. M., & Abomohra, A. E.',
-    year: 2023,
-    category: 'Applied Phycology & Biotechnology',
-    journal: 'Egyptian Journal of Phycology',
-    volume: '24',
-    issue: '2',
-    pages: '115-132',
-    doi: '10.21608/egyjs.2023.284910',
-    algaeType: 'Arthrospira platensis (Spirulina)',
-    summary_ar: 'دراسة حركية لتحسين إنتاجية الصبغات المضادة للأكسدة والبروتين من طحلب السبيرولينا تحت ظروف الإجهاد الضوئي والملحي.',
-    ownerId: 'demo-user'
-  },
-  {
-    id: 999002,
-    title: 'Phycoremediation of Industrial Effluents and Heavy Metals Biosorption by Immobilized Microalgae Consortium',
-    titleArabic: 'المعالجة الحيوية لمياه الصرف الصناعي وامتزاز المعادن الثقيلة بواسطة اتحاد الطحالب الدقيقة المثبتة',
-    authors: 'Moghazy, R. M., El-Sheekh, M. M., & Ismail, G. A.',
-    year: 2022,
-    category: 'Wastewater Treatment & Bioremediation',
-    journal: 'Journal of Applied Phycology',
-    volume: '34',
-    issue: '4',
-    pages: '1890-1904',
-    doi: '10.1007/s10811-022-02741-x',
-    algaeType: 'Chlorella vulgaris & Scenedesmus obliquus',
-    summary_ar: 'تقييم كفاءة إزالة النيتروجين والفوسفور والكروم السداسي من مياه الصرف بنسبة إزالة تتجاوز 92% مع إعادة تدوير الكتلة الحيوية كوقود حيوي.',
-    ownerId: 'demo-user'
-  },
-  {
-    id: 999003,
-    title: 'Bio-fixation of Flue Gas CO2 and Biodiesel Synthesis Using High-Rate Algal Pond Photobioreactors',
-    titleArabic: 'التثبيت الحيوي لغاز ثاني أكسيد الكربون وإنتاج الديزل الحيوي باستخدام مفاعلات البرك الطحلبية عالية الكفاءة',
-    authors: 'Moghazy, R. M., & Shanab, S. M.',
-    year: 2021,
-    category: 'Carbon Capture & Bio-fixation',
-    journal: 'Algal Research',
-    volume: '58',
-    pages: '102389',
-    doi: '10.1016/j.algal.2021.102389',
-    algaeType: 'Chlorella sorokiniana',
-    summary_ar: 'تحديد معدل تثبيت الكربون اليومي وحساب رصيد شهادات الكربون المكافئة مع استخلاص الدهون المحايدة لصناعة وقود الديزل الحيوي.',
-    ownerId: 'demo-user'
-  }
-];
-
   // Filter papers for this researcher
   const userPapers = useMemo(() => {
-    const matched = resources.filter((r) => {
+    if (!user) return [];
+    return resources.filter((r) => {
       if (r.ownerId === user.id) return true;
       if (user.name && r.authors && r.authors.toLowerCase().includes(user.name.toLowerCase())) return true;
-      // For demo user, associate with top benchmark papers
-      if (user.id === 'demo-user') {
-        return (
-          r.ownerId === 'demo-user' ||
-          (r.authors && r.authors.toLowerCase().includes('moghazy')) ||
-          (r.authors && r.authors.toLowerCase().includes('moghazi'))
-        );
-      }
       return false;
     });
-
-    if (user.id === 'demo-user' && matched.length === 0) {
-      return DEMO_BENCHMARK_PAPERS;
-    }
-    return matched;
   }, [resources, user]);
 
   // Derived metrics
@@ -132,6 +87,10 @@ const DEMO_BENCHMARK_PAPERS = [
   const uniqueStrains = useMemo(() => {
     return new Set(userPapers.map((p) => p.algaeType).filter(Boolean)).size;
   }, [userPapers]);
+
+  if (!isOpen || !user) return null;
+
+  const validOrcid = cleanOrcid(user.orcid);
 
   const handleCopyCitation = async (id: string, text: string) => {
     try {
@@ -174,7 +133,141 @@ const DEMO_BENCHMARK_PAPERS = [
     setIsEditing(false);
   };
 
-  const cleanOrcid = (user.orcid || '').replace(/^https?:\/\/orcid\.org\//, '').trim();
+  const handleSyncOrcid = async () => {
+    if (!validOrcid) {
+      setSyncNotification({
+        type: 'info',
+        text: isArabic
+          ? 'يرجى تسجيل معرّف ORCID الخاص بك أولاً بالضغط على "تعديل البيانات" للتمكن من المزامنة التلقائية.'
+          : 'Please add your ORCID iD in your profile settings first to enable auto-sync.'
+      });
+      setIsEditing(true);
+      return;
+    }
+
+    setIsSyncingOrcid(true);
+    setSyncNotification(null);
+
+    try {
+      const works = await fetchWorksFromOrcid(validOrcid);
+      if (!works || works.length === 0) {
+        setSyncNotification({
+          type: 'info',
+          text: isArabic
+            ? 'لم يتم العثور على أبحاث منشورة في هذا المعرف أو جاري انتظار تحديث مستودع ORCID.'
+            : 'No public research works found for this ORCID iD.'
+        });
+        return;
+      }
+
+      // Check against existing library papers to avoid duplicate imports
+      const existingTitles = new Set(resources.map((r) => r.title.toLowerCase().trim()));
+      const existingDois = new Set(resources.map((r) => r.doi.toLowerCase().trim()).filter(Boolean));
+      const newWorks = works.filter((w) => {
+        const titleMatch = existingTitles.has(w.title.toLowerCase().trim());
+        const doiMatch = w.doi ? existingDois.has(w.doi.toLowerCase().trim()) : false;
+        return !titleMatch && !doiMatch;
+      });
+
+      if (newWorks.length === 0) {
+        setSyncNotification({
+          type: 'info',
+          text: isArabic
+            ? 'كافة أبحاثك المسجلة في ORCID مدرجة بالفعل ومصنفة داخل المكتبة البحثية!'
+            : 'All your ORCID papers are already indexed and classified in the library!'
+        });
+        return;
+      }
+
+      const classified = syncAndClassifyPapers(newWorks, user.id, user.name);
+      await saveSubmittedResourcesBatch(classified);
+      window.dispatchEvent(new Event('resources-updated'));
+
+      setSyncNotification({
+        type: 'success',
+        text: isArabic
+          ? `تمت بنجاح مزامنة وتصنيف ${classified.length} بحثاً من ORCID وإدراجها في المكتبة وملفك الشخصي!`
+          : `Successfully synced and classified ${classified.length} research papers from ORCID!`
+      });
+    } catch (err: any) {
+      setSyncNotification({
+        type: 'error',
+        text: isArabic
+          ? `تعذر استكمال المزامنة مع ORCID: ${err?.message || 'خطأ في الاتصال'}`
+          : `Failed to sync with ORCID: ${err?.message || 'Network error'}`
+      });
+    } finally {
+      setIsSyncingOrcid(false);
+    }
+  };
+
+  const handleImportScholarBibTeX = async () => {
+    if (!scholarBibText.trim()) return;
+    setIsImportingScholar(true);
+
+    try {
+      const parsedWorks = parseScholarBibTeX(scholarBibText);
+      if (parsedWorks.length === 0) {
+        setSyncNotification({
+          type: 'error',
+          text: isArabic 
+            ? 'لم يتم العثور على أبحاث صالحة في نص BibTeX. تأكد من نسخ صيغة BibTeX القياسية من Google Scholar.'
+            : 'No valid BibTeX entries found. Please ensure you copied standard BibTeX from Google Scholar.'
+        });
+        return;
+      }
+
+      const existingTitles = new Set(resources.map((r) => r.title.toLowerCase().trim()));
+      const existingDois = new Set(resources.map((r) => r.doi.toLowerCase().trim()).filter(Boolean));
+      const newWorks = parsedWorks.filter((w) => {
+        const titleMatch = existingTitles.has(w.title.toLowerCase().trim());
+        const doiMatch = w.doi ? existingDois.has(w.doi.toLowerCase().trim()) : false;
+        return !titleMatch && !doiMatch;
+      });
+
+      if (newWorks.length === 0) {
+        setSyncNotification({
+          type: 'info',
+          text: isArabic
+            ? 'كافة الأبحاث الموجودة في ملف BibTeX مدرجة بالفعل ومصنفة في المكتبة.'
+            : 'All papers in the BibTeX file already exist in the library.'
+        });
+        setIsScholarModalOpen(false);
+        return;
+      }
+
+      const classified = syncAndClassifyPapers(newWorks, user.id, user.name);
+      await saveSubmittedResourcesBatch(classified);
+      window.dispatchEvent(new Event('resources-updated'));
+
+      setIsScholarModalOpen(false);
+      setScholarBibText('');
+      setSyncNotification({
+        type: 'success',
+        text: isArabic
+          ? `تم بنجاح استيراد وتصنيف ${classified.length} بحثاً من Google Scholar وإدراجها في المكتبة!`
+          : `Successfully imported and classified ${classified.length} papers from Google Scholar!`
+      });
+    } catch (err: any) {
+      setSyncNotification({
+        type: 'error',
+        text: isArabic ? 'حدث خطأ أثناء معالجة بيانات BibTeX.' : 'Error processing BibTeX data.'
+      });
+    } finally {
+      setIsImportingScholar(false);
+    }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      if (content) setScholarBibText(content);
+    };
+    reader.readAsText(file);
+  };
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
@@ -190,9 +283,9 @@ const DEMO_BENCHMARK_PAPERS = [
             <div className="researcher-avatar-icon">
               <UserRound size={36} />
             </div>
-            {cleanOrcid && (
+            {validOrcid && (
               <a 
-                href={`https://orcid.org/${cleanOrcid}`} 
+                href={`https://orcid.org/${validOrcid}`} 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="orcid-badge-floating"
@@ -229,15 +322,15 @@ const DEMO_BENCHMARK_PAPERS = [
 
             {/* Academic Identifier Links */}
             <div className="researcher-badges-bar">
-              {cleanOrcid && (
+              {validOrcid && (
                 <a 
-                  href={`https://orcid.org/${cleanOrcid}`} 
+                  href={`https://orcid.org/${validOrcid}`} 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="orcid-link-chip"
                 >
                   <span className="orcid-id-icon">iD</span>
-                  <span>https://orcid.org/{cleanOrcid}</span>
+                  <span>https://orcid.org/{validOrcid}</span>
                   <ExternalLink size={11} />
                 </a>
               )}
@@ -267,162 +360,197 @@ const DEMO_BENCHMARK_PAPERS = [
               )}
             </div>
 
-            {/* Bio statement */}
-            {user.bio && !isEditing && (
+            {/* Bio summary */}
+            {user.bio && (
               <p className="researcher-bio-text">{user.bio}</p>
             )}
 
-            {/* Specialties */}
-            {user.specialties && user.specialties.length > 0 && !isEditing && (
-              <div className="researcher-specialties">
-                {user.specialties.map((spec, i) => (
-                  <span key={i} className="specialty-tag">
-                    <Sparkles size={11} /> {spec}
-                  </span>
-                ))}
+            {/* Research Specialties Chips */}
+            {user.specialties && user.specialties.length > 0 && (
+              <div className="researcher-specialties-row">
+                <span className="specialties-label">
+                  <Sparkles size={13} /> {isArabic ? 'الاهتمامات والتخصصات الدقيقة:' : 'Focus Areas:'}
+                </span>
+                <div className="specialties-chips-wrap">
+                  {user.specialties.map((spec, i) => (
+                    <span key={i} className="specialty-chip">
+                      {spec}
+                    </span>
+                  ))}
+                </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Edit Form Drawer */}
+        {/* Edit Profile Form (Collapsible) */}
         {isEditing && (
-          <form onSubmit={handleSaveProfile} className="profile-edit-form">
-            <h4 className="edit-form-title">
-              <Edit3 size={16} /> {isArabic ? 'تحديث البيانات الأكاديمية والبحثية' : 'Update Academic Profile'}
-            </h4>
+          <form className="edit-profile-drawer" onSubmit={handleSaveProfile}>
+            <div className="drawer-header">
+              <h3>
+                <Edit3 size={16} />
+                <span>{isArabic ? 'تحديث الملف التعريفي والروابط الأكاديمية' : 'Update Academic Profile & Identifiers'}</span>
+              </h3>
+            </div>
+
             <div className="edit-form-grid">
-              <label>
-                <span>{isArabic ? 'اللقب والدرجة العلمية:' : 'Academic Title:'}</span>
+              <div className="input-group">
+                <label>{isArabic ? 'اللقب الأكاديمي والدرجة العلمية' : 'Academic Title / Position'}</label>
                 <input 
                   type="text" 
                   value={editTitle} 
                   onChange={(e) => setEditTitle(e.target.value)} 
-                  placeholder={isArabic ? 'مثال: أستاذ دكتور، باحث متفرغ...' : 'e.g., Prof. Dr., Senior Scientist'} 
+                  placeholder={isArabic ? 'مثال: أستاذ التكنولوجيا الحيوية الطحلبية' : 'e.g. Professor of Applied Phycology'}
                 />
-              </label>
-              <label>
-                <span>{isArabic ? 'المؤسسة البحثية / الجامعة:' : 'Institution:'}</span>
+              </div>
+
+              <div className="input-group">
+                <label>{isArabic ? 'الجامعة أو المركز البحثي' : 'Institution / University'}</label>
                 <input 
                   type="text" 
                   value={editInstitution} 
                   onChange={(e) => setEditInstitution(e.target.value)} 
-                  placeholder={isArabic ? 'مثال: المركز القومي للبحوث (NRC)' : 'e.g., National Research Centre (NRC)'} 
+                  placeholder={isArabic ? 'مثال: المركز القومي للبحوث' : 'e.g. National Research Centre'}
                 />
-              </label>
-              <label>
-                <span>{isArabic ? 'القسم / الوحدة المعملية:' : 'Department / Lab:'}</span>
+              </div>
+
+              <div className="input-group">
+                <label>{isArabic ? 'القسم أو المعمل البحثي' : 'Department / Research Unit'}</label>
                 <input 
                   type="text" 
                   value={editDepartment} 
                   onChange={(e) => setEditDepartment(e.target.value)} 
-                  placeholder={isArabic ? 'مثال: قسم الهيدروبيولوجي - تكنولوجيا الطحالب' : 'e.g., Algal Biotechnology Lab'} 
+                  placeholder={isArabic ? 'مثال: قسم الهيدروبيولوجي - معمل بيوتكنولوجيا الطحالب' : 'e.g. Hydrobiology Dept.'}
                 />
-              </label>
-              <label>
-                <span>{isArabic ? 'معرّف ORCID iD:' : 'ORCID iD:'}</span>
+              </div>
+
+              <div className="input-group">
+                <label>{isArabic ? 'معرّف ORCID (16 رقم)' : 'ORCID iD (16 digits)'}</label>
                 <input 
                   type="text" 
                   value={editOrcid} 
                   onChange={(e) => setEditOrcid(e.target.value)} 
-                  placeholder="0000-0002-1825-0097" 
+                  placeholder="0000-0002-1825-0097"
                 />
-              </label>
-              <label>
-                <span>Google Scholar URL:</span>
+              </div>
+
+              <div className="input-group">
+                <label>{isArabic ? 'رابط ملف Google Scholar' : 'Google Scholar Profile URL'}</label>
                 <input 
                   type="url" 
                   value={editScholar} 
                   onChange={(e) => setEditScholar(e.target.value)} 
-                  placeholder="https://scholar.google.com/citations?user=..." 
+                  placeholder="https://scholar.google.com/citations?user=..."
                 />
-              </label>
-              <label>
-                <span>ResearchGate URL:</span>
+              </div>
+
+              <div className="input-group">
+                <label>{isArabic ? 'رابط ملف ResearchGate' : 'ResearchGate Profile URL'}</label>
                 <input 
                   type="url" 
                   value={editResearchGate} 
                   onChange={(e) => setEditResearchGate(e.target.value)} 
-                  placeholder="https://www.researchgate.net/profile/..." 
+                  placeholder="https://www.researchgate.net/profile/..."
                 />
-              </label>
-              <label className="span-full">
-                <span>{isArabic ? 'مجالات الاهتمام والتخصص الدقيق (مفصولة بفواصل):' : 'Research Specialties (comma-separated):'}</span>
+              </div>
+
+              <div className="input-group full-width">
+                <label>{isArabic ? 'الاهتمامات البحثية وسلالات الطحالب المستهدفة (مفصولة بفواصل)' : 'Research Topics & Algae Species (comma-separated)'}</label>
                 <input 
                   type="text" 
                   value={editSpecialties} 
                   onChange={(e) => setEditSpecialties(e.target.value)} 
-                  placeholder="Arthrospira, Biofuels, Wastewater Treatment, Photobioreactors" 
+                  placeholder={isArabic ? 'Arthrospira platensis, Chlorella vulgaris, Biofuels, Phycoremediation' : 'Spirulina, Chlorella, Biofuels, Bioremediation'}
                 />
-              </label>
-              <label className="span-full">
-                <span>{isArabic ? 'نبذة وسيرة بحثية موجزة:' : 'Research Statement / Bio:'}</span>
+              </div>
+
+              <div className="input-group full-width">
+                <label>{isArabic ? 'نبذة علمية وسيرة ذاتية مختصرة' : 'Short Academic Bio'}</label>
                 <textarea 
                   rows={2} 
                   value={editBio} 
                   onChange={(e) => setEditBio(e.target.value)} 
-                  placeholder={isArabic ? 'اكتب نبذة عن اهتماماتك البحثية وإنجازاتك المعملية...' : 'Brief summary of your research focus and achievements...'} 
+                  placeholder={isArabic ? 'اكتب نبذة عن مجالاتك البحثية وخبراتك المعملية...' : 'Describe your research experience...'}
                 />
-              </label>
+              </div>
             </div>
-            <div className="edit-form-actions">
+
+            <div className="edit-form-footer">
               <button type="submit" className="save-profile-btn">
-                <Save size={15} />
+                <Save size={16} />
                 <span>{isArabic ? 'حفظ التعديلات' : 'Save Changes'}</span>
               </button>
-              <button type="button" className="cancel-profile-btn" onClick={() => setIsEditing(false)}>
+              <button type="button" className="cancel-edit-btn" onClick={() => setIsEditing(false)}>
                 {isArabic ? 'إلغاء' : 'Cancel'}
               </button>
             </div>
           </form>
         )}
 
-        {/* Impact Statistics Cards */}
-        <div className="researcher-metrics-grid">
-          <div className="metric-card">
-            <div className="metric-icon-box bg-emerald-light">
-              <BookOpen size={20} className="text-emerald" />
+        {/* Academic Impact Metrics Cards */}
+        <div className="researcher-impact-stats">
+          <div className="impact-stat-card">
+            <div className="stat-icon-circle blue">
+              <FileText size={18} />
             </div>
-            <div className="metric-info">
-              <span className="metric-num">{userPapers.length}</span>
-              <span className="metric-label">{isArabic ? 'أبحاث مفهرسة بالمكتبة' : 'Indexed Publications'}</span>
-            </div>
-          </div>
-
-          <div className="metric-card">
-            <div className="metric-icon-box bg-amber-light">
-              <Quote size={20} className="text-amber" />
-            </div>
-            <div className="metric-info">
-              <span className="metric-num">{user.citationCount || (userPapers.length * 12 + 8)}</span>
-              <span className="metric-label">{isArabic ? 'مؤشر الاستشهادات والتوثيق' : 'Citation Impact'}</span>
+            <div className="stat-text-col">
+              <span className="stat-number">{userPapers.length}</span>
+              <span className="stat-title">{isArabic ? 'أبحاث مفهرسة' : 'Indexed Publications'}</span>
             </div>
           </div>
 
-          <div className="metric-card">
-            <div className="metric-icon-box bg-blue-light">
-              <Award size={20} className="text-blue" />
+          <div className="impact-stat-card">
+            <div className="stat-icon-circle green">
+              <Award size={18} />
             </div>
-            <div className="metric-info">
-              <span className="metric-num">{uniqueJournals || (userPapers.length ? 1 : 0)}</span>
-              <span className="metric-label">{isArabic ? 'مجلات علمية محكمة' : 'Indexed Journals'}</span>
+            <div className="stat-text-col">
+              <span className="stat-number">{uniqueJournals}</span>
+              <span className="stat-title">{isArabic ? 'مجلات ودوريات علمية' : 'Distinct Journals'}</span>
             </div>
           </div>
 
-          <div className="metric-card">
-            <div className="metric-icon-box bg-teal-light">
-              <Flame size={20} className="text-teal" />
+          <div className="impact-stat-card">
+            <div className="stat-icon-circle amber">
+              <Sparkles size={18} />
             </div>
-            <div className="metric-info">
-              <span className="metric-num">{uniqueStrains || (userPapers.length ? 1 : 0)}</span>
-              <span className="metric-label">{isArabic ? 'سلالات طحلبية مدروسة' : 'Target Strains'}</span>
+            <div className="stat-text-col">
+              <span className="stat-number">{uniqueStrains}</span>
+              <span className="stat-title">{isArabic ? 'سلالات طحالب مدروسة' : 'Algae Species Studied'}</span>
+            </div>
+          </div>
+
+          <div className="impact-stat-card">
+            <div className="stat-icon-circle red">
+              <Flame size={18} />
+            </div>
+            <div className="stat-text-col">
+              <span className="stat-number">{user.citationCount || (userPapers.length * 16)}</span>
+              <span className="stat-title">{isArabic ? 'مؤشر الاستشهادات التقديري' : 'Estimated Citations'}</span>
             </div>
           </div>
         </div>
 
-        {/* Action Toolbar */}
+        {/* Sync / Action Notification Banner */}
+        {syncNotification && (
+          <div className={`sync-alert-banner ${syncNotification.type}`}>
+            {syncNotification.type === 'success' && <CheckCircle2 size={18} className="text-emerald shrink-0" />}
+            {syncNotification.type === 'error' && <AlertCircle size={18} className="text-rose shrink-0" />}
+            {syncNotification.type === 'info' && <Sparkles size={18} className="text-blue shrink-0" />}
+            <span className="sync-alert-text">{syncNotification.text}</span>
+            <button 
+              type="button" 
+              className="sync-alert-close" 
+              onClick={() => setSyncNotification(null)}
+              aria-label="Close alert"
+            >
+              <X size={14} />
+            </button>
+          </div>
+        )}
+
+        {/* Profile Actions Bar */}
         <div className="researcher-actions-toolbar">
-          <div className="toolbar-left">
+          <div className="toolbar-left-group">
             <button 
               type="button" 
               className="toolbar-action-btn primary"
@@ -432,8 +560,30 @@ const DEMO_BENCHMARK_PAPERS = [
               }}
             >
               <Plus size={16} />
-              <span>{isArabic ? 'إدراج بحث جديد للملف' : 'Submit Research Paper'}</span>
+              <span>{isArabic ? 'إدراج بحث يدوي' : 'Manual Submit'}</span>
             </button>
+
+            <button 
+              type="button" 
+              className="toolbar-action-btn sync-btn"
+              onClick={handleSyncOrcid}
+              disabled={isSyncingOrcid}
+              title={isArabic ? 'مزامنة وتصنيف أبحاث ORCID تلقائياً في المكتبة' : 'Auto sync & classify papers from ORCID'}
+            >
+              <RefreshCw size={16} className={isSyncingOrcid ? 'spin' : ''} />
+              <span>{isSyncingOrcid ? (isArabic ? 'جاري المزامنة...' : 'Syncing...') : (isArabic ? 'مزامنة أبحاث ORCID تلقائياً' : 'Sync ORCID')}</span>
+            </button>
+
+            <button 
+              type="button" 
+              className="toolbar-action-btn scholar-btn"
+              onClick={() => setIsScholarModalOpen(true)}
+              title={isArabic ? 'استيراد أبحاث Google Scholar وتصنيفها آلياً' : 'Import papers from Google Scholar'}
+            >
+              <Upload size={16} />
+              <span>{isArabic ? 'استيراد من Google Scholar' : 'Import Scholar'}</span>
+            </button>
+
             <button 
               type="button" 
               className="toolbar-action-btn secondary"
@@ -477,19 +627,28 @@ const DEMO_BENCHMARK_PAPERS = [
               <h4>{isArabic ? 'لا توجد أبحاث مدرجة في ملفك حالياً' : 'No publications listed yet'}</h4>
               <p>
                 {isArabic 
-                  ? 'قم بإدراج أول بحث لك في المكتبة لنشره للباحثين وزيادة استشهاداتك الأكاديمية بنقرة واحدة.'
-                  : 'Submit your research papers to get indexed in the Egyptian Phycological Society repository and boost your citations.'}
+                  ? 'يمكنك استيراد أبحاثك بنقرة زر واحدة عبر معرّف ORCID أو ملف BibTeX من Google Scholar، أو إدراجها يدوياً.'
+                  : 'Sync your papers from ORCID, import via Google Scholar BibTeX, or submit manually to get indexed in the library.'}
               </p>
-              <button 
-                type="button" 
-                className="submit-first-paper-btn"
-                onClick={() => {
-                  onClose();
-                  onAddPaper?.();
-                }}
-              >
-                <Plus size={16} /> {isArabic ? 'إدراج بحث الآن' : 'Submit First Paper'}
-              </button>
+              <div className="empty-actions-row">
+                <button 
+                  type="button" 
+                  className="submit-first-paper-btn"
+                  onClick={handleSyncOrcid}
+                  disabled={isSyncingOrcid}
+                >
+                  <RefreshCw size={16} className={isSyncingOrcid ? 'spin' : ''} />
+                  <span>{isArabic ? 'مزامنة أبحاث ORCID الآن' : 'Sync ORCID Now'}</span>
+                </button>
+                <button 
+                  type="button" 
+                  className="submit-first-paper-btn secondary"
+                  onClick={() => setIsScholarModalOpen(true)}
+                >
+                  <Upload size={16} />
+                  <span>{isArabic ? 'استيراد من Google Scholar' : 'Import Scholar'}</span>
+                </button>
+              </div>
             </div>
           ) : (
             <div className="publications-cards-list">
@@ -591,6 +750,76 @@ const DEMO_BENCHMARK_PAPERS = [
             </div>
           )}
         </div>
+
+        {/* Google Scholar Import Modal */}
+        {isScholarModalOpen && (
+          <div className="sub-modal-backdrop" onClick={() => setIsScholarModalOpen(false)}>
+            <div className="sub-modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="sub-modal-header">
+                <div className="sub-modal-title-box">
+                  <FileCode size={20} className="text-primary" />
+                  <h3>{isArabic ? 'استيراد أبحاث Google Scholar وتصنيفها آلياً' : 'Import & Auto-Classify Google Scholar Papers'}</h3>
+                </div>
+                <button type="button" className="close-btn" onClick={() => setIsScholarModalOpen(false)}>
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="scholar-import-guide">
+                <p>
+                  {isArabic 
+                    ? 'نظراً لقيود الحماية على Google Scholar، يمكنك تصدير أبحاثك بنقرة واحدة من حسابك:'
+                    : 'To import papers from Google Scholar:'}
+                </p>
+                <ol>
+                  <li>{isArabic ? 'افتح حسابك في Google Scholar وحدد أبحاثك المطلوبة.' : 'Open your Google Scholar profile and select papers.'}</li>
+                  <li>{isArabic ? 'اضغط على زر Export (تصدير) واختر تنسيق BibTeX.' : 'Click Export and choose BibTeX.'}</li>
+                  <li>{isArabic ? 'الصق النص المنسوخ أدناه أو ارفع الملف المحفوظ (.bib).' : 'Paste the BibTeX text below or upload the .bib file.'}</li>
+                </ol>
+              </div>
+
+              <div className="scholar-input-area">
+                <div className="file-upload-row">
+                  <label className="file-upload-btn">
+                    <Upload size={15} />
+                    <span>{isArabic ? 'رفع ملف .bib من جهازك' : 'Upload .bib file'}</span>
+                    <input type="file" accept=".bib,.txt" onChange={handleFileUpload} style={{ display: 'none' }} />
+                  </label>
+                  <span className="file-upload-hint">
+                    {scholarBibText ? (isArabic ? 'تم تحميل النص، جاهز للمعالجة والتصنيف' : 'File loaded, ready to import') : (isArabic ? 'أو الصق النص مباشرة في الصندوق أدناه:' : 'Or paste BibTeX directly below:')}
+                  </span>
+                </div>
+
+                <textarea
+                  className="scholar-bib-textarea"
+                  rows={8}
+                  value={scholarBibText}
+                  onChange={(e) => setScholarBibText(e.target.value)}
+                  placeholder="@article{...\n  title={...},\n  author={...},\n  year={...}\n}"
+                />
+              </div>
+
+              <div className="sub-modal-footer">
+                <button
+                  type="button"
+                  className="scholar-submit-btn"
+                  onClick={handleImportScholarBibTeX}
+                  disabled={isImportingScholar || !scholarBibText.trim()}
+                >
+                  <Sparkles size={16} />
+                  <span>{isImportingScholar ? (isArabic ? 'جاري الفحص والتصنيف...' : 'Processing...') : (isArabic ? 'استيراد وتصنيف الأبحاث فورياً' : 'Import & Auto-Classify')}</span>
+                </button>
+                <button
+                  type="button"
+                  className="scholar-cancel-btn"
+                  onClick={() => setIsScholarModalOpen(false)}
+                >
+                  {isArabic ? 'إلغاء' : 'Cancel'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { FormEvent, useState } from 'react';
-import { DEMO_CREDENTIALS, useAuth } from '../auth';
+import { useAuth } from '../auth';
 
 export function AuthModal({ onClose }: { onClose: () => void }) {
   const { login, register } = useAuth();
@@ -9,10 +9,6 @@ export function AuthModal({ onClose }: { onClose: () => void }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [fieldError, setFieldError] = useState('');
-  const useDemoLogin = () => {
-    const result = login(DEMO_CREDENTIALS.email, DEMO_CREDENTIALS.password);
-    if (result) setError(result); else onClose();
-  };
   const submit = (event: FormEvent) => {
     event.preventDefault();
     setFieldError('');
@@ -25,6 +21,6 @@ export function AuthModal({ onClose }: { onClose: () => void }) {
     <button className="modal-close" onClick={onClose} aria-label="Close">×</button>
     <span className="eyebrow">ACADEMIC PORTAL</span><h2>{registering ? 'Create your account' : 'Welcome back'}</h2>
     <div className="auth-tabs"><button className={!registering ? 'active' : ''} onClick={() => setRegistering(false)}>Login</button><button className={registering ? 'active' : ''} onClick={() => setRegistering(true)}>Register</button></div>
-    <form onSubmit={submit}>{registering && <label>Full name<input value={name} onChange={(event) => setName(event.target.value)} required /></label>}<label>Email<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required aria-invalid={Boolean(fieldError)} /></label><label>Password<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} minLength={6} required aria-invalid={Boolean(fieldError)} /></label>{(fieldError || error) && <p className="error" role="alert">{fieldError || error}</p>}<button type="submit" className="primary-action">{registering ? 'Create account' : 'Login'}</button>{!registering && <button type="button" className="demo-login" onClick={useDemoLogin}>Quick Demo Login</button>}</form>
+    <form onSubmit={submit}>{registering && <label>Full name<input value={name} onChange={(event) => setName(event.target.value)} required /></label>}<label>Email<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required aria-invalid={Boolean(fieldError)} /></label><label>Password<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} minLength={6} required aria-invalid={Boolean(fieldError)} /></label>{(fieldError || error) && <p className="error" role="alert">{fieldError || error}</p>}<button type="submit" className="primary-action">{registering ? 'Create account' : 'Login'}</button></form>
   </section></div>;
 }

@@ -29,24 +29,6 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null);
 const USERS_KEY = 'algae-library-users';
 const SESSION_KEY = 'algae-library-session';
-const DEMO_PROFILE_KEY = 'algae-library-demo-profile';
-
-export const DEMO_CREDENTIALS = { email: 'demo@algae-library.local', password: 'demo1234' };
-
-const DEFAULT_DEMO_PROFILE: AuthUser = {
-  id: 'demo-user',
-  name: 'Demo Researcher (د. باحث تجريبي)',
-  email: DEMO_CREDENTIALS.email,
-  title: 'Senior Phycologist & Biotechnology Specialist',
-  institution: 'National Research Centre (NRC), Egypt',
-  department: 'Hydrobiology Department, Algal Biotechnology Unit',
-  orcid: '0000-0002-1825-0097',
-  googleScholarUrl: 'https://scholar.google.com',
-  researchGateUrl: 'https://www.researchgate.net',
-  bio: 'Specialized in microalgae mass cultivation, photobioreactor scale-up, Arthrospira platensis (Spirulina) harvest optimization, and phycoremediation of industrial wastewater.',
-  specialties: ['Arthrospira platensis', 'Chlorella vulgaris', 'Biofuels & Biodiesel', 'Phycoremediation', 'Zarrouk Medium Optimization'],
-  citationCount: 48
-};
 
 function readUsers(): StoredUser[] {
   try {
@@ -54,15 +36,6 @@ function readUsers(): StoredUser[] {
     return Array.isArray(parsed) ? parsed as StoredUser[] : [];
   } catch {
     return [];
-  }
-}
-
-function getStoredDemoProfile(): AuthUser {
-  try {
-    const parsed: unknown = JSON.parse(localStorage.getItem(DEMO_PROFILE_KEY) ?? 'null');
-    return (parsed && typeof parsed === 'object') ? (parsed as AuthUser) : DEFAULT_DEMO_PROFILE;
-  } catch {
-    return DEFAULT_DEMO_PROFILE;
   }
 }
 
@@ -90,11 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!normalizedEmail || !password) return 'Enter your email and password.';
       const users = readUsers();
       
-      const demo = normalizedEmail === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password
-        ? { ...getStoredDemoProfile(), password: DEMO_CREDENTIALS.password }
-        : undefined;
-      
-      const match = users.find((candidate) => candidate.email === normalizedEmail && candidate.password === password) ?? demo;
+      const match = users.find((candidate) => candidate.email === normalizedEmail && candidate.password === password);
       if (!match) return 'Invalid email or password.';
       
       const sessionUser: AuthUser = {
@@ -156,11 +125,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const users = readUsers();
       const updatedUsers = users.map((u) => u.id === user.id ? { ...u, ...updates } : u);
       localStorage.setItem(USERS_KEY, JSON.stringify(updatedUsers));
-      
-      // If demo user, persist demo profile override
-      if (user.id === 'demo-user') {
-        localStorage.setItem(DEMO_PROFILE_KEY, JSON.stringify(updated));
-      }
     },
     logout: () => persist(null),
   }), [user]);

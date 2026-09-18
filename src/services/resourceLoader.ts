@@ -105,7 +105,17 @@ export async function saveSubmittedResource(resource: Resource): Promise<void> {
   await db.put(SUBMISSIONS_STORE, resource);
 }
 
+export async function saveSubmittedResourcesBatch(resources: Resource[]): Promise<void> {
+  const db = await database;
+  const tx = db.transaction(SUBMISSIONS_STORE, 'readwrite');
+  await Promise.all([
+    ...resources.map((res) => tx.store.put(res)),
+    tx.done,
+  ]);
+}
+
 export async function deleteSubmittedResource(id: number): Promise<void> {
   const db = await database;
   await db.delete(SUBMISSIONS_STORE, id);
 }
+
