@@ -74,5 +74,21 @@
     "summary": "Arabische Zusammenfassung",
     "save": "Forschung speichern"
   },
-  "contactUs": "Kontaktieren Sie uns"
+  "contactUs": "Kontaktieren Sie uns",
+  "quickView": "Schnellansicht",
+  "bookmarks": "Lesezeichen",
+  "readingList": "Leseliste & Gespeicherte Arbeiten",
+  "savedPapers": "Gespeichert",
+  "savePaper": "In Leseliste speichern",
+  "removeBookmark": "Aus Lesezeichen entfernen",
+  "emptyBookmarks": "Noch keine Arbeiten in Ihrer Leseliste gespeichert",
+  "emptyBookmarksDesc": "Klicken Sie auf das Lesezeichensymbol 🔖 bei einer Arbeit in der Bibliothek, um sie hier für später zu speichern.",
+  "clearAllBookmarks": "Alle löschen",
+  "exportAllRIS": "Alle als RIS exportieren",
+  "paperDetails": "Details & Vorschau der Arbeit",
+  "abstract": "Wissenschaftliche Zusammenfassung",
+  "sourceJournal": "Fachzeitschrift & Details",
+  "publicationYear": "Erscheinungsjahr",
+  "authorsLabel": "Autoren",
+  "citationFormats": "Wissenschaftliche Zitierformate"
 }

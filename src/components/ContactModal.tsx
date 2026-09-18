@@ -27,7 +27,7 @@ const FACEBOOK_GROUP_URL = 'https://www.facebook.com/groups/740974712673179/';
 const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@%D8%A7%D9%84%D8%AC%D9%85%D8%B9%D9%8A%D8%A9%D8%A7%D9%84%D9%85%D8%B5%D8%B1%D9%8A%D8%A9%D9%84%D9%84%D8%B7%D8%AD%D8%A7%D9%84%D8%A8';
 
 export function ContactModal({ isOpen, onClose }: ContactModalProps) {
-  const { language } = useI18n();
+  const { language, t } = useI18n();
   const isArabic = language === 'ar';
 
   const [copiedItem, setCopiedItem] = useState<string | null>(null);

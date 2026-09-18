@@ -216,5 +216,21 @@
     "purityRatio": "Indice de Pureté (A₆₂₀/A₂₈₀)",
     "grade": "Niveau de Pureté"
   },
-  "contactUs": "Contactez-nous"
+  "contactUs": "Contactez-nous",
+  "quickView": "Aperçu rapide",
+  "bookmarks": "Signets",
+  "readingList": "Liste de lecture & Articles sauvegardés",
+  "savedPapers": "Enregistré",
+  "savePaper": "Enregistrer dans la liste",
+  "removeBookmark": "Retirer des signets",
+  "emptyBookmarks": "Aucun article enregistré pour le moment",
+  "emptyBookmarksDesc": "Cliquez sur l'icône de signet 🔖 sur n'importe quel article de la bibliothèque pour le retrouver ici ou l'exporter en lot.",
+  "clearAllBookmarks": "Tout effacer",
+  "exportAllRIS": "Tout exporter au format RIS",
+  "paperDetails": "Détails et aperçu de l'article",
+  "abstract": "Résumé académique",
+  "sourceJournal": "Revue scientifique & Détails",
+  "publicationYear": "Année de publication",
+  "authorsLabel": "Auteurs",
+  "citationFormats": "Formats de citation académique"
 }

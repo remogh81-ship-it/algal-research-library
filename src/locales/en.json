@@ -244,5 +244,21 @@
     "pe": "Phycoerythrin (PE)",
     "purityRatio": "Phycocyanin Purity Ratio (A₆₂₀/A₂₈₀)",
     "grade": "Purity Grade"
-  }
+  },
+  "quickView": "Quick View",
+  "bookmarks": "Bookmarks",
+  "readingList": "Reading List & Saved Papers",
+  "savedPapers": "Saved in List",
+  "savePaper": "Save to Reading List",
+  "removeBookmark": "Remove from bookmarks",
+  "emptyBookmarks": "No saved papers in your reading list yet",
+  "emptyBookmarksDesc": "Click the bookmark icon 🔖 on any paper in the library to save it here for later review or batch export.",
+  "clearAllBookmarks": "Clear All",
+  "exportAllRIS": "Export All as RIS",
+  "paperDetails": "Paper Details & Preview",
+  "abstract": "Academic Abstract",
+  "sourceJournal": "Source Journal & Details",
+  "publicationYear": "Publication Year",
+  "authorsLabel": "Authors",
+  "citationFormats": "Academic Citation Formats"
 }

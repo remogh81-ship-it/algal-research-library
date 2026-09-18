@@ -45,5 +45,21 @@
     "copyright": "© Prof. Dr. Reda Mohamed Moghazy — Professore di Ficologia presso il Centro Nazionale di Ricerca e Membro del Consiglio di Amministrazione della Società Egiziana di Ficologia.",
     "contactTitle": "Contattaci"
   },
-  "contactUs": "Contattaci"
+  "contactUs": "Contattaci",
+  "quickView": "Anteprima rapida",
+  "bookmarks": "Segnalibri",
+  "readingList": "Lista di lettura e articoli salvati",
+  "savedPapers": "Salvato",
+  "savePaper": "Salva nella lista di lettura",
+  "removeBookmark": "Rimuovi dai segnalibri",
+  "emptyBookmarks": "Nessun articolo salvato nella tua lista di lettura",
+  "emptyBookmarksDesc": "Fai clic sull'icona del segnalibro 🔖 su qualsiasi articolo della biblioteca per salvarlo qui o esportarlo in blocco.",
+  "clearAllBookmarks": "Cancella tutto",
+  "exportAllRIS": "Esporta tutto come RIS",
+  "paperDetails": "Dettagli e anteprima dell'articolo",
+  "abstract": "Abstract accademico",
+  "sourceJournal": "Rivista scientifica e dettagli",
+  "publicationYear": "Anno di pubblicazione",
+  "authorsLabel": "Autori",
+  "citationFormats": "Formati di citazione accademica"
 }

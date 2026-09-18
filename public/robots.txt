@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+
+# Specific instructions for Academic Search Engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Scholar
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+Sitemap: https://algae-library.org/sitemap.xml

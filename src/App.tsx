@@ -16,12 +16,19 @@ import { ScientificLabSuite } from './components/ScientificLabSuite';
 import { JournalPromotionSection } from './components/JournalPromotionSection';
 import { ResearcherProfileModal } from './components/ResearcherProfileModal';
 import { ContactModal } from './components/ContactModal';
+import { useBookmarks } from './hooks/useBookmarks';
+import { QuickViewDrawer } from './components/QuickViewDrawer';
+import { BookmarksModal } from './components/BookmarksModal';
+import type { Resource } from './types/resource';
+
 export default function App() {
   const [submit, setSubmit] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [submissionOpen, setSubmissionOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
+  const [bookmarksOpen, setBookmarksOpen] = useState(false);
+  const [quickViewResource, setQuickViewResource] = useState<Resource | null>(null);
   const [mineOnly, setMineOnly] = useState(false);
   const [dark, setDark] = useState(() => localStorage.getItem('library-theme') === 'dark');
   const [selectedPaperIds, setSelectedPaperIds] = useState<number[]>([]);
@@ -29,6 +36,7 @@ export default function App() {
   const { language, t } = useI18n();
   const { user, logout } = useAuth();
   const { resources } = useResources();
+  const { bookmarks, bookmarksCount, toggleBookmark, isBookmarked, clearBookmarks } = useBookmarks();
   const totalCategories = resources.length > 0 ? new Set(resources.map((resource) => resource.category || 'General')).size : 5;
 
   useEffect(() => {
@@ -39,9 +47,9 @@ export default function App() {
     document.querySelector('meta[name="description"]')?.setAttribute('content', `${t('siteTitle')} | ${t('tagline')}`);
   }, [language, t]);
   useEffect(() => { document.documentElement.dataset.theme = dark ? 'dark' : 'light'; localStorage.setItem('library-theme', dark ? 'dark' : 'light'); }, [dark]);
-  if (submit) return <><Header dark={dark} onToggleDark={() => setDark(!dark)} user={user} mineOnly={mineOnly} onToggleMine={() => setMineOnly(!mineOnly)} onLogin={() => setAuthOpen(true)} onLogout={logout} onAddResearch={() => setSubmissionOpen(true)} onLibrary={() => setSubmit(false)} onOpenProfile={() => setProfileOpen(true)} onOpenContact={() => setContactOpen(true)} /><button className="library-return" onClick={() => setSubmit(false)}>{t('library')}</button><SubmitResearch /><Footer onOpenContact={() => setContactOpen(true)} />{contactOpen && <ContactModal isOpen={contactOpen} onClose={() => setContactOpen(false)} />}</>;
+  if (submit) return <><Header dark={dark} onToggleDark={() => setDark(!dark)} user={user} mineOnly={mineOnly} onToggleMine={() => setMineOnly(!mineOnly)} onLogin={() => setAuthOpen(true)} onLogout={logout} onAddResearch={() => setSubmissionOpen(true)} onLibrary={() => setSubmit(false)} onOpenProfile={() => setProfileOpen(true)} onOpenContact={() => setContactOpen(true)} onOpenBookmarks={() => setBookmarksOpen(true)} bookmarksCount={bookmarksCount} /><button className="library-return" onClick={() => setSubmit(false)}>{t('library')}</button><SubmitResearch /><Footer onOpenContact={() => setContactOpen(true)} />{contactOpen && <ContactModal isOpen={contactOpen} onClose={() => setContactOpen(false)} />}</>;
   return <div>
-    <Header dark={dark} onToggleDark={() => setDark(!dark)} user={user} mineOnly={mineOnly} onToggleMine={() => setMineOnly(!mineOnly)} onLogin={() => setAuthOpen(true)} onLogout={logout} onAddResearch={() => user ? setSubmissionOpen(true) : setAuthOpen(true)} onLibrary={() => setSubmit(false)} onOpenProfile={() => setProfileOpen(true)} onOpenContact={() => setContactOpen(true)} />
+    <Header dark={dark} onToggleDark={() => setDark(!dark)} user={user} mineOnly={mineOnly} onToggleMine={() => setMineOnly(!mineOnly)} onLogin={() => setAuthOpen(true)} onLogout={logout} onAddResearch={() => user ? setSubmissionOpen(true) : setAuthOpen(true)} onLibrary={() => setSubmit(false)} onOpenProfile={() => setProfileOpen(true)} onOpenContact={() => setContactOpen(true)} onOpenBookmarks={() => setBookmarksOpen(true)} bookmarksCount={bookmarksCount} />
     <section className="portal-hero"><div className="hero-content"><span className="eyebrow">{t('hero.motto')}</span><h1 className="hero-heading">{t('hero.heading')}</h1><p>{t('hero.description')}</p><button className="primary-action" onClick={() => document.querySelector('.resource-query input')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>{t('hero.cta')} <Plus size={16} /></button></div><div className="hero-visual"><div className="hero-image-card"><img src="/assets/hero-photobioreactor.jpg" alt="Futuristic photobioreactor research laboratory for microalgae biotechnology" /><span className="visual-badge">Microalgae research</span></div><div className="hero-image-card hero-image-card--secondary"><img src="/assets/microscope-chlorella.jpg" alt="Fluorescence microscopy of microalgae cells" /><span className="visual-badge">Bioenergy lab</span></div></div><div className="hero-stat"><strong>{resources.length > 0 ? resources.length.toLocaleString(language) : '30,000+'}</strong><span>{t('hero.resources_label')}</span><strong>{totalCategories}</strong><span>{t('hero.categories_label')}</span></div></section>
     <TopAdBanner />
     <AdSlot />
@@ -80,6 +88,9 @@ export default function App() {
         onTogglePaper={(id) => setSelectedPaperIds((ids) => ids.includes(id) ? ids.filter((selectedId) => selectedId !== id) : [...ids, id])}
         searchQuery={searchQuery}
         onSearchQueryChange={setSearchQuery}
+        onQuickView={(res) => setQuickViewResource(res)}
+        isBookmarked={isBookmarked}
+        onToggleBookmark={toggleBookmark}
       />
       <ScientificLabSuite />
       <JournalPromotionSection />
@@ -89,5 +100,21 @@ export default function App() {
     {submissionOpen && <SubmissionModal onClose={() => setSubmissionOpen(false)} onSaved={() => setMineOnly(true)} />}
     {profileOpen && <ResearcherProfileModal isOpen={profileOpen} onClose={() => setProfileOpen(false)} onAddPaper={() => setSubmissionOpen(true)} />}
     {contactOpen && <ContactModal isOpen={contactOpen} onClose={() => setContactOpen(false)} />}
+    <QuickViewDrawer
+      resource={quickViewResource}
+      isOpen={Boolean(quickViewResource)}
+      onClose={() => setQuickViewResource(null)}
+      isBookmarked={quickViewResource ? isBookmarked(quickViewResource.id) : false}
+      onToggleBookmark={toggleBookmark}
+    />
+    <BookmarksModal
+      isOpen={bookmarksOpen}
+      onClose={() => setBookmarksOpen(false)}
+      bookmarkedIds={bookmarks}
+      resources={resources}
+      onToggleBookmark={toggleBookmark}
+      onClearAll={clearBookmarks}
+      onQuickView={(res) => setQuickViewResource(res)}
+    />
   </div>;
 }

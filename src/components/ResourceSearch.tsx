@@ -1,12 +1,22 @@
 import { useEffect, useState } from 'react';
-import { ArrowUpDown, ChevronDown, Copy, Download, ExternalLink, FileText, Quote, Search } from 'lucide-react';
+import { ArrowUpDown, Bookmark, ChevronDown, Copy, Download, ExternalLink, Eye, FileText, Quote, Search } from 'lucide-react';
 import { downloadRIS, formatAPA, formatBibTeX, formatMLA, formatRIS, useResources, type ResourceFilters, type SortOption } from '../hooks/useResources';
 import type { Resource } from '../types/resource';
 import { useI18n } from '../i18n';
 import { useAuth } from '../auth';
 import { getLocalizedSummary } from '../utils/translateSummary';
 
-function CitationButtons({ resource }: { resource: Resource }) {
+function CitationButtons({ 
+  resource, 
+  onQuickView, 
+  isBookmarked, 
+  onToggleBookmark 
+}: { 
+  resource: Resource; 
+  onQuickView?: (resource: Resource) => void; 
+  isBookmarked?: boolean; 
+  onToggleBookmark?: (id: number) => void; 
+}) {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState('');
@@ -20,6 +30,27 @@ function CitationButtons({ resource }: { resource: Resource }) {
     window.setTimeout(() => setCopied(''), 1600);
   };
   return <div className="resource-actions">
+    {onQuickView && (
+      <button 
+        type="button" 
+        className="button-link quickview-card-btn" 
+        onClick={() => onQuickView(resource)}
+        title={t('quickView')}
+      >
+        <Eye size={15} /> {t('quickView')}
+      </button>
+    )}
+    {onToggleBookmark && (
+      <button 
+        type="button" 
+        className={`button-link bookmark-card-btn ${isBookmarked ? 'active' : ''}`} 
+        onClick={() => onToggleBookmark(resource.id)}
+        title={isBookmarked ? t('savedPapers') : t('savePaper')}
+      >
+        <Bookmark size={15} fill={isBookmarked ? 'currentColor' : 'none'} /> 
+        <span>{isBookmarked ? t('savedPapers') : t('savePaper')}</span>
+      </button>
+    )}
     {resource.doi && <a className="button-link" href={resource.doi.startsWith('http') ? resource.doi : `https://doi.org/${resource.doi}`} target="_blank" rel="noreferrer"><ExternalLink size={15} /> {t('doi')}</a>}
     {resource.pdfUrl && <a className="button-link" href={resource.pdfUrl} target="_blank" rel="noreferrer"><FileText size={15} /> {t('pdf')}</a>}
     <div className="citation-menu">
@@ -51,12 +82,18 @@ export function ResourceSearch({
   onTogglePaper,
   searchQuery,
   onSearchQueryChange,
+  onQuickView,
+  isBookmarked,
+  onToggleBookmark,
 }: {
   mineOnly?: boolean;
   selectedPaperIds?: number[];
   onTogglePaper?: (id: number) => void;
   searchQuery?: string;
   onSearchQueryChange?: (q: string) => void;
+  onQuickView?: (resource: Resource) => void;
+  isBookmarked?: (id: number) => boolean;
+  onToggleBookmark?: (id: number) => void;
 }) {
   const { t, category, language } = useI18n();
   const { user } = useAuth();
@@ -150,13 +187,25 @@ export function ResourceSearch({
     {!isLoading && !error && scopedResources.length === 0 && <p className="loading-message">{t('noResults')}</p>}
     <div className="resource-grid">{visibleResources.filter((resource) => !mineOnly || resource.ownerId === user?.id).map((resource) => <article className="resource-card" key={resource.id}>
       {onTogglePaper && <label><input type="checkbox" checked={selectedPaperIds.includes(resource.id)} onChange={() => onTogglePaper(resource.id)} /> Select for AI summary</label>}
-      <h2>{resource.title || resource.titleArabic} {language !== 'en' && language !== 'ar' && resource.title && <small className="fallback-indicator">({t('fallback')})</small>}</h2>
+      <h2 
+        className="resource-card-title" 
+        onClick={() => onQuickView?.(resource)} 
+        title={onQuickView ? t('quickView') : undefined}
+        style={{ cursor: onQuickView ? 'pointer' : 'default' }}
+      >
+        {resource.title || resource.titleArabic} {language !== 'en' && language !== 'ar' && resource.title && <small className="fallback-indicator">({t('fallback')})</small>}
+      </h2>
       {resource.titleArabic && resource.title !== resource.titleArabic && <p className="resource-arabic" lang="ar" dir="rtl">{resource.titleArabic}</p>}
       <p className="resource-meta">{resource.authors || t('unknownAuthors')} · {resource.year || 'n.d.'} · {resource.journal || t('unknownJournal')}</p>
       {resource.algaeType && <span className="algae-type-badge">{resource.algaeType}</span>}
       <p className="resource-category">{category(resource.category)}</p>
       <p className="resource-summary">{getLocalizedSummary(resource, language)}</p>
-      <CitationButtons resource={resource} />
+      <CitationButtons 
+        resource={resource} 
+        onQuickView={onQuickView}
+        isBookmarked={isBookmarked?.(resource.id)}
+        onToggleBookmark={onToggleBookmark}
+      />
     </article>)}</div>
     {totalPages > 1 && <nav className="pagination" aria-label={t('page', { page, total: totalPages })}><button disabled={page === 1} onClick={() => setPage(page - 1)}>{t('previous')}</button><span>{t('page', { page, total: totalPages })}</span><button disabled={page === totalPages} onClick={() => setPage(page + 1)}>{t('next')}</button></nav>}
   </section>;

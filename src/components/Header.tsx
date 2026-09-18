@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BookOpen, FilePlus2, GraduationCap, LogIn, Mail, Moon, Plus, Sun, UserRound, Youtube } from 'lucide-react';
+import { Bookmark, BookOpen, FilePlus2, GraduationCap, LogIn, Mail, Moon, Plus, Sun, UserRound, Youtube } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
@@ -17,9 +17,11 @@ type HeaderProps = {
   onLibrary: () => void;
   onOpenProfile?: () => void;
   onOpenContact?: () => void;
+  onOpenBookmarks?: () => void;
+  bookmarksCount?: number;
 };
 
-export function Header({ dark, onToggleDark, user, mineOnly, onToggleMine, onLogin, onLogout, onAddResearch, onLibrary, onOpenProfile, onOpenContact }: HeaderProps) {
+export function Header({ dark, onToggleDark, user, mineOnly, onToggleMine, onLogin, onLogout, onAddResearch, onLibrary, onOpenProfile, onOpenContact, onOpenBookmarks, bookmarksCount = 0 }: HeaderProps) {
   const { t } = useI18n();
   const [logoFailed, setLogoFailed] = useState(false);
   const handleLogoError = () => {
@@ -59,6 +61,20 @@ export function Header({ dark, onToggleDark, user, mineOnly, onToggleMine, onLog
         >
           <Mail size={16} />
           <span className="header-contact-text">{t('contactUs') || 'اتصل بنا'}</span>
+        </button>
+      )}
+      {onOpenBookmarks && (
+        <button 
+          className="header-bookmarks-btn" 
+          onClick={onOpenBookmarks} 
+          title={t('readingList') || 'قائمة القراءة'} 
+          aria-label={t('readingList') || 'قائمة القراءة'}
+        >
+          <Bookmark size={16} />
+          <span className="header-bookmarks-text">{t('bookmarks') || 'المحفوظات'}</span>
+          {typeof bookmarksCount === 'number' && bookmarksCount > 0 && (
+            <span className="header-bookmarks-badge">{bookmarksCount}</span>
+          )}
         </button>
       )}
       <button className="icon-button" onClick={onToggleDark} aria-label="Toggle theme">{dark ? <Sun size={18} /> : <Moon size={18} />}</button>

@@ -74,5 +74,21 @@
     "summary": "阿拉伯文摘要",
     "save": "保存研究"
   },
-  "contactUs": "联系我们"
+  "contactUs": "联系我们",
+  "quickView": "快速预览",
+  "bookmarks": "书签",
+  "readingList": "阅读列表与已存论文",
+  "savedPapers": "已保存",
+  "savePaper": "保存至阅读列表",
+  "removeBookmark": "从书签中移除",
+  "emptyBookmarks": "您的阅读列表中尚无保存的论文",
+  "emptyBookmarksDesc": "点击图书馆中任何论文卡片上的书签图标 🔖，即可保存在此供日后查阅或批量导出。",
+  "clearAllBookmarks": "清空全部",
+  "exportAllRIS": "全部导出为 RIS",
+  "paperDetails": "论文详情与预览",
+  "abstract": "学术摘要",
+  "sourceJournal": "学术期刊与详情",
+  "publicationYear": "发表年份",
+  "authorsLabel": "作者",
+  "citationFormats": "学术引用格式"
 }
