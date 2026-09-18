@@ -654,9 +654,22 @@ footer p { max-width: 900px; margin: .4rem 0; }
 .resource-search-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
 .resource-search-header h1 { margin-bottom: .25rem; }
 .resource-search-header p { margin: 0; color: #698083; }
-.resource-controls { display: grid; grid-template-columns: minmax(260px, 1fr) 220px 150px; gap: .7rem; margin-bottom: 1rem; }
+.resource-controls { display: grid; grid-template-columns: minmax(260px, 1fr) 180px 130px 170px; gap: .7rem; margin-bottom: .6rem; }
 .resource-query { display: flex; align-items: center; gap: .5rem; padding: 0 .7rem; background: #fff; border: 1px solid #c9d9dc; border-radius: 7px; color: #617579; }
 .resource-query input { border: 0; outline: 0; padding-left: 0; }
+.sort-select { background: #f0fdf4; border-color: #0d7c7855; font-weight: 600; color: #075c62; }
+[data-theme="dark"] .sort-select { background: #0d3331; border-color: #14b8a655; color: #5eead4; }
+.advanced-filters-toggle { display: flex; justify-content: space-between; align-items: center; margin-bottom: .7rem; gap: .5rem; }
+.toggle-advanced-btn { background: transparent; color: #617579; font-size: .82rem; padding: .35rem .65rem; border: 1px solid #c9d9dc; border-radius: 7px; display: inline-flex; align-items: center; gap: .3rem; }
+.toggle-advanced-btn:hover { background: #f0fdf4; color: #075c62; border-color: #0d7c78; transform: none; box-shadow: none; }
+[data-theme="dark"] .toggle-advanced-btn { border-color: #2d4856; color: #94a3b8; }
+[data-theme="dark"] .toggle-advanced-btn:hover { background: #1a3a4a; color: #5eead4; }
+.export-all-btn { background: #075c62; color: white; font-size: .78rem; padding: .4rem .65rem; border-radius: 7px; display: inline-flex; align-items: center; gap: .3rem; }
+.export-all-btn:hover { background: #0d7c78; }
+.advanced-filters-panel { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; margin-bottom: 1rem; padding: .8rem; background: #f8fffe; border: 1px solid #d6e5e6; border-radius: 10px; }
+[data-theme="dark"] .advanced-filters-panel { background: #172733; border-color: #2d4856; }
+.algae-type-badge { display: inline-block; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; font-size: .72rem; font-weight: 700; padding: .15rem .45rem; border-radius: 999px; margin-bottom: .4rem; }
+[data-theme="dark"] .algae-type-badge { background: #064e3b; color: #a7f3d0; border-color: #065f4680; }
 .resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: .9rem; }
 .resource-card { background: #fff; border: 1px solid #e0ebec; border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; min-width: 0; }
 .resource-card h2 { font-size: 1.05rem; margin-bottom: .35rem; }
@@ -668,15 +681,19 @@ footer p { max-width: 900px; margin: .4rem 0; }
 .resource-actions button, .button-link { font-size: .78rem; padding: .4rem .55rem; text-decoration: none; }
 .citation-menu { position: relative; }
 .citation-menu > button { font-size: .78rem; padding: .4rem .55rem; }
-.citation-dropdown { position: absolute; z-index: 4; inset-inline-end: 0; bottom: calc(100% + .35rem); min-width: 165px; display: grid; gap: .2rem; padding: .35rem; border: 1px solid #d6e5e6; border-radius: 8px; background: white; box-shadow: 0 8px 20px #17324d22; }
+.citation-dropdown { position: absolute; z-index: 4; inset-inline-end: 0; bottom: calc(100% + .35rem); min-width: 210px; display: grid; gap: .2rem; padding: .35rem; border: 1px solid #d6e5e6; border-radius: 8px; background: white; box-shadow: 0 8px 20px #17324d22; }
 .citation-dropdown button { justify-content: flex-start; background: transparent; color: #075c62; font-size: .75rem; padding: .4rem; }
 .citation-dropdown button:hover { background: #eef6f5; box-shadow: none; transform: none; }
+.citation-dropdown hr { border-color: #e0ebec; }
+[data-theme="dark"] .citation-dropdown { background: #1e3a4d; border-color: #2d4856; }
+[data-theme="dark"] .citation-dropdown button { color: #5eead4; }
+[data-theme="dark"] .citation-dropdown button:hover { background: #2d4856; }
 .citation-toast { position: absolute; z-index: 5; inset-inline-end: 0; bottom: calc(100% + .35rem); white-space: nowrap; border-radius: 999px; background: #17324d; color: white; padding: .25rem .55rem; font-size: .7rem; }
 .library-return { margin: 1rem 5vw; }
 .button-link { background: #0d7c78; color: white; border-radius: 8px; display: inline-flex; align-items: center; gap: .35rem; }
 .loading-message { background: #fff; border: 1px solid #e0ebec; border-radius: 10px; padding: 1rem; color: #617579; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-@media (max-width: 760px) { .resource-controls { grid-template-columns: 1fr; } .resource-grid { grid-template-columns: 1fr; } .portal-hero { margin: 1rem; flex-direction: column; } .hero-stat { border-left: 0; border-top: 1px solid #ffffff35; padding-left: 0; padding-top: 1rem; } .form-grid { grid-template-columns: 1fr; } .account-menu { flex-wrap: wrap; } }
+@media (max-width: 760px) { .resource-controls { grid-template-columns: 1fr; } .advanced-filters-panel { grid-template-columns: 1fr; } .resource-grid { grid-template-columns: 1fr; } .portal-hero { margin: 1rem; flex-direction: column; } .hero-stat { border-left: 0; border-top: 1px solid #ffffff35; padding-left: 0; padding-top: 1rem; } .form-grid { grid-template-columns: 1fr; } .account-menu { flex-wrap: wrap; } }
 @media (max-width: 760px) { .top-ad-banner { margin: 1rem; } .top-ad-banner a { align-items: flex-start; flex-direction: column; } .top-ad-cta { align-self: flex-start; } .hero-visual { width: 100%; max-width: 420px; min-width: 0; grid-template-columns: 1fr 1fr; } .hero-image-card--secondary { width: 100%; margin-top: 1.5rem; } }
 @media print { body * { visibility: hidden; } .chat-panel, .chat-panel * { visibility: visible; } .chat-panel { position: absolute; inset: 0; width: 100%; max-height: none; box-shadow: none; } .chat-form, .assistant-tools, .quick-prompts, .chat-panel header button { display: none; } }
 
