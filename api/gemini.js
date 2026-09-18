@@ -4,8 +4,6 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Rate-limit: basic protection via origin check
-  const origin = req.headers.origin || req.headers.referer || '';
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -15,7 +13,7 @@ export default async function handler(req, res) {
   }
 
   // Server-side API key (never sent to the client)
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ 
       error: 'GEMINI_API_KEY is not configured on the server. Set it in Vercel Environment Variables.' 
@@ -29,9 +27,19 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Invalid request body: contents array is required.' });
     }
 
-    const geminiPayload = { contents };
+    const geminiPayload = { 
+      contents,
+      generationConfig: {
+        temperature: 0.25,
+        topP: 0.95,
+        maxOutputTokens: 8192,
+      },
+    };
+
     if (systemInstruction) {
-      geminiPayload.systemInstruction = systemInstruction;
+      geminiPayload.systemInstruction = typeof systemInstruction === 'string'
+        ? { parts: [{ text: systemInstruction }] }
+        : systemInstruction;
     }
 
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
@@ -45,6 +53,7 @@ export default async function handler(req, res) {
     const data = await geminiResponse.json();
 
     if (!geminiResponse.ok) {
+      console.error('Gemini upstream error:', geminiResponse.status, data);
       return res.status(geminiResponse.status).json(data);
     }
 

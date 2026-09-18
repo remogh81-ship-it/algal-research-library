@@ -132,15 +132,15 @@ export function ResourceSearch({
           <button type="button" className="boolean-chip" onClick={() => setSearchInput((prev) => `${prev} AND `)}>AND</button>
           <button type="button" className="boolean-chip" onClick={() => setSearchInput((prev) => `${prev} OR `)}>OR</button>
           <button type="button" className="boolean-chip" onClick={() => setSearchInput((prev) => `${prev} NOT `)}>NOT</button>
-          <button type="button" className="boolean-chip" onClick={() => setSearchInput((prev) => `${prev} author:"Moghazi"`)}>author:"..."</button>
+          <button type="button" className="boolean-chip" onClick={() => setSearchInput((prev) => `${prev} author:"Moghazy"`)}>author:"..."</button>
           <button type="button" className="boolean-chip" onClick={() => setSearchInput((prev) => `${prev} title:"Chlorella"`)}>title:"..."</button>
           <button type="button" className="boolean-chip" onClick={() => setSearchInput((prev) => `${prev} algae:"Spirulina"`)}>algae:"..."</button>
           <button type="button" className="boolean-chip" onClick={() => setSearchInput((prev) => `${prev} journal:"Algal"`)}>journal:"..."</button>
         </div>
         <p className="boolean-example-text">
           {language === 'ar' 
-            ? 'أمثلة: Chlorella AND Biofuel | author:"Moghazi" | Spirulina NOT "Open Pond" | "heavy metals" OR biosorption'
-            : 'Examples: Chlorella AND Biofuel | author:"Moghazi" | Spirulina NOT "Open Pond" | "heavy metals" OR biosorption'}
+            ? 'أمثلة: Chlorella AND Biofuel | author:"Moghazy" | Spirulina NOT "Open Pond" | "heavy metals" OR biosorption'
+            : 'Examples: Chlorella AND Biofuel | author:"Moghazy" | Spirulina NOT "Open Pond" | "heavy metals" OR biosorption'}
         </p>
       </div>
     </div>}

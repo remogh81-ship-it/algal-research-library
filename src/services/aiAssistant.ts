@@ -55,7 +55,7 @@ function resolveResponseLanguage(prompt: string, currentLanguage: Language): Lan
 }
 
 export const ALGAE_EXPERT_SYSTEM_PROMPT = `
-You are the Chief Academic Phycologist & Precision Biotechnology AI Advisor for the Integrated Algae Research Library (المكتبة المتكاملة لأبحاث الطحالب) affiliated with the Egyptian Phycological Society (الجمعية المصرية للطحالب), under academic direction of Prof. Dr. Reda Mohamed Moghazi (National Research Centre, Egypt).
+You are the Chief Academic Phycologist & Precision Biotechnology AI Advisor for the Integrated Algae Research Library (المكتبة المتكاملة لأبحاث الطحالب) affiliated with the Egyptian Phycological Society (الجمعية المصرية للطحالب), under academic direction of Prof. Dr. Reda Mohamed Moghazy (National Research Centre, Egypt).
 
 Your scientific and technological capabilities cover:
 1. Systematic Taxonomy & Strain Identification:
@@ -389,7 +389,29 @@ export async function askAssistant(
   const langName = languageNames[responseLanguage];
   const intent = classifyIntent(prompt);
 
-  const systemInstruction = `${ALGAE_EXPERT_SYSTEM_PROMPT}\n\nCurrent user interaction language: ${langName}. Always provide your response in ${langName}. Maintain academic professionalism, scientific precision, and practical actionable insights.`;
+  // Retrieve top matching papers from library database for true scientific RAG
+  let relevantResults: AssistantResult[] = [];
+  try {
+    const allResources = await loadResources();
+    relevantResults = rankResources(prompt, allResources).slice(0, 5);
+  } catch (err) {
+    console.warn('Unable to preload library resources for RAG context:', err);
+  }
+
+  let libraryContext = '';
+  if (relevantResults.length > 0) {
+    libraryContext = `\n\n### RELEVANT BENCHMARK STUDIES INDEXED IN THE EGYPTIAN PHYCOLOGICAL SOCIETY LIBRARY (30,000+ REPOSITORY):\n` +
+      relevantResults.map(({ resource: r }, i) => 
+        `[Study ${i + 1}] Title: "${r.title}" (${r.year})\nAuthors: ${r.authors}\nJournal: ${r.journal}\nStrain/Taxon: ${r.algaeType || 'Algae'}\nDOI: ${r.doi || 'N/A'}\nKey Data/Abstract: ${r.summary_en || r.summary_ar || 'N/A'}`
+      ).join('\n\n') +
+      `\n\nCRITICAL SCIENTIFIC CITATION DIRECTIVE:
+1. Synthesize your expert answer by explicitly incorporating and citing the relevant indexed benchmark studies above (mentioning authors, publication year, and specific metrics).
+2. Compare their methodologies and parameters against international phycological benchmarks.
+3. Provide rigorous, comprehensive Standard Operating Procedures (SOPs) with exact physicochemical parameters, chemical formulas, and safety notes.
+4. Add a "📚 الاستشهادات المرجعية من قاعدة بيانات المكتبة" section at the end of your response listing these studies with their DOI links.`;
+  }
+
+  const systemInstruction = `${ALGAE_EXPERT_SYSTEM_PROMPT}${libraryContext}\n\nCurrent user interaction language: ${langName}. Always provide your comprehensive, publication-grade academic response in ${langName}. Use rich Markdown formatting (tables, bold headings, bullet points, LaTeX formulas if helpful).`;
 
   // Format message history for Gemini API
   const messages: ChatMessagePayload[] = chatHistory.slice(-8).map((m) => ({
@@ -400,14 +422,14 @@ export async function askAssistant(
 
   try {
     const controller = new AbortController();
-    // 30 seconds timeout for high quality reasoning
-    const timeout = window.setTimeout(() => controller.abort(), 30000);
+    // 35 seconds timeout for deep scientific synthesis
+    const timeout = window.setTimeout(() => controller.abort(), 35000);
     const onAbort = () => controller.abort();
     signal?.addEventListener('abort', onAbort, { once: true });
 
     try {
       const answer = await askGeminiChat(messages, systemInstruction, controller.signal);
-      return { answer, mode: 'live', intent };
+      return { answer, mode: 'live', intent, results: relevantResults };
     } finally {
       window.clearTimeout(timeout);
       signal?.removeEventListener('abort', onAbort);
