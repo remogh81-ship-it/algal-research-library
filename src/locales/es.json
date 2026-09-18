@@ -52,7 +52,8 @@
     "academicResources": "Recursos académicos",
     "journalLink": "The Egyptian Journal of Phycology (EKB)",
     "ekbLink": "Banco Egipcio de Conocimiento (EKB)",
-    "officialBadge": "Portal oficial de investigación y educación"
+    "officialBadge": "Portal oficial de investigación y educación",
+    "contactTitle": "Contáctenos"
   },
   "main_title": "Biblioteca Integrada de Investigación sobre Algas",
   "hero": {
@@ -214,5 +215,6 @@
     "pe": "Ficoeritrina (PE)",
     "purityRatio": "Índice de Pureza (A₆₂₀/A₂₈₀)",
     "grade": "Grado de Pureza"
-  }
+  },
+  "contactUs": "Contáctenos"
 }

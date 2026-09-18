@@ -52,12 +52,13 @@ export function Header({ dark, onToggleDark, user, mineOnly, onToggleMine, onLog
       </a>
       {onOpenContact && (
         <button 
-          className="icon-button header-contact-btn" 
+          className="header-contact-btn" 
           onClick={onOpenContact} 
-          title={t('contactUs') || 'تواصل معنا'} 
-          aria-label={t('contactUs') || 'تواصل معنا'}
+          title={t('contactUs') || 'اتصل بنا'} 
+          aria-label={t('contactUs') || 'اتصل بنا'}
         >
-          <Mail size={18} />
+          <Mail size={16} />
+          <span className="header-contact-text">{t('contactUs') || 'اتصل بنا'}</span>
         </button>
       )}
       <button className="icon-button" onClick={onToggleDark} aria-label="Toggle theme">{dark ? <Sun size={18} /> : <Moon size={18} />}</button>

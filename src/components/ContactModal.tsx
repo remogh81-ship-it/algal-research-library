@@ -85,7 +85,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
             <span>{isArabic ? 'قنوات التواصل الرسمية' : 'Official Channels'}</span>
           </div>
           <h2 className="contact-modal-title">
-            {isArabic ? 'تواصل مع الجمعية المصرية للطحالب' : 'Contact Egyptian Phycological Society'}
+            {isArabic ? 'اتصل بنا - الجمعية المصرية للطحالب' : `${t('contactUs') || 'Contact Us'} - Egyptian Phycological Society`}
           </h2>
           <p className="contact-modal-subtitle">
             {isArabic 

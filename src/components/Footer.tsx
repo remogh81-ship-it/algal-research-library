@@ -79,15 +79,16 @@ export function Footer({ onOpenContact }: FooterProps) {
         {/* Official Contact Section */}
         <div className="footer-contact-col">
           <div className="footer-contact-title-row">
-            <h4>{t('footer.contactTitle') || 'تواصل معنا'}</h4>
+            <h4>{t('footer.contactTitle') || t('contactUs') || 'اتصل بنا'}</h4>
             {onOpenContact && (
               <button 
                 type="button" 
                 className="footer-open-contact-btn" 
                 onClick={onOpenContact}
-                title={t('contactUs') || 'فتح نافذة التواصل'}
+                title={t('contactUs') || 'اتصل بنا'}
               >
-                {t('moreDetails') || 'تفاصيل أكثر'}
+                <Mail size={13} />
+                <span>{t('contactUs') || 'اتصل بنا'}</span>
               </button>
             )}
           </div>

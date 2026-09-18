@@ -75,12 +75,14 @@
   "youtube": "YouTube",
   "youtubeChannel": "Official Society YouTube Channel",
   "footer": {
-    "copyright": "© Egyptian Phycological Society. Prepared by Prof. Dr. Reda Mohamed Moghazy, Professor of Phycology, National Research Centre.",
-    "academicResources": "Academic Resources",
-    "journalLink": "The Egyptian Journal of Phycology (EKB)",
-    "ekbLink": "Egyptian Knowledge Bank (EKB)",
-    "youtubeLink": "Egyptian Phycological Society YouTube Channel (Lectures & Seminars)",
-    "officialBadge": "Official Research & Education Portal"
+    "academicResources": "Academic Resources & Links",
+    "journalLink": "Egyptian Journal of Phycology (EKB)",
+    "ekbLink": "Egyptian Knowledge Bank",
+    "youtubeLink": "Society YouTube Channel",
+    "facebookLink": "Society Facebook Group",
+    "contactTitle": "Contact Us",
+    "copyright": "© 2026 Egyptian Phycological Society - All rights reserved.",
+    "officialBadge": "Verified Academic Portal"
   },
   "main_title": "Integrated Algae Research Library",
   "hero": {
@@ -242,15 +244,5 @@
     "pe": "Phycoerythrin (PE)",
     "purityRatio": "Phycocyanin Purity Ratio (A₆₂₀/A₂₈₀)",
     "grade": "Purity Grade"
-  },
-  "footer": {
-    "academicResources": "Academic Resources & Links",
-    "journalLink": "Egyptian Journal of Phycology (EKB)",
-    "ekbLink": "Egyptian Knowledge Bank",
-    "youtubeLink": "Society YouTube Channel",
-    "facebookLink": "Society Facebook Group",
-    "contactTitle": "Contact Us",
-    "copyright": "© 2026 Egyptian Phycological Society - All rights reserved.",
-    "officialBadge": "Verified Academic Portal"
   }
 }

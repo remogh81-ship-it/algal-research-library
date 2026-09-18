@@ -1,1 +1,49 @@
-{"siteTitle":"Biblioteca Integrata di Ricerca sulle Alghe","tagline":"Società Egiziana di Ficologia","society_title":"Società Egiziana di Ficologia","main_title":"Biblioteca Integrata di Ricerca sulle Alghe","prepared_by":"A cura del Prof. Dr. Reda Mohamed Moghazy — Membro del Consiglio di Amministrazione della Società Egiziana di Ficologia","library":"Biblioteca","submit":"Invia ricerca","explore":"Esplora la ricerca sulle alghe","indexed":"{{count}} risorse indicizzate","searchPlaceholder":"Cerca titoli, autori, categorie o DOI...","searchLabel":"Cerca titolo, autori, categoria o DOI","allCategories":"Tutte le categorie","allYears":"Tutti gli anni","loading":"Caricamento del database di ricerca compresso ({{phase}})...","noResults":"Nessuna risorsa corrisponde ai filtri attuali.","previous":"Precedente","next":"Successivo","page":"Pagina {{page}} di {{total}}","unknownAuthors":"Autori sconosciuti","unknownJournal":"Rivista sconosciuta","fallback":"Fallback inglese","doi":"Visualizza DOI","pdf":"Scarica PDF","apa":"Copia APA","mla":"Copia MLA","bibtex":"Copia BibTeX","copied":"Copiato","hero":{"eyebrow":"PROVE. SCOPERTA. IMPATTO.","title":"Dove la ricerca sulle alghe fa progressi.","description":"Esplora oltre 30.000 studi indicizzati, scopri la scienza emergente e condividi i tuoi lavori con una comunità accademica specializzata per massimizzare la visibilità scientifica e aumentare l'impatto delle citazioni delle tue ricerche.","start":"Inizia a esplorare","resources":"Risorse indicizzate","areas":"Aree di ricerca"},"categories":{"Biofuel":"Biocarburanti","Bioremediation":"Biorisanamento","Wastewater Treatment":"Trattamento delle acque reflue","Microalgae":"Microalghe","Carbon Capture":"Cattura del carbonio"},"footer":{"copyright":"© Prof. Dr. Reda Mohamed Moghazy — Professore di Ficologia presso il Centro Nazionale di Ricerca e Membro del Consiglio di Amministrazione della Società Egiziana di Ficologia."}}
+{
+  "siteTitle": "Biblioteca Integrata di Ricerca sulle Alghe",
+  "tagline": "Società Egiziana di Ficologia",
+  "society_title": "Società Egiziana di Ficologia",
+  "main_title": "Biblioteca Integrata di Ricerca sulle Alghe",
+  "prepared_by": "A cura del Prof. Dr. Reda Mohamed Moghazy — Membro del Consiglio di Amministrazione della Società Egiziana di Ficologia",
+  "library": "Biblioteca",
+  "submit": "Invia ricerca",
+  "explore": "Esplora la ricerca sulle alghe",
+  "indexed": "{{count}} risorse indicizzate",
+  "searchPlaceholder": "Cerca titoli, autori, categorie o DOI...",
+  "searchLabel": "Cerca titolo, autori, categoria o DOI",
+  "allCategories": "Tutte le categorie",
+  "allYears": "Tutti gli anni",
+  "loading": "Caricamento del database di ricerca compresso ({{phase}})...",
+  "noResults": "Nessuna risorsa corrisponde ai filtri attuali.",
+  "previous": "Precedente",
+  "next": "Successivo",
+  "page": "Pagina {{page}} di {{total}}",
+  "unknownAuthors": "Autori sconosciuti",
+  "unknownJournal": "Rivista sconosciuta",
+  "fallback": "Fallback inglese",
+  "doi": "Visualizza DOI",
+  "pdf": "Scarica PDF",
+  "apa": "Copia APA",
+  "mla": "Copia MLA",
+  "bibtex": "Copia BibTeX",
+  "copied": "Copiato",
+  "hero": {
+    "eyebrow": "PROVE. SCOPERTA. IMPATTO.",
+    "title": "Dove la ricerca sulle alghe fa progressi.",
+    "description": "Esplora oltre 30.000 studi indicizzati, scopri la scienza emergente e condividi i tuoi lavori con una comunità accademica specializzata per massimizzare la visibilità scientifica e aumentare l'impatto delle citazioni delle tue ricerche.",
+    "start": "Inizia a esplorare",
+    "resources": "Risorse indicizzate",
+    "areas": "Aree di ricerca"
+  },
+  "categories": {
+    "Biofuel": "Biocarburanti",
+    "Bioremediation": "Biorisanamento",
+    "Wastewater Treatment": "Trattamento delle acque reflue",
+    "Microalgae": "Microalghe",
+    "Carbon Capture": "Cattura del carbonio"
+  },
+  "footer": {
+    "copyright": "© Prof. Dr. Reda Mohamed Moghazy — Professore di Ficologia presso il Centro Nazionale di Ricerca e Membro del Consiglio di Amministrazione della Società Egiziana di Ficologia.",
+    "contactTitle": "Contattaci"
+  },
+  "contactUs": "Contattaci"
+}

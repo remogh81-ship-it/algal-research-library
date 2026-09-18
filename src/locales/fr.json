@@ -52,7 +52,8 @@
     "academicResources": "Ressources académiques",
     "journalLink": "The Egyptian Journal of Phycology (EKB)",
     "ekbLink": "Banque égyptienne de connaissances (EKB)",
-    "officialBadge": "Portail officiel de recherche et d'éducation"
+    "officialBadge": "Portail officiel de recherche et d'éducation",
+    "contactTitle": "Contactez-nous"
   },
   "main_title": "Bibliothèque intégrée de recherche sur les algues",
   "hero": {
@@ -214,5 +215,6 @@
     "pe": "Phycoérythrine (PE)",
     "purityRatio": "Indice de Pureté (A₆₂₀/A₂₈₀)",
     "grade": "Niveau de Pureté"
-  }
+  },
+  "contactUs": "Contactez-nous"
 }
