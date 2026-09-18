@@ -187,7 +187,18 @@ export function AiChatWidget({ selectedPapers = [] }: { selectedPapers?: Resourc
         setSelectedIds(response.results.map((r) => r.resource.id));
       }
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : 'Assistant is temporarily unavailable.');
+      const errorMsg = requestError instanceof Error ? requestError.message : 'Assistant is temporarily unavailable.';
+      setError(errorMsg);
+      const fallbackMsg: MessageBubble = {
+        id: String(Date.now() + 1),
+        sender: 'assistant',
+        text: isArabic 
+          ? `⚠️ **تنبيه:** لم يتمكن المساعد من إتمام المعالجة حالياً (${errorMsg}). يُرجى إعادة المحاولة أو اختيار إحدى الأدوات المتخصصة أدناه.`
+          : `⚠️ **Notice:** The assistant encountered an issue while processing your request (${errorMsg}). Please try again or select one of the specialized tools below.`,
+        mode: 'local',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+      setMessages((prev) => [...prev, fallbackMsg]);
     } finally {
       setBusy(false);
     }

@@ -146,6 +146,74 @@ function resolveResponseLanguage(prompt: string, currentLanguage: Language): Lan
   return languagePatterns.find(([, pattern]) => pattern.test(prompt))?.[0] ?? currentLanguage;
 }
 
+function languageText(language: Language, key: 'metrics' | 'search' | 'noMatch' | 'citation' | 'unavailable'): string {
+  const messages: Record<Language, Record<'metrics' | 'search' | 'noMatch' | 'citation' | 'unavailable', string>> = {
+    ar: { 
+      metrics: 'إحصائيات المكتبة', 
+      search: 'نتائج البحث', 
+      noMatch: 'لم يتم العثور على أبحاث مطابقة.', 
+      citation: 'التوثيق العلمي', 
+      unavailable: 'الوضع المحلي نشط، لكن قاعدة بيانات الأبحاث غير متاحة حالياً.' 
+    },
+    en: { 
+      metrics: 'Library metrics', 
+      search: 'Search results', 
+      noMatch: 'No matching papers were found.', 
+      citation: 'Citation', 
+      unavailable: 'Local Smart Mode is active, but the research database is unavailable.' 
+    },
+    fr: { 
+      metrics: 'Statistiques de la bibliothèque', 
+      search: 'Résultats de recherche', 
+      noMatch: 'Aucun article correspondant trouvé.', 
+      citation: 'Citation', 
+      unavailable: 'Le mode local est actif, mais la base de recherche est indisponible.' 
+    },
+    es: { 
+      metrics: 'Métricas de la biblioteca', 
+      search: 'Resultados de búsqueda', 
+      noMatch: 'No se encontraron artículos coincidentes.', 
+      citation: 'Cita', 
+      unavailable: 'El modo inteligente local está activo, pero la base de datos no está disponible.' 
+    },
+    de: { 
+      metrics: 'Bibliotheksstatistik', 
+      search: 'Suchergebnisse', 
+      noMatch: 'Keine passenden Arbeiten gefunden.', 
+      citation: 'Zitation', 
+      unavailable: 'Der lokale Modus ist aktiv, aber die Forschungsdatenbank ist nicht verfügbar.' 
+    },
+    zh: { 
+      metrics: '图书馆统计', 
+      search: '搜索结果', 
+      noMatch: '未找到匹配的论文。', 
+      citation: '引用', 
+      unavailable: '本地智能模式已启用，但研究数据库暂时不可用。' 
+    },
+    it: { 
+      metrics: 'Statistiche della biblioteca', 
+      search: 'Risultati della ricerca', 
+      noMatch: 'Non sono stati trovati articoli corrispondenti.', 
+      citation: 'Citazione', 
+      unavailable: 'La modalità locale è attiva, ma il database di ricerca non è disponible.' 
+    },
+  };
+  return messages[language]?.[key] ?? messages.en[key];
+}
+
+function classifyIntent(prompt: string): AssistantIntent {
+  const p = prompt.toLowerCase();
+  if (/(species|identify|taxonomy|نوع|تصنيف|تعريف|مورفولوج|سلالة)/i.test(p)) return 'species_id';
+  if (/(protocol|sop|methodology|بروتوكول|خطوات عمل|طريقة تحضير|استخلاص)/i.test(p)) return 'protocol';
+  if (/(medium|media|zarrouk|bg-11|bbm|guillard|بيئة غذائية|وسط غذائي|تغذية)/i.test(p)) return 'media_advisor';
+  if (/(gap|novel|thesis|فجوة|فجوات|بحث جديد|أفكار بحثية|ماجستير)/i.test(p)) return 'gaps';
+  if (/(interpret|data|kinetics|isotherm|تفسير|نتائج|منحنى نمو|دلالة)/i.test(p)) return 'interpretation';
+  if (/(apa|mla|bibtex|citation|توثيق|استشهاد|مراجع|literature review)/i.test(p)) return 'citation';
+  if (/(how many|count|statistics|statistic|most|عدد|إحصائيات|الأكثر|كم)/i.test(p)) return 'analysis';
+  if (/(find|search|papers|research|أبحاث|ابحث|دراسة)/i.test(p)) return 'search';
+  return 'general';
+}
+
 export const ALGAE_EXPERT_SYSTEM_PROMPT = `
 You are the Chief Academic Phycologist & Precision Biotechnology AI Advisor for the Integrated Algae Research Library (المكتبة المتكاملة لأبحاث الطحالب) affiliated with the Egyptian Phycological Society (الجمعية المصرية للطحالب), under academic direction of Prof. Dr. Reda Mohamed Moghazy (National Research Centre, Egypt).
 

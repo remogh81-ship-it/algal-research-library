@@ -102,6 +102,14 @@ function sortResources(resources: Resource[], sortBy: SortOption, searchQuery: s
 
 /* ---- Advanced Boolean & Field-Specific Search Engine ---- */
 
+function normalizeArabic(text: string): string {
+  return text
+    .replace(/[أإآ]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ى/g, 'ي')
+    .replace(/[\u064B-\u065F]/g, '');
+}
+
 export function matchesBooleanQuery(resource: Resource, rawQuery: string): boolean {
   const query = rawQuery.trim();
   if (!query) return true;
@@ -117,12 +125,16 @@ export function matchesBooleanQuery(resource: Resource, rawQuery: string): boole
   const categoryFull = `${resource.category || ''} ${resource.categoryArabic || ''}`.toLowerCase();
   const summaryFull = `${resource.summary_ar || ''} ${resource.summary_en || ''}`.toLowerCase();
 
-  const allText = `${titleFull} ${authorFull} ${journalFull} ${doiFull} ${algaeFull} ${categoryFull} ${summaryFull}`;
+  const rawAllText = `${titleFull} ${authorFull} ${journalFull} ${doiFull} ${algaeFull} ${categoryFull} ${summaryFull}`;
+  const allText = `${rawAllText} ${normalizeArabic(rawAllText)}`;
 
   if (!hasOperators) {
     // Normal multi-term search (all terms match anywhere)
     const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
-    return terms.every((term) => allText.includes(term));
+    return terms.every((term) => {
+      const normTerm = normalizeArabic(term);
+      return allText.includes(term) || allText.includes(normTerm);
+    });
   }
 
   // Handle OR split first (highest level disjunction)
