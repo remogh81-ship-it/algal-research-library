@@ -1,18 +1,52 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 
-export type AuthUser = { id: string; name: string; email: string };
+export type AuthUser = { 
+  id: string; 
+  name: string; 
+  email: string;
+  title?: string;
+  institution?: string;
+  department?: string;
+  orcid?: string;
+  googleScholarUrl?: string;
+  researchGateUrl?: string;
+  bio?: string;
+  specialties?: string[];
+  citationCount?: number;
+};
+
 type StoredUser = AuthUser & { password: string };
+
 type AuthContextValue = {
   user: AuthUser | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => string | null;
   register: (name: string, email: string, password: string) => string | null;
+  updateProfile: (updates: Partial<Omit<AuthUser, 'id' | 'email'>>) => void;
   logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 const USERS_KEY = 'algae-library-users';
 const SESSION_KEY = 'algae-library-session';
+const DEMO_PROFILE_KEY = 'algae-library-demo-profile';
+
+export const DEMO_CREDENTIALS = { email: 'demo@algae-library.local', password: 'demo1234' };
+
+const DEFAULT_DEMO_PROFILE: AuthUser = {
+  id: 'demo-user',
+  name: 'Demo Researcher (د. باحث تجريبي)',
+  email: DEMO_CREDENTIALS.email,
+  title: 'Senior Phycologist & Biotechnology Specialist',
+  institution: 'National Research Centre (NRC), Egypt',
+  department: 'Hydrobiology Department, Algal Biotechnology Unit',
+  orcid: '0000-0002-1825-0097',
+  googleScholarUrl: 'https://scholar.google.com',
+  researchGateUrl: 'https://www.researchgate.net',
+  bio: 'Specialized in microalgae mass cultivation, photobioreactor scale-up, Arthrospira platensis (Spirulina) harvest optimization, and phycoremediation of industrial wastewater.',
+  specialties: ['Arthrospira platensis', 'Chlorella vulgaris', 'Biofuels & Biodiesel', 'Phycoremediation', 'Zarrouk Medium Optimization'],
+  citationCount: 48
+};
 
 function readUsers(): StoredUser[] {
   try {
@@ -23,7 +57,14 @@ function readUsers(): StoredUser[] {
   }
 }
 
-export const DEMO_CREDENTIALS = { email: 'demo@algae-library.local', password: 'demo1234' };
+function getStoredDemoProfile(): AuthUser {
+  try {
+    const parsed: unknown = JSON.parse(localStorage.getItem(DEMO_PROFILE_KEY) ?? 'null');
+    return (parsed && typeof parsed === 'object') ? (parsed as AuthUser) : DEFAULT_DEMO_PROFILE;
+  } catch {
+    return DEFAULT_DEMO_PROFILE;
+  }
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(() => {
@@ -48,12 +89,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const normalizedEmail = email.trim().toLowerCase();
       if (!normalizedEmail || !password) return 'Enter your email and password.';
       const users = readUsers();
+      
       const demo = normalizedEmail === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password
-        ? { id: 'demo-user', name: 'Demo Researcher', email: DEMO_CREDENTIALS.email, password: DEMO_CREDENTIALS.password }
+        ? { ...getStoredDemoProfile(), password: DEMO_CREDENTIALS.password }
         : undefined;
+      
       const match = users.find((candidate) => candidate.email === normalizedEmail && candidate.password === password) ?? demo;
       if (!match) return 'Invalid email or password.';
-      persist({ id: match.id, name: match.name, email: match.email });
+      
+      const sessionUser: AuthUser = {
+        id: match.id,
+        name: match.name,
+        email: match.email,
+        title: match.title,
+        institution: match.institution,
+        department: match.department,
+        orcid: match.orcid,
+        googleScholarUrl: match.googleScholarUrl,
+        researchGateUrl: match.researchGateUrl,
+        bio: match.bio,
+        specialties: match.specialties,
+        citationCount: match.citationCount
+      };
+      
+      persist(sessionUser);
       return null;
     },
     register: (name, email, password) => {
@@ -63,10 +122,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (password.length < 6) return 'Password must be at least 6 characters.';
       const users = readUsers();
       if (users.some((candidate) => candidate.email === normalizedEmail)) return 'An account already exists for this email.';
-      const next: StoredUser = { id: crypto.randomUUID(), name: name.trim(), email: normalizedEmail, password };
+      
+      const next: StoredUser = { 
+        id: crypto.randomUUID(), 
+        name: name.trim(), 
+        email: normalizedEmail, 
+        password,
+        title: 'Phycology Researcher',
+        institution: 'Academic / Scientific Research Institution',
+        specialties: ['Microalgae', 'Applied Phycology']
+      };
+      
       localStorage.setItem(USERS_KEY, JSON.stringify([...users, next]));
-      persist({ id: next.id, name: next.name, email: next.email });
+      
+      const sessionUser: AuthUser = {
+        id: next.id,
+        name: next.name,
+        email: next.email,
+        title: next.title,
+        institution: next.institution,
+        specialties: next.specialties
+      };
+      
+      persist(sessionUser);
       return null;
+    },
+    updateProfile: (updates) => {
+      if (!user) return;
+      const updated: AuthUser = { ...user, ...updates };
+      persist(updated);
+      
+      // Persist to users list
+      const users = readUsers();
+      const updatedUsers = users.map((u) => u.id === user.id ? { ...u, ...updates } : u);
+      localStorage.setItem(USERS_KEY, JSON.stringify(updatedUsers));
+      
+      // If demo user, persist demo profile override
+      if (user.id === 'demo-user') {
+        localStorage.setItem(DEMO_PROFILE_KEY, JSON.stringify(updated));
+      }
     },
     logout: () => persist(null),
   }), [user]);

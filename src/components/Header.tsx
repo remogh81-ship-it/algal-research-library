@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BookOpen, FilePlus2, LogIn, Moon, Plus, Sun, UserRound, Youtube } from 'lucide-react';
+import { BookOpen, FilePlus2, GraduationCap, LogIn, Moon, Plus, Sun, UserRound, Youtube } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
@@ -15,9 +15,10 @@ type HeaderProps = {
   onLogout: () => void;
   onAddResearch: () => void;
   onLibrary: () => void;
+  onOpenProfile?: () => void;
 };
 
-export function Header({ dark, onToggleDark, user, mineOnly, onToggleMine, onLogin, onLogout, onAddResearch, onLibrary }: HeaderProps) {
+export function Header({ dark, onToggleDark, user, mineOnly, onToggleMine, onLogin, onLogout, onAddResearch, onLibrary, onOpenProfile }: HeaderProps) {
   const { t } = useI18n();
   const [logoFailed, setLogoFailed] = useState(false);
   const handleLogoError = () => {
@@ -51,7 +52,8 @@ export function Header({ dark, onToggleDark, user, mineOnly, onToggleMine, onLog
       <button className="icon-button" onClick={onToggleDark} aria-label="Toggle theme">{dark ? <Sun size={18} /> : <Moon size={18} />}</button>
       <LanguageSwitcher />
       {user ? <div className="account-menu">
-        <button className="account-trigger" onClick={onToggleMine}><UserRound size={17} /><span>{user.name}</span></button>
+        <button className="account-trigger" onClick={onOpenProfile} title={t('academicProfile') || 'الملف الأكاديمي'}><UserRound size={17} /><span>{user.name}</span></button>
+        <button className="menu-action academic-profile-action" onClick={onOpenProfile}><GraduationCap size={15} /> {t('academicProfile') || 'الملف الأكاديمي'}</button>
         <button className="menu-action" onClick={onAddResearch}><Plus size={15} /> {t('submit')}</button>
         <button className="menu-action" onClick={onToggleMine}>{t('mySubmissions')}</button>
         <button className="menu-action" onClick={onLogout}><LogIn size={15} /> {t('logout')}</button>
