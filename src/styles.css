@@ -351,6 +351,123 @@ footer p { max-width: 900px; margin: .4rem 0; }
 }
 .md-spacing { height: 0.35rem; }
 
+/* Markdown Tables */
+.chat-table-wrapper {
+  overflow-x: auto;
+  margin: 0.6rem 0;
+  border-radius: 8px;
+  border: 1px solid #cce3df;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+.chat-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.77rem;
+  text-align: start;
+}
+.chat-table th {
+  background: #eef6f4;
+  color: #05484d;
+  font-weight: 700;
+  padding: 0.45rem 0.65rem;
+  border-bottom: 2px solid #b7dbd5;
+  white-space: nowrap;
+}
+.chat-table td {
+  padding: 0.45rem 0.65rem;
+  border-bottom: 1px solid #e5f0ee;
+  color: #243c3f;
+  vertical-align: top;
+}
+.chat-table tr:nth-child(even) {
+  background: #fbfdfd;
+}
+.chat-table tr:hover {
+  background: #f0f8f6;
+}
+.chat-code-block {
+  background: #1e293b;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.75rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  overflow-x: auto;
+  margin: 0.5rem 0;
+}
+.chat-inline-code {
+  background: #eef5f4;
+  color: #075c62;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  font-size: 0.82em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  border: 1px solid #d4e8e5;
+}
+.chat-link {
+  color: #0c827c;
+  font-weight: 600;
+  text-decoration: underline;
+}
+.chat-list, .chat-ol {
+  margin: 0.35rem 0;
+  padding-inline-start: 1.25rem;
+}
+.chat-list li, .chat-ol li {
+  margin: 0.2rem 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+/* Precision Focus Mode Bar */
+.focus-mode-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.8rem;
+  background: #edf7f5;
+  border-top: 1px solid #dbeae7;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+.focus-mode-bar::-webkit-scrollbar { display: none; }
+.focus-mode-label {
+  font-size: 0.71rem;
+  font-weight: 700;
+  color: #086659;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+.focus-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  font-size: 0.71rem;
+  font-weight: 600;
+  border: 1px solid #c2ded8;
+  background: #ffffff;
+  color: #17655f;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.focus-btn:hover {
+  background: #e1f2ee;
+  border-color: #075c62;
+}
+.focus-btn.active {
+  background: #075c62;
+  color: #ffffff;
+  border-color: #075c62;
+  box-shadow: 0 1px 3px rgba(7, 92, 98, 0.2);
+}
+
 /* Associated mini paper cards */
 .bubble-paper-results { 
   margin-top: 0.75rem; 

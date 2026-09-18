@@ -30,6 +30,98 @@ export interface ChatHistoryItem {
   text: string;
 }
 
+export interface ResearchToolDefinition {
+  id: string;
+  nameAr: string;
+  nameEn: string;
+  descriptionAr: string;
+  descriptionEn: string;
+  icon: 'Dna' | 'FileSpreadsheet' | 'FlaskConical' | 'Sparkles' | 'LineChart' | 'BookOpen' | 'Cpu';
+  promptTemplateAr: string;
+  promptTemplateEn: string;
+}
+
+export const RESEARCH_TOOLS: ResearchToolDefinition[] = [
+  {
+    id: 'species_id',
+    nameAr: 'تشخيص وتصنيف السلالات الطحلبية',
+    nameEn: 'Taxonomic Strain Identification',
+    descriptionAr: 'تحليل الصفات المورفولوجية والبيوكيميائية لتحديد وتصنيف السلالات النقية بدقة.',
+    descriptionEn: 'Identify and classify algal strains based on morphological and molecular markers.',
+    icon: 'Dna',
+    promptTemplateAr: 'أريد تحديد وتصنيف السلالة الطحلبية ذات الخصائص التالية: [اكتب الخصائص، مثل: وحيدة خلية، خضراء كروية، قطرها 3-8 ميكرون] مع تبيان أفضل بيئة ومراجع تصنيفية موثوقة.',
+    promptTemplateEn: 'Please identify and taxonomically classify the microalgal strain with these features: [insert characteristics, e.g., unicellular, spherical green, 3-8 μm] and suggest optimal media.'
+  },
+  {
+    id: 'media_formulation',
+    nameAr: 'مستشار البيئات الغذائية المعملية',
+    nameEn: 'Culture Media Formulator',
+    descriptionAr: 'حساب وإعداد مكونات البيئات القياسية (BG-11, Zarrouk, BBM, f/2) وضبط المغذيات.',
+    descriptionEn: 'Formulate and adjust nutrient recipes for standard media (BG-11, Zarrouk, BBM, Guillard f/2).',
+    icon: 'FlaskConical',
+    promptTemplateAr: 'أريد بروتوكول تحضير بيئة [اختر: Zarrouk / BG-11 / BBM / f/2] بالتراكيز المحددة بالـ g/L ومصدر الكربون والنيتروجين، مع محاذير التعقيم والخلط.',
+    promptTemplateEn: 'Provide the exact preparation protocol for [Zarrouk / BG-11 / BBM / f/2] medium with chemical formulas, concentrations in g/L, and autoclave sterilization notes.'
+  },
+  {
+    id: 'biofuels_lipids',
+    nameAr: 'بروتوكول إنتاج وتحفيز الدهون والوقود',
+    nameEn: 'Lipid & Biofuel Induction Protocol',
+    descriptionAr: 'استراتيجيات تحفيز تراكم الدهون الثلاثية (TAGs) عبر الإجهاد النيتروجيني والضوئي.',
+    descriptionEn: 'Optimized stress protocols (nitrogen starvation, high light) to maximize lipid accumulation.',
+    icon: 'LineChart',
+    promptTemplateAr: 'ما هو البروتوكول الإجرائي ثنائي المرحلة لتعظيم إنتاج الدهون المحايدة (TAGs) في طحلب [Chlorella / Scenedesmus / Nannochloropsis] مع جدول بالمعايير المثلى ونسبة الزيادة المتوقعة؟',
+    promptTemplateEn: 'What is the optimal two-stage culture strategy to induce lipid accumulation in [Chlorella / Scenedesmus / Nannochloropsis] for biodiesel production?'
+  },
+  {
+    id: 'phycoremediation',
+    nameAr: 'تصميم معالجة مياه الصرف (Phycoremediation)',
+    nameEn: 'Phycoremediation & Wastewater Design',
+    descriptionAr: 'حساب كفاءات إزالة النيتروجين، الفوسفور، وامتزاز المعادن الثقيلة ونماذج لانجمير.',
+    descriptionEn: 'Design wastewater treatment setups to eliminate N, P, COD, and heavy metals using microalgae.',
+    icon: 'Sparkles',
+    promptTemplateAr: 'أريد تصميم نظام معالجة حيوية بمياه الصرف [البلدي / الصناعي / الزراعي] باستخدام الطحالب، مع كفاءات إزالة النيتروجين والفوسفور وحركية الامتزاز.',
+    promptTemplateEn: 'How can I optimize an algal phycoremediation system to treat [municipal / industrial / agricultural] wastewater, including N/P removal rates and hydraulic retention time (HRT)?'
+  },
+  {
+    id: 'pigment_extraction',
+    nameAr: 'استخلاص وتنقية الصبغات الحيوية (Phycocyanin / Astaxanthin)',
+    nameEn: 'Pigment Extraction & Purification',
+    descriptionAr: 'طرق التكسير الخلوي والاستخلاص الدقيق للفيكوسيانين والأستازانثين مع معادلات النقاء.',
+    descriptionEn: 'Cell disruption and purification protocols for high-value pigments (C-phycocyanin, astaxanthin).',
+    icon: 'FileSpreadsheet',
+    promptTemplateAr: 'أريد بروتوكولاً معملياً دقيقاً لاستخلاص صبغة الفيكوسيانين من *Arthrospira platensis* بأعلى نقاوة طيفية (EP = A620/A280) وحساب العائد.',
+    promptTemplateEn: 'Provide a laboratory SOP for the extraction and purification of C-phycocyanin from *Arthrospira platensis* including freeze-thaw steps and spectroscopic purity index calculation.'
+  },
+  {
+    id: 'literature_synthesis',
+    nameAr: 'التحليل التركيبي والمقارن للأوراق العلمية',
+    nameEn: 'Cross-Paper Literature Synthesis',
+    descriptionAr: 'مقارنة منهجيات الأبحاث وتحديد الفجوات العلمية بناءً على قاعدة بيانات المكتبة.',
+    descriptionEn: 'Synthesize evidence, compare methodologies, and discover research gaps from indexed papers.',
+    icon: 'BookOpen',
+    promptTemplateAr: 'قارن بين أحدث الأبحاث المفهرسة في المكتبة حول [الموضوع أو السلالة] من حيث المنهجية، وسرعة النمو، ومعدل إنتاج الكتلة الحيوية، واستنتج الفجوة البحثية.',
+    promptTemplateEn: 'Compare the indexed benchmark studies on [topic or strain] regarding methodology, growth kinetics, and identify key research gaps.'
+  }
+];
+
+export const QUICK_PROMPTS_AR = [
+  'ما هي أفضل بيئة لزراعة السبيرولينا وحصادها؟',
+  'بروتوكول حث إنتاج الدهون في كلوريلا لإنتاج الديزل الحيوي',
+  'كفاءة سلالات سينيديسموس في معالجة مياه الصرف وإزالة المعادن',
+  'كيفية استخلاص صبغة الفيكوسيانين وحساب مؤشر النقاوة',
+  'معادلات حساب معدل النمو النوعي والزمن المضاعف للطحالب',
+  'تثبيت ثاني أكسيد الكربون حيوياً بواسطة المفاعلات الضوئية PBR'
+];
+
+export const QUICK_PROMPTS_EN = [
+  'Optimal Zarrouk formulation and harvest for Spirulina',
+  'Two-stage nitrogen starvation protocol for Chlorella lipids',
+  'Scenedesmus efficiency in wastewater nutrient removal',
+  'Extraction and spectroscopic purity of C-phycocyanin',
+  'Formulas for specific growth rate (μ) and biomass productivity',
+  'CO2 biofixation kinetics and photobioreactor design'
+];
+
 const languageNames: Record<Language, string> = {
   ar: 'Arabic',
   en: 'English',
@@ -57,173 +149,116 @@ function resolveResponseLanguage(prompt: string, currentLanguage: Language): Lan
 export const ALGAE_EXPERT_SYSTEM_PROMPT = `
 You are the Chief Academic Phycologist & Precision Biotechnology AI Advisor for the Integrated Algae Research Library (المكتبة المتكاملة لأبحاث الطحالب) affiliated with the Egyptian Phycological Society (الجمعية المصرية للطحالب), under academic direction of Prof. Dr. Reda Mohamed Moghazy (National Research Centre, Egypt).
 
-Your scientific and technological capabilities cover:
-1. Systematic Taxonomy & Strain Identification:
-   - Cyanobacteria (*Arthrospira platensis*, *Anabaena*, *Nostoc*, *Spirulina*, *Microcystis*).
-   - Chlorophyta (*Chlorella vulgaris*, *Scenedesmus obliquus*, *Dunaliella salina*, *Haematococcus pluvialis*).
-   - Bacillariophyceae/Diatoms (*Phaeodactylum tricornutum*, *Skeletonema costatum*, *Chaetoceros*).
-   - Phaeophyceae & Rhodophyta macroalgae (*Sargassum*, *Ulva*, *Gracilaria*).
-   Always output biological binomial nomenclature in *italics* with author citations when relevant.
+CORE SCIENTIFIC DIRECTIVE:
+You must provide ACCURATE, TARGETED, FOCUSED, and HIGHLY STRUCTURED scientific answers. Avoid generic introductions or superficial fillers. Every answer must deliver rigorous, actionable value to academic researchers and biotechnology professionals.
 
-2. Precision Culture Formulations & Media Chemistry:
-   - BG-11 (freshwater cyanobacteria/microalgae): NaNO3 (1.5 g/L), K2HPO4 (0.04 g/L), MgSO4·7H2O (0.075 g/L), CaCl2·2H2O (0.036 g/L), Citric acid (0.006 g/L), Ferric ammonium citrate (0.006 g/L), EDTA (0.001 g/L), A6 trace elements.
-   - Zarrouk's Medium (Spirulina/Arthrospira): NaHCO3 (16.8 g/L), NaNO3 (2.5 g/L), K2HPO4 (0.5 g/L), K2SO4 (1.0 g/L), NaCl (1.0 g/L), MgSO4·7H2O (0.2 g/L), CaCl2 (0.04 g/L), FeSO4·7H2O (0.01 g/L), EDTA (0.08 g/L), Micronutrients A5+B6. pH strictly 9.0 - 9.8.
-   - Bold's Basal Medium (BBM), Guillard's f/2 (marine diatoms and flagellates), Walne, Chu-10.
-   - Provide exact stock solution preparation, autoclaving vs. sterile-filtration warnings, and pH adjusting protocols.
+MANDATORY RESPONSE BLUEPRINT:
+Structure every scientific inquiry, protocol request, or technical question using the following 5 focused sections:
 
-3. Bioreactor Engineering & Kinetics:
-   - Specific growth rate: μ = (ln X2 - ln X1) / (t2 - t1) [day⁻¹ or h⁻¹].
-   - Doubling time: td = ln(2) / μ.
-   - Volumetric biomass productivity: P_vol = (X2 - X1) / (t2 - t1) [g L⁻¹ day⁻¹].
-   - Areal biomass productivity: P_area = P_vol × (V / A) [g m⁻² day⁻¹].
-   - CO2 Biofixation kinetics: R_CO2 = C_carbon × P_vol × (44 / 12) (typically ~1.83 g CO2 per g dry algal biomass).
-   - Optimal photosynthetically active radiation (PAR): 50 - 250 μmol photons m⁻² s⁻¹, dark:light photoperiods (16:8 or 12:12), aerated with 0.04% - 5% CO2 at 0.1 - 0.5 vvm.
+### 1. 🎯 الخلاصة العلمية المركزة (Direct Executive Takeaway)
+- A concise, high-density scientific answer directly solving the user's question in 2–3 sentences.
+- State the exact species, strain, or optimal operational parameter immediately.
 
-4. Bioremediation & Phycoremediation Protocols:
-   - Heavy metal biosorption (Pb²⁺, Cd²⁺, Cr⁶⁺, Cu²⁺, Ni²⁺, Zn²⁺): Biosorption capacity q_e = ((C0 - Ce) × V) / m [mg/g].
-   - Langmuir isotherm: q_e = (q_max × K_L × C_e) / (1 + K_L × C_e).
-   - Freundlich isotherm: q_e = K_F × (C_e)^(1/n).
-   - Municipal, industrial & dairy wastewater polishing: Removal percentages (R%) for Total Nitrogen (TN), Nitrate (NO3⁻), Ammonium (NH4⁺), Total Phosphorus (TP), and Chemical Oxygen Demand (COD).
+### 2. 📊 جدول المعايير والبارامترات الرقمية (Quantitative Benchmark Table)
+Provide a structured Markdown table summarizing the exact quantitative metrics:
+| المعيار / Parameter | القيمة المثلى (Optimal) | المدى التشغيلي (Range) | الوحدة / الملاحظات العلمية |
+Include specific numbers: Light (μmol photons m⁻² s⁻¹), Temp (°C), pH, Carbon/Aeration (vvm or % CO₂), Biomass yield (g/L/day), or Extraction purity ratio.
 
-5. High-Value Natural Bioactive Extraction Protocols:
-   - Astaxanthin from *Haematococcus pluvialis*: Two-phase green-to-red stress induction (N/P depletion, high irradiance >400 μmol m⁻² s⁻¹, salt stress), cell wall disruption (bead milling, enzymatic lysis), extraction via supercritical CO2 or ethyl acetate/ethanol.
-   - Phycobiliproteins (C-Phycocyanin) from *Arthrospira*: Repeated freeze-thaw cycles (-20°C to 25°C) or ultrasonic disintegration in phosphate buffer (0.1 M, pH 7.0), purity ratio calculation: EP = A620 / A280 (Food grade: >0.7, Cosmetic: >1.5, Analytical/Reagent: >4.0).
-   - Lipids & FAME for Biodiesel: Bligh & Dyer / Folch chloroform-methanol or Soxhlet n-hexane extraction, transesterification using methanol + 1% H2SO4 or KOH at 60°C.
+### 3. 🔬 البروتوكول الإجرائي الدقيق (Focused Actionable SOP)
+- Numbered, concise, step-by-step procedural steps without redundant fluff.
+- Specify exact chemical concentrations (g/L or mg/L), incubation intervals, centrifugation speeds (rpm / ×g), and reagent grades.
 
-Response Formatting Rules:
-- Provide exhaustive, publication-grade academic answers.
-- Use clean hierarchical Markdown (#, ##, ###, bullet points, bolding, scientific units).
-- When providing protocols, use numbered step-by-step Standard Operating Procedure (SOP) format with:
-  1. Objectives & Principles
-  2. Required Reagents & Equipment
-  3. Step-by-Step Execution Guide
-  4. Critical Quality Control (QC) & Pitfalls
-  5. Mathematical Formulas & Calculation Examples
-- Always respond in the target language of the prompt or context (Arabic or English).
+### 4. ⚠️ ضوابط الجودة والمحاذير المعملية (Critical QC & Pitfalls)
+- 2–3 bullet points highlighting critical failure points (e.g., photoinhibition thresholds, contamination vectors, shear stress, temperature crash risks).
+
+### 5. 📚 الشواهد والدراسات المرجعية (Library Evidence & Citations)
+- Directly reference the provided benchmark studies from the library (citing author, year, journal, and DOI).
+
+TAXONOMIC & CHEMICAL RIGOR:
+- Binomial species names MUST be in *italics* (*Chlorella vulgaris*, *Arthrospira platensis*).
+- Chemical formulas in correct stoichiometry (NaHCO₃, NaNO₃, K₂HPO₄, CO₂).
+- Always respond in the target language (Arabic or English).
 `;
 
-function languageText(language: Language, key: 'metrics' | 'search' | 'noMatch' | 'citation' | 'unavailable'): string {
-  const messages: Record<Language, Record<typeof key, string>> = {
-    ar: { metrics: 'إحصائيات المكتبة', search: 'نتائج البحث', noMatch: 'لم يتم العثور على أبحاث مطابقة.', citation: 'التوثيق العلمي', unavailable: 'الوضع المحلي نشط، لكن قاعدة بيانات الأبحاث غير متاحة حالياً.' },
-    en: { metrics: 'Library metrics', search: 'Search results', noMatch: 'No matching papers were found.', citation: 'Citation', unavailable: 'Local Smart Mode is active, but the research database is unavailable.' },
-    fr: { metrics: 'Statistiques de la bibliothèque', search: 'Résultats de recherche', noMatch: 'Aucun article correspondant trouvé.', citation: 'Citation', unavailable: 'Le mode local est actif, mais la base de recherche est indisponible.' },
-    es: { metrics: 'Métricas de la biblioteca', search: 'Resultados de búsqueda', noMatch: 'No se encontraron artículos coincidentes.', citation: 'Cita', unavailable: 'El modo inteligente local está activo, pero la base de datos no está disponible.' },
-    de: { metrics: 'Bibliotheksstatistik', search: 'Suchergebnisse', noMatch: 'Keine passenden Arbeiten gefunden.', citation: 'Zitation', unavailable: 'Der lokale Modus ist aktiv, aber die Forschungsdatenbank ist nicht verfügbar.' },
-    zh: { metrics: '图书馆统计', search: '搜索结果', noMatch: '未找到匹配的论文。', citation: '引用', unavailable: '本地智能模式已启用，但研究数据库暂时不可用。' },
-    it: { metrics: 'Statistiche della biblioteca', search: 'Risultati della ricerca', noMatch: 'Non sono stati trovati articoli corrispondenti.', citation: 'Citazione', unavailable: 'La modalità locale è attiva, ma il database di ricerca non è disponible.' },
-  };
-  return messages[language][key];
-}
+/* Common Stopwords in Arabic and English to purify search intents */
+const STOP_WORDS = new Set([
+  'what', 'is', 'how', 'to', 'the', 'of', 'in', 'on', 'for', 'with', 'a', 'an', 'and', 'or', 'by', 'at', 'from',
+  'can', 'you', 'give', 'me', 'please', 'tell', 'about', 'best', 'good', 'way', 'paper', 'papers', 'research',
+  'ما', 'هي', 'هو', 'في', 'على', 'عن', 'من', 'إلى', 'كيف', 'كيفية', 'هل', 'أريد', 'ماهو', 'ماهي', 'اعطني',
+  'طريقة', 'بروتوكول', 'بحث', 'ابحث', 'عن', 'افضل', 'أفضل', 'دراسة', 'دراسات', 'مكتبة', 'معلومات', 'حول'
+]);
 
-export interface ResearchToolDefinition {
-  id: AssistantIntent;
-  nameAr: string;
-  nameEn: string;
-  icon: string;
-  promptTemplateAr: string;
-  promptTemplateEn: string;
-  descriptionAr: string;
-  descriptionEn: string;
-}
+/* Phycology High-Priority Keywords & Weights */
+const PHYCOLOGY_WEIGHTS: Record<string, number> = {
+  // Strains & Genera
+  spirulina: 12, arthrospira: 12, chlorella: 12, scenedesmus: 12, dunaliella: 12,
+  haematococcus: 12, nannochloropsis: 12, anabaena: 12, nostoc: 12, phaeodactylum: 12,
+  skeletonema: 12, sargassum: 12, ulva: 12, gracilaria: 12, cyanobacteria: 10,
+  diatom: 10, diatoms: 10, microalgae: 8, macroalgae: 8,
+  سبيرولينا: 12, أرثروسبيرا: 12, كلوريلا: 12, سينيديسموس: 12, دوناليلا: 12,
+  هيماتوكوكس: 12, نانوكلوروبسيس: 12, أنابينا: 12, نوستوك: 12, سارجاسوم: 12, أولفا: 12,
 
-export const RESEARCH_TOOLS: ResearchToolDefinition[] = [
-  {
-    id: 'species_id',
-    nameAr: 'تعريف الأنواع',
-    nameEn: 'Species Identification',
-    icon: 'Dna',
-    promptTemplateAr: 'أريد تحديد نوع طحلب بالخصائص المورفولوجية والبيئية التالية: ',
-    promptTemplateEn: 'Identify the algae species based on these morphological and physiological traits: ',
-    descriptionAr: 'تحليل دقيق لتشخيص وتصنيف الطحالب حسب المعايير المورفولوجية والبيئية',
-    descriptionEn: 'Taxonomic identification guide based on morphological & ecological traits',
-  },
-  {
-    id: 'protocol',
-    nameAr: 'مولّد البروتوكولات',
-    nameEn: 'Protocol Generator',
-    icon: 'FileSpreadsheet',
-    promptTemplateAr: 'صمم بروتوكولاً تجريبياً مفصلاً (زراعة / استخلاص / معالجة) لطحلب: ',
-    promptTemplateEn: 'Generate a detailed laboratory protocol (cultivation, extraction, or assay) for: ',
-    descriptionAr: 'بروتوكولات مخبرية معيارية للزراعة واستخلاص الصبغات والدهون',
-    descriptionEn: 'Standard laboratory SOPs for culture, harvesting, and analytical assays',
-  },
-  {
-    id: 'media_advisor',
-    nameAr: 'مستشار البيئات الغذائية',
-    nameEn: 'Media Advisor',
-    icon: 'FlaskConical',
-    promptTemplateAr: 'ما هي أفضل بيئة زراعية غذائية لنمو طحلب [النوع] لغرض [إنتاج دهون / نمو سريع / إجهاد نيتروجيني]: ',
-    promptTemplateEn: 'Recommend and adjust the optimal culture medium (BG-11, BBM, Zarrouk, f/2) for: ',
-    descriptionAr: 'توصيات تركيبات الأوساط الغذائية (BG-11, BBM, Zarrouk, Walne...) والتعديل للعناصر',
-    descriptionEn: 'Formulation advisor for culture media optimization and nutrient stress conditions',
-  },
-  {
-    id: 'gaps',
-    nameAr: 'محلل الفجوات البحثية',
-    nameEn: 'Research Gap Analyzer',
-    icon: 'Sparkles',
-    promptTemplateAr: 'حدد الفجوات البحثية الحالية والمجالات غير المدروسة كفاية في موضوع: ',
-    promptTemplateEn: 'Analyze research gaps and unaddressed research questions in: ',
-    descriptionAr: 'اكتشاف نقاط الضعف والفجوات في الأدبيات لاقتراح أفكار رسائل ماجستير ودكتوراه',
-    descriptionEn: 'Uncover literature gaps to formulate novel MSc/PhD theses proposals',
-  },
-  {
-    id: 'interpretation',
-    nameAr: 'مفسر النتائج والبيانات',
-    nameEn: 'Data Interpreter',
-    icon: 'LineChart',
-    promptTemplateAr: 'فسّر علمياً النتائج والبيانات المخبرية التالية وقارنها بالمعدلات المنشورة: ',
-    promptTemplateEn: 'Provide a scientific phycological interpretation for the following experimental data: ',
-    descriptionAr: 'تفسير معدلات النمو μ، كفاءة الامتزاز الحيوي، وتثبيت ثاني أكسيد الكربون',
-    descriptionEn: 'Interpret kinetics, growth curves, adsorption isotherms, and pigment yields',
-  },
-  {
-    id: 'citation',
-    nameAr: 'الموثق المرجعي',
-    nameEn: 'Citation & Review Writer',
-    icon: 'BookOpen',
-    promptTemplateAr: 'صغ فقرة مراجعة علمية أكاديمية موثقة مع المراجع (APA/BibTeX) عن: ',
-    promptTemplateEn: 'Draft an academic synthesized literature review paragraph with citations on: ',
-    descriptionAr: 'صياغة فقرات أدبيات البحث والتوثيق الأكاديمي بأنماط APA و MLA و BibTeX',
-    descriptionEn: 'Draft academic review paragraphs and export compliant reference citations',
-  },
-];
-
-export const QUICK_PROMPTS_AR = [
-  'بروتوكول زراعة Arthrospira platensis (Spirulina) في بيئة Zarrouk',
-  'أفضل ظروف لإجهاد Chlorella vulgaris لزيادة تراكم الدهون لإنتاج الوقود الحيوي',
-  'مقارنة كفاءة إزالة النيتروجين والفوسفور بواسطة Scenedesmus obliquus',
-  'حساب معدل تثبيت ثاني أكسيد الكربون (CO2 Bio-fixation) في المفاعلات الضوئية',
-];
-
-export const QUICK_PROMPTS_EN = [
-  'Cultivation protocol for Arthrospira platensis (Spirulina) in Zarrouk medium',
-  'Nitrogen-starvation protocols for Chlorella vulgaris lipid accumulation',
-  'Scenedesmus obliquus efficiency in wastewater heavy metal biosorption',
-  'CO2 sequestration kinetics calculation in photobioreactors',
-];
-
-function classifyIntent(prompt: string): AssistantIntent {
-  const p = prompt.toLocaleLowerCase();
-  if (/(species|identify|taxonomy|نوع|تصنيف|تعريف|مورفولوج|سلالة)/i.test(p)) return 'species_id';
-  if (/(protocol|sop|methodology|بروتوكول|خطوات عمل|طريقة تحضير|استخلاص)/i.test(p)) return 'protocol';
-  if (/(medium|media|zarrouk|bg-11|bbm|guillard|بيئة غذائية|وسط غذائي|تغذية)/i.test(p)) return 'media_advisor';
-  if (/(gap|novel|thesis|فجوة|فجوات|بحث جديد|أفكار بحثية|ماجستير)/i.test(p)) return 'gaps';
-  if (/(interpret|data|kinetics|isotherm|تفسير|نتائج|منحنى نمو|دلالة)/i.test(p)) return 'interpretation';
-  if (/(apa|mla|bibtex|citation|توثيق|استشهاد|مراجع|literature review)/i.test(p)) return 'citation';
-  if (/(how many|count|statistics|statistic|most|عدد|إحصائيات|الأكثر|كم)/i.test(p)) return 'analysis';
-  if (/(find|search|papers|research|أبحاث|ابحث|دراسة)/i.test(p)) return 'search';
-  return 'general';
-}
+  // Topics & Products
+  biofuel: 9, biodiesel: 9, lipid: 9, lipids: 9, bioethanol: 9, biohydrogen: 9,
+  wastewater: 9, remediation: 9, bioremediation: 9, biosorption: 9, adsorption: 8,
+  'heavy metal': 9, 'heavy metals': 9, lead: 8, cadmium: 8, chromium: 8, nickel: 8, copper: 8,
+  carbon: 9, co2: 9, biofixation: 9, sequestration: 9, 'flue gas': 8,
+  astaxanthin: 10, phycocyanin: 10, antioxidant: 8, antimicrobial: 8, anticancer: 8,
+  biofertilizer: 9, biostimulant: 9, agriculture: 8, aquafeed: 8, aquaculture: 8,
+  bioplastic: 9, pha: 9, phb: 9, nanoparticle: 8, nanoparticles: 8,
+  zarrouk: 10, 'bg-11': 10, bbm: 10, guillard: 10, photobioreactor: 9, pbr: 9, raceway: 9,
+  kinetics: 8, 'growth rate': 8, productivity: 8, isotherm: 8, langmuir: 8,
+  وقود: 9, 'ديزل حيوي': 9, دهون: 9, معالجة: 9, صرف: 9, 'امتزاز حيوي': 9, 'معادن ثقيلة': 9,
+  كربون: 9, 'تثبيت حيوي': 9, فيكوسيانين: 10, أستازانثين: 10, أكسدة: 8, مخصبات: 9, 'أعلاف': 8,
+  'بلاستيك حيوي': 9, زاروك: 10, 'مفاعل ضوئي': 9, حركية: 8
+};
 
 function rankResources(prompt: string, resources: Resource[]): AssistantResult[] {
-  const normalized = prompt.toLocaleLowerCase();
-  const terms = normalized.split(/[^\p{L}\p{N}]+/u).filter((term) => term.length > 2);
-  return resources.map((resource) => {
-    const haystack = [resource.title, resource.titleArabic, resource.category, resource.categoryArabic, resource.algaeType, resource.authors, resource.journal, String(resource.year)].join(' ').toLocaleLowerCase();
-    const relevance = terms.reduce((score, term) => score + (haystack.includes(term) ? (resource.title.toLocaleLowerCase().includes(term) ? 4 : 1) : 0), 0);
-    return { resource, relevance };
-  }).filter((match) => match.relevance > 0).sort((a, b) => b.relevance - a.relevance || b.resource.year - a.resource.year).slice(0, 5);
+  const normalized = prompt.toLowerCase();
+  
+  // Extract clean meaningful keywords excluding stopwords
+  const rawTerms = normalized.split(/[^\p{L}\p{N}+-]+/u).filter((t) => t.length > 1);
+  const searchTerms = rawTerms.filter((t) => !STOP_WORDS.has(t));
+  
+  if (searchTerms.length === 0) {
+    searchTerms.push(...rawTerms.filter((t) => t.length > 2));
+  }
+
+  return resources
+    .map((resource) => {
+      const titleLower = `${resource.title || ''} ${resource.titleArabic || ''}`.toLowerCase();
+      const catLower = `${resource.category || ''} ${resource.categoryArabic || ''}`.toLowerCase();
+      const strainLower = (resource.algaeType || '').toLowerCase();
+      const authorLower = (resource.authors || '').toLowerCase();
+      const journalLower = (resource.journal || '').toLowerCase();
+      const summaryLower = `${resource.summary_en || ''} ${resource.summary_ar || ''}`.toLowerCase();
+
+      let score = 0;
+
+      for (const term of searchTerms) {
+        const weight = PHYCOLOGY_WEIGHTS[term] || 3;
+
+        // Highest priority: title match
+        if (titleLower.includes(term)) score += weight * 5;
+        // High priority: strain or category match
+        if (strainLower.includes(term)) score += weight * 4;
+        if (catLower.includes(term)) score += weight * 3;
+        // Author or journal match
+        if (authorLower.includes(term)) score += weight * 2;
+        if (journalLower.includes(term)) score += weight * 2;
+        // Summary content match
+        if (summaryLower.includes(term)) score += weight * 1.5;
+      }
+
+      // Bonus for recent peer-reviewed publications
+      if (resource.year && resource.year >= 2020) score += 2;
+      if (resource.doi) score += 1;
+
+      return { resource, relevance: score };
+    })
+    .filter((match) => match.relevance > 0)
+    .sort((a, b) => b.relevance - a.relevance || b.resource.year - a.resource.year)
+    .slice(0, 5);
 }
 
 function localAnswer(prompt: string, resources: Resource[], language: Language): AssistantResponse {
@@ -276,66 +311,94 @@ function localAnswer(prompt: string, resources: Resource[], language: Language):
     let guidance = '';
     if (language === 'ar') {
       if (isSpirulina) {
-        guidance = `## 🔬 استشارة متخصصة: استزراع وإنتاجية *Arthrospira platensis* (السبيرولينا)
+        guidance = `### 1. 🎯 الخلاصة العلمية المركزة
+طحلب *Arthrospira platensis* (السبيرولينا) ينمو بكفاءة قصوى في البيئات القلوية الغنية بالكربون غير العضوي، وأنسب بيئة معتمدة عالمياً هي **بيئة زاروك (Zarrouk's Medium)** بتركيز NaHCO₃ مرتفع مع تثبيت درجة الحرارة بين 30-35°م.
 
-### 1. بيئة الاستزراع الكيميائية الموصى بها: **بيئة زاروك (Zarrouk's Medium)**
-- **بيكربونات الصوديوم (NaHCO₃):** 16.8 جم/لتر (لتوفير الكربون غير العضوي وضبط الأس الهيدروجيني).
-- **نترات الصوديوم (NaNO₃):** 2.5 جم/لتر (كمصدر نيتروجين رئيسي).
-- **فوسفات ثنائي البوتاسيوم (K₂HPO₄):** 0.5 جم/لتر.
-- **كبريتات البوتاسيوم (K₂SO₄):** 1.0 جم/لتر | **كلوريد الصوديوم (NaCl):** 1.0 جم/لتر.
-- **محلول العناصر النادرة (Trace Elements A5+B6):** 1 مل/لتر.
+### 2. 📊 جدول المعايير والبارامترات الرقمية
+| المعيار الفيزيوكيميائي | القيمة المثلى (Optimal) | المدى المقبول (Range) | الوحدة / الملاحظات |
+| :--- | :--- | :--- | :--- |
+| **الأس الهيدروجيني (pH)** | **9.2 – 9.5** | 9.0 – 9.8 | قلوي يمنع التلوث البيولوجي |
+| **درجة الحرارة** | **32°C** | 30 – 35°C | حرجة عند >38°C أو <18°C |
+| **شدة الإضاءة (PAR)** | **80 – 100** | 50 – 120 | μmol photons m⁻² s⁻¹ |
+| **بيكربونات الصوديوم** | **16.8** | 12.0 – 18.0 | g/L NaHCO₃ (مصدر كربون) |
+| **نترات الصوديوم** | **2.5** | 2.0 – 2.5 | g/L NaNO₃ (مصدر نيتروجين) |
+| **إنتاجية الكتلة الحيوية** | **0.85 – 1.2** | 0.6 – 1.5 | g L⁻¹ day⁻¹ |
 
-### 2. الظروف الفيزيوكيميائية المثلى:
-- **الأس الهيدروجيني (pH):** 9.2 – 9.8 (قلوية عالية تمنع التلوث بالميكروبات الأخرى).
-- **درجة الحرارة:** 30 – 35°م (الحد الأدنى 20°م، والحد الحرج 38°م).
-- **الإضاءة (PAR):** 60 – 120 μmol photons m⁻² s⁻¹ مع دورة ضوئية 16:8 ساعة.
-- **التهوية والخلط:** تقليب مستمر (سرعة تدفق 20-30 سم/ث في الأحواض المفتوحة Raceway Ponds).
+### 3. 🔬 البروتوكول الإجرائي الدقيق (SOP)
+1. **تحضير الوسط:** إذابة 16.8 جم NaHCO₃ و 2.5 جم NaNO₃ و 0.5 جم K₂HPO₄ في 1 لتر ماء مقطر، وإضافة 1 مل من محلول العناصر النادرة (Trace A5+B6).
+2. **التلقيح والزراعة:** تلقيح بكثافة بصرية أولية $OD_{560} = 0.2$، مع خلط مستمر (25-30 سم/ث).
+3. **الحصاد:** ترشيح الكتلة الحيوية عبر شبكة حريرية (Nylon mesh 40-50 μm)، وغسلها بماء مقطر لإزالة الأملاح.
+4. **استخلاص الفيكوسيانين:** تجميد الكتلة الحيوية الرطبة عند -20°م ثم إذابتها في دارئ فوسفات الصوديوم (0.1 M, pH 7.0)، مع طرد مركزي (10,000 ×g لمدة 15 دقيقة) وقياس النقاء $EP = A_{620} / A_{280} > 0.7$.
 
-### 3. استخلاص صبغة الفيكوسيانين (C-Phycocyanin):
-- تكسير الكتلة الحيوية الرطبة عبر دورات التجميد والذوبان المتكررة (-20°م ثم 25°م).
-- الاستخلاص في دارئ الفوسفات (Sodium phosphate buffer 0.1 M, pH 7.0).
-- معامل النقاء المطلوب: $EP = A_{620} / A_{280}$ (أكبر من 0.7 للدرجة الغذائية، وأكبر من 4.0 للدرجة التحليلية).`;
+### 4. ⚠️ ضوابط الجودة والمحاذير المعملية
+- هبوط الـ pH إلى ما دون 8.5 يسمح بنمو الطحالب الخضراء وحيدة الخلية والبروتوزوا الملوثة.
+- تجنب تعريض المزارع لإضاءة قوية مفاجئة لتفادي التثبيط الضوئي (Photoinhibition).`;
       } else if (isChlorella) {
-        guidance = `## 🔬 استشارة متخصصة: استزراع وإنتاجية *Chlorella vulgaris*
+        guidance = `### 1. 🎯 الخلاصة العلمية المركزة
+طحلب *Chlorella vulgaris* هو النموذج الأمثل لإنتاج الكتلة الحيوية الغنية بالبروتين والدهون؛ ويتم تحقيق أقصى تراكم للدهون (>40% من الوزن الجاف) عبر إستراتيجية **الزراعة ثنائية المرحلة (Two-Stage Strategy)** بحرمان الخلايا من النيتروجين.
 
-### 1. بيئة الاستزراع: **بيئة BG-11 أو BBM (Bold's Basal Medium)**
-- **نترات الصوديوم (NaNO₃):** 1.5 جم/لتر (للنمو الخضري السريع).
-- **فوسفات ثنائي البوتاسيوم (K₂HPO₄):** 0.04 جم/لتر | **كبريتات المغنيسيوم:** 0.075 جم/لتر.
-- **سترات الحديد والأمونيوم:** 0.006 جم/لتر لتعزيز تصنيع الكلوروفيل.
+### 2. 📊 جدول المعايير والبارامترات الرقمية
+| المعيار التشغيلي | مرحلة الكتلة الحيوية (المرحلة 1) | مرحلة إجهاد الدهون (المرحلة 2) | الملاحظات العلمية |
+| :--- | :--- | :--- | :--- |
+| **البيئة الغذائية** | **BG-11 كاملة** (1.5 g/L NaNO₃) | **BG-11 خالية من N** (0.0 g/L) | حث مسار TAGs |
+| **شدة الإضاءة** | **60 – 80** μmol m⁻² s⁻¹ | **150 – 200** μmol m⁻² s⁻¹ | إجهاد ضوئي مضاعف |
+| **درجة الحرارة** | **24 – 26°C** | **25 – 28°C** | حرارة معتدلة |
+| **الأس الهيدروجيني (pH)** | **7.0 – 7.2** | **7.5 – 8.0** | معتدل إلى قلوي خفيف |
+| **معدل النمو النوعي (μ)**| **0.85 – 1.1** day⁻¹ | **<0.15** day⁻¹ | توقف الانقسام الخلوي |
+| **محتوى الدهون الجاف** | **14 – 18%** | **42 – 52%** | دهون محايدة صالحة للديزل |
 
-### 2. بروتوكول حث تراكم الدهون للوقود الحيوي:
-- **المرحلة 1 (تراكم الكتلة الحيوية):** نمو كامل في BG-11 لمدة 8-10 أيام (تركيز نيتروجين كامل).
-- **المرحلة 2 (الإجهاد النيتروجيني):** نقل الخلايا لبيئة خالية من النيتروجين (Nitrogen-free BG-11) مع زيادة الإضاءة (>180 μmol m⁻² s⁻¹). يؤدي ذلك لتراكم الدهون المحايدة (TAGs) بنسبة تفوق 40-50% من الوزن الجاف.
-- **معدل النمو النوعي المتوقع (μ):** 0.65 – 1.1 day⁻¹.`;
+### 3. 🔬 البروتوكول الإجرائي الدقيق (SOP)
+1. **المرحلة 1:** زراعة الخلايا في وسط BG-11 كامل لمدة 6-8 أيام مع إمداد 1.5% CO₂ حتى وصول الكثافة إلى $OD_{680} \approx 1.8$.
+2. **الغسيل والنقل:** جمع الخلايا بالطرد المركزي (4,000 ×g لمدة 8 دقائق)، وغسل الراسب بماء مقطر لإزالة بقايا النترات.
+3. **المرحلة 2:** إعادة تعليق الخلايا في وسط BG-11 خالٍ تماماً من النيتروجين، مع مضاعفة الإضاءة لمدة 72-96 ساعة.
+4. **الاستخلاص والتحويل:** استخلاص الدهون بطريقة Folch المعدلة أو مذيب n-Hexane، وإجراء الأسترة التبادلية (Transesterification) بميثانول + 1% H₂SO₄ عند 60°م لمدة ساعتين.
+
+### 4. ⚠️ ضوابط الجودة والمحاذير المعملية
+- الإجهاد النيتروجيني المطول لأكثر من 5 أيام يؤدي لتحلل صبغة الكلوروفيل وموت الخلايا الذاتي (Autolysis).
+- ضرورة مراقبة ترسب الخلايا وضمان الخلط بالفقاعات الغازية لمنع حدوث التكتل التلقائي.`;
       } else if (isScenedesmus || isBioremediation) {
-        guidance = `## 🔬 استشارة متخصصة: المعالجة الحيوية بمساعدة الطحالب (*Phycoremediation*)
+        guidance = `### 1. 🎯 الخلاصة العلمية المركزة
+تُظهر سلالة *Scenedesmus obliquus* كفاءة استثنائية في المعالجة الحيوية لمياه الصرف (*Phycoremediation*)، حيث تزيل ما بين 85-95% من النيتروجين والفوسفور، وتمتلك قدرة امتزاز حيوي فائقة للمعادن الثقيلة تتوافق مع نموذج لانجمير (Langmuir Isotherm).
 
-### 1. السلالات الأكثر كفاءة:
-- *Scenedesmus obliquus* و *Chlorella pyrenoidosa*.
+### 2. 📊 جدول المعايير والبارامترات الرقمية
+| المعيار / الملوث | تركيز الدخول (Influent) | كفاءة الإزالة (Removal %) | زمن المكوث الهيدروليكي (HRT) |
+| :--- | :--- | :--- | :--- |
+| **النيتروجين الكلي (TN)** | **40 – 80 mg/L** | **85 – 94%** | 4 – 6 أيام |
+| **الفوسفور الكلي (TP)** | **6 – 15 mg/L** | **80 – 92%** | 4 – 6 أيام (امتزاز فاخر) |
+| **خفض COD** | **300 – 600 mg/L** | **70 – 82%** | اقتران تكافلي مع البكتيريا |
+| **امتزاز الرصاص (Pb²⁺)** | **10 – 50 mg/L** | **$q_{max} = 78.4$ mg/g** | توافق تام مع لانجمير ($R^2 > 0.98$) |
+| **امتزاز الكادميوم (Cd²⁺)**| **5 – 25 mg/L** | **$q_{max} = 42.1$ mg/g** | زمن اتزان 60 دقيقة |
 
-### 2. كفاءة إزالة المغذيات والملوثات:
-- **إزالة النيتروجين الكلي (TN) والأمونيوم (NH₄⁺):** 80% – 95% خلال 6-8 أيام.
-- **إزالة الفوسفور الكلي (TP):** 75% – 90% عبر الامتزاز والتخزين الفائض (Polyphosphate accumulation).
-- **خفض الأكسجين الحيوي الممتص (BOD/COD):** خفض بنسبة تصل إلى 70-85%.
+### 3. 🔬 البروتوكول الإجرائي الدقيق (SOP)
+1. **المعالجة الأولية:** ترشيح مياه الصرف لإزالة العوالق الخشنة، وتعديل الأس الهيدروجيني إلى pH 7.0 ± 0.2.
+2. **التلقيح والتكافل:** تلقيح بنسبة 15% حجمياً من مزرعة نشطة لـ *Scenedesmus obliquus* في الطور اللوغاريتمي.
+3. **التشغيل:** إمداد إضاءة مستمرة أو دورة 16:8 مع تهوية خفيفة بدون إضافة أية مغذيات كيميائية خارجية.
+4. **فصل الكتلة الحيوية:** الترويق التلقائي أو إضافة الشبة المخففة (Alum 20 mg/L) أو الترويق الحيوي، وقياس المغذيات المتبقية بالطرق القياسية (APHA Standards).
 
-### 3. الامتزاز الحيوي للمعادن الثقيلة (Biosorption):
-- حساب سعة الامتزاز عند الاتزان: $q_e = \\frac{(C_0 - C_e) \\times V}{m}$ (مجم معدن/جم طحلب جاف).
-- التوافق مع نموذج لانجمير (Langmuir Isotherm) لتحديد أقصى سعة تشبع أحادية الطبقة $q_{max}$.`;
+### 4. ⚠️ ضوابط الجودة والمحاذير المعملية
+- العكارة العالية تمنع نفاذ الضوء، لذا يجب تخفيف مياه الصرف الخام (1:1 أو 1:2) عند بدء التجربة.
+- الحفاظ على pH بين 6.8 و 7.8 لمنع تطاير الأمونيا كغاز $NH_3$ وضمان امتصاصها بيولوجياً.`;
       } else {
-        guidance = `## 🔬 الإرشادات المعيارية الشاملة لأبحاث واستزراع الطحالب
+        guidance = `### 1. 🎯 الخلاصة العلمية المركزة
+تعتمد كفاءة وتطبيقات الطحالب الدقيقة على الضبط الدقيق لمدخلات الضوء والكربون وتوازن النيتروجين والفوسفور، وتختلف المتطلبات الفيزيوكيميائية بين الأجناس الخضراء وحيدة الخلية والسيانوباكتيريا الخيطية.
 
-### 1. المعايير الفيزيوكيميائية الدقيقة:
-- 🌡️ **درجة الحرارة:** 22-26°م للمزارع النقية، 28-32°م للطحالب الخضراء المزرقة.
-- 💡 **شدة الإضاءة:** 50-120 μmol photons m⁻² s⁻¹ مع نظام إضاءة 16:8 ضوء:ظلام.
-- 🫧 **إمداد ثاني أكسيد الكربون:** تهوية بهواء مدعم بـ 1-2% CO₂ عند معدل تدفق 0.2-0.5 vvm لضبط الـ pH وتجنب استنزاف الكربون.
-- ⚗️ **الأس الهيدروجيني (pH):** 6.8-7.8 لمعظم الطحالب الخضراء، و9.0-10.0 للسيانوباكتيريا القلوية.
+### 2. 📊 جدول المعايير والبارامترات التشغيلية القياسية
+| المتغير البيئي | الطحالب الخضراء (*Chlorophyta*) | السيانوباكتيريا (*Cyanobacteria*) | الدياتومات (*Bacillariophyceae*) |
+| :--- | :--- | :--- | :--- |
+| **البيئة المعتمدة** | **BG-11 / BBM** | **Zarrouk / BG-11₀** | **Guillard f/2 (+ Silicate)** |
+| **الأس الهيدروجيني (pH)**| **6.8 – 7.5** | **9.0 – 9.8** | **7.8 – 8.2** |
+| **درجة الحرارة (°C)** | **22 – 26** | **30 – 35** | **18 – 22** |
+| **الإضاءة (PAR)** | **60 – 100** μmol m⁻² s⁻¹ | **50 – 90** μmol m⁻² s⁻¹ | **40 – 80** μmol m⁻² s⁻¹ |
+| **التهوية (CO₂)** | **1 – 2% CO₂** (0.2 vvm) | **تهوية خلط قلوية** | **تهوية فقاعية دقيقة** |
 
-### 2. المعادلات الحركية القياسية:
-- **معدل النمو النوعي:** $\\mu = \\frac{\\ln(OD_2) - \\ln(OD_1)}{t_2 - t_1}$
-- **الزمن المضاعف:** $t_d = \\frac{\\ln(2)}{\\mu}$
-- **الإنتاجية الحجمية:** $P_{vol} = \\frac{X_2 - X_1}{\\Delta t}$ (جم كتلة جافة / لتر / يوم).
+### 3. 🔬 المعادلات الحسابية والتحليل الحركي
+- **معدل النمو النوعي:** $\\mu = \\frac{\\ln(OD_2) - \\ln(OD_1)}{t_2 - t_1}$ [day⁻¹]
+- **الزمن المضاعف:** $t_d = \\frac{0.693}{\\mu}$ [days]
+- **معدل تثبيت الكربون:** $R_{CO_2} = 1.83 \\times P_{vol}$ [g CO₂ L⁻¹ day⁻¹]
 
-> يمكنك الانتقال إلى **الجناح الحاسوبي المخبري** بالصفحة الرئيسية لإجراء هذه الحسابات الرياضية فورياً.`;
+### 4. ⚠️ ضوابط الجودة والمحاذير المعملية
+- تجنب التغيرات المفاجئة في درجات الحرارة بين الليل والنهار بمقدار يزيد عن 6°م لتفادي الصدمة الفسيولوجية.
+- استخدام مرشحات التعقيم (0.22 μm filters) لكافة الإمدادات الهوائية لمنع تلوث المزرعة بالفطريات والبكتيريا.`;
       }
     } else {
       guidance = `## 🔬 Phycological Advisory & Standard Scientific Parameters

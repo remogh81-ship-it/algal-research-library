@@ -41,6 +41,11 @@ export async function askGeminiChat(
 ): Promise<string> {
   const bodyPayload: Record<string, any> = {
     contents: messages,
+    generationConfig: {
+      temperature: 0.25,
+      topP: 0.95,
+      maxOutputTokens: 8192,
+    },
   };
 
   if (systemInstruction) {

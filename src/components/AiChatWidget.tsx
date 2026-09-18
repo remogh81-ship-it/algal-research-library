@@ -69,6 +69,8 @@ export function AiChatWidget({ selectedPapers = [] }: { selectedPapers?: Resourc
   const [summaryTool, setSummaryTool] = useState<SummaryTool>('findings');
   const [summaryBusy, setSummaryBusy] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  type FocusPreset = 'standard' | 'focused' | 'benchmark' | 'protocol' | 'qc';
+  const [focusPreset, setFocusPreset] = useState<FocusPreset>('standard');
 
   const { language } = useI18n();
   const isArabic = language === 'ar';
@@ -145,8 +147,27 @@ export function AiChatWidget({ selectedPapers = [] }: { selectedPapers?: Resourc
       text: m.text,
     }));
 
+    let queryPayload = query;
+    if (focusPreset === 'focused') {
+      queryPayload += isArabic 
+        ? '\n[توجيه علمي ذو أولوية: المطلوب إجابة تنفيذية مركزة جداً وموجزة بالأرقام والنتائج المباشرة دون حشو أو استطراد]'
+        : '\n[Priority Scientific Directive: Direct executive takeaway with exact quantitative figures, concise, zero fluff]';
+    } else if (focusPreset === 'benchmark') {
+      queryPayload += isArabic 
+        ? '\n[توجيه علمي ذو أولوية: المطلوب التركيز الشديد على جدول مقارنة كمي رقمي للبارامترات والقيم المثلى ونطاقات التشغيل والوحدات]'
+        : '\n[Priority Scientific Directive: Detailed quantitative benchmark table of parameters, optimal values, and operating ranges with units]';
+    } else if (focusPreset === 'protocol') {
+      queryPayload += isArabic 
+        ? '\n[توجيه علمي ذو أولوية: المطلوب بروتوكول معملي دقيق SOP خطوة بخطوة بالتركيزات الكيميائية والمواد وأوقات التحضين]'
+        : '\n[Priority Scientific Directive: Step-by-step actionable lab SOP with exact chemical concentrations, reagents, and timings]';
+    } else if (focusPreset === 'qc') {
+      queryPayload += isArabic 
+        ? '\n[توجيه علمي ذو أولوية: المطلوب التركيز على ضوابط الجودة ونقاط الفشل الحرجة والمحاذير المعملية وطرق التغلب عليها وتفادي التلوث]'
+        : '\n[Priority Scientific Directive: Quality control criteria, critical failure modes, contamination hazards, and mitigation SOP]';
+    }
+
     try {
-      const response = await askAssistant(query, language, historyPayload);
+      const response = await askAssistant(queryPayload, language, historyPayload);
       setMode(response.mode);
 
       const assistantMsg: MessageBubble = {
@@ -254,47 +275,196 @@ export function AiChatWidget({ selectedPapers = [] }: { selectedPapers?: Resourc
     setExpandedSummaryIds((ids) => (ids.includes(id) ? ids.filter((sId) => sId !== id) : [...ids, id]));
   };
 
-  // Helper to format simple markdown lines into styled elements
+  // Helper to format inline markdown (bold, italic, code, links)
+  const formatInlineHtml = (raw: string): string => {
+    let res = raw;
+    // Bold **text**
+    res = res.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    // Italic *text*
+    res = res.replace(/(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
+    // Inline code `code`
+    res = res.replace(/`([^`]+)`/g, '<code class="chat-inline-code">$1</code>');
+    // Markdown links [text](url)
+    res = res.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noreferrer" class="chat-link">$1 ↗</a>');
+    return res;
+  };
+
+  // Helper to format complex markdown lines into styled elements (tables, code blocks, lists)
   const renderMarkdown = (text: string) => {
+    if (!text) return null;
     const lines = text.split('\n');
-    return lines.map((line, idx) => {
+    const elements: React.ReactNode[] = [];
+    let i = 0;
+
+    while (i < lines.length) {
+      const line = lines[i];
       const trimmed = line.trim();
+
+      // 1. Spacing / empty lines
+      if (!trimmed) {
+        elements.push(<div key={`sp-${i}`} className="md-spacing" />);
+        i++;
+        continue;
+      }
+
+      // 2. Multi-line Code Block (```)
+      if (trimmed.startsWith('```')) {
+        const codeLines: string[] = [];
+        i++;
+        while (i < lines.length && !lines[i].trim().startsWith('```')) {
+          codeLines.push(lines[i]);
+          i++;
+        }
+        if (i < lines.length && lines[i].trim().startsWith('```')) {
+          i++;
+        }
+        elements.push(
+          <pre key={`code-${i}`} className="chat-code-block">
+            <code>{codeLines.join('\n')}</code>
+          </pre>
+        );
+        continue;
+      }
+
+      // 3. Markdown Tables (| Col 1 | Col 2 |)
+      const isTableRow = (str: string) => str.includes('|') && str.startsWith('|');
+      const isTableSeparator = (str: string) => /^\|?(\s*:?-+:?\s*\|)+\s*:?-+:?\s*\|?$/.test(str);
+
+      if (isTableRow(trimmed) && i + 1 < lines.length && isTableSeparator(lines[i + 1].trim())) {
+        const headerLine = trimmed;
+        i += 2; // skip header & separator
+        const dataRows: string[] = [];
+        while (i < lines.length && lines[i].trim().includes('|') && lines[i].trim().length > 1) {
+          dataRows.push(lines[i].trim());
+          i++;
+        }
+
+        const parseCells = (rowStr: string) => {
+          const parts = rowStr.split('|');
+          let cells = parts.map(c => c.trim());
+          if (cells[0] === '') cells.shift();
+          if (cells[cells.length - 1] === '') cells.pop();
+          return cells;
+        };
+
+        const headers = parseCells(headerLine);
+        const rows = dataRows.map(parseCells);
+
+        elements.push(
+          <div key={`tbl-${i}`} className="chat-table-wrapper">
+            <table className="chat-table">
+              <thead>
+                <tr>
+                  {headers.map((h, hIdx) => (
+                    <th key={hIdx} dangerouslySetInnerHTML={{ __html: formatInlineHtml(h) }} />
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((row, rIdx) => (
+                  <tr key={rIdx}>
+                    {row.map((cell, cIdx) => (
+                      <td key={cIdx} dangerouslySetInnerHTML={{ __html: formatInlineHtml(cell) }} />
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+        continue;
+      }
+
+      // 4. Headings
+      if (trimmed.startsWith('#### ')) {
+        elements.push(<h5 key={`h4-${i}`} className="md-h4">{trimmed.replace('#### ', '')}</h5>);
+        i++;
+        continue;
+      }
       if (trimmed.startsWith('### ')) {
-        return <h4 key={idx} className="md-h4">{trimmed.replace('### ', '')}</h4>;
+        elements.push(<h4 key={`h3-${i}`} className="md-h4">{trimmed.replace('### ', '')}</h4>);
+        i++;
+        continue;
       }
       if (trimmed.startsWith('## ')) {
-        return <h3 key={idx} className="md-h3">{trimmed.replace('## ', '')}</h3>;
+        elements.push(<h3 key={`h2-${i}`} className="md-h3">{trimmed.replace('## ', '')}</h3>);
+        i++;
+        continue;
       }
       if (trimmed.startsWith('# ')) {
-        return <h2 key={idx} className="md-h2">{trimmed.replace('# ', '')}</h2>;
+        elements.push(<h2 key={`h1-${i}`} className="md-h2">{trimmed.replace('# ', '')}</h2>);
+        i++;
+        continue;
       }
+
+      // 5. Unordered List (- or *)
       if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
-        const itemContent = trimmed.substring(2);
-        return (
-          <li key={idx} className="md-li" dangerouslySetInnerHTML={{
-            __html: itemContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>')
-          }} />
+        const items: string[] = [];
+        while (i < lines.length && (lines[i].trim().startsWith('- ') || lines[i].trim().startsWith('* '))) {
+          items.push(lines[i].trim().substring(2));
+          i++;
+        }
+        elements.push(
+          <ul key={`ul-${i}`} className="chat-list">
+            {items.map((it, itIdx) => (
+              <li key={itIdx} dangerouslySetInnerHTML={{ __html: formatInlineHtml(it) }} />
+            ))}
+          </ul>
         );
+        continue;
       }
-      if (trimmed.startsWith('> [!NOTE]')) {
-        return (
-          <div key={idx} className="md-callout-note">
+
+      // 6. Ordered List (1. 2. ...)
+      if (/^\d+\.\s/.test(trimmed)) {
+        const items: string[] = [];
+        while (i < lines.length && /^\d+\.\s/.test(lines[i].trim())) {
+          items.push(lines[i].trim().replace(/^\d+\.\s/, ''));
+          i++;
+        }
+        elements.push(
+          <ol key={`ol-${i}`} className="chat-ol">
+            {items.map((it, itIdx) => (
+              <li key={itIdx} dangerouslySetInnerHTML={{ __html: formatInlineHtml(it) }} />
+            ))}
+          </ol>
+        );
+        continue;
+      }
+
+      // 7. Callout note or blockquote
+      if (trimmed.startsWith('> [!NOTE]') || trimmed.startsWith('> [!TIP]')) {
+        elements.push(
+          <div key={`callout-${i}`} className="md-callout-note">
             <strong>ℹ️ {isArabic ? 'تنبيه' : 'Note'}</strong>
           </div>
         );
+        i++;
+        continue;
       }
       if (trimmed.startsWith('> ')) {
-        return <blockquote key={idx} className="md-quote">{trimmed.substring(2)}</blockquote>;
+        const quoteLines: string[] = [];
+        while (i < lines.length && lines[i].trim().startsWith('> ')) {
+          quoteLines.push(lines[i].trim().substring(2));
+          i++;
+        }
+        elements.push(
+          <blockquote key={`bq-${i}`} className="md-quote">
+            {quoteLines.map((ql, qlIdx) => (
+              <div key={qlIdx} dangerouslySetInnerHTML={{ __html: formatInlineHtml(ql) }} />
+            ))}
+          </blockquote>
+        );
+        continue;
       }
-      if (!trimmed) {
-        return <div key={idx} className="md-spacing" />;
-      }
-      return (
-        <p key={idx} className="md-p" dangerouslySetInnerHTML={{
-          __html: trimmed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>')
-        }} />
+
+      // 8. Normal paragraph
+      elements.push(
+        <p key={`p-${i}`} className="md-p" dangerouslySetInnerHTML={{ __html: formatInlineHtml(trimmed) }} />
       );
-    });
+      i++;
+    }
+
+    return elements;
   };
 
   return (
@@ -506,6 +676,53 @@ export function AiChatWidget({ selectedPapers = [] }: { selectedPapers?: Resourc
                       <Sparkle size={12} /> {chip}
                     </button>
                   ))}
+                </div>
+
+                {/* Precision Focus Mode Toolbar */}
+                <div className="focus-mode-bar">
+                  <span className="focus-mode-label">
+                    <Sparkles size={13} /> {isArabic ? 'نمط الدقة والتركيز:' : 'Precision Mode:'}
+                  </span>
+                  <button 
+                    type="button" 
+                    className={`focus-btn ${focusPreset === 'standard' ? 'active' : ''}`}
+                    onClick={() => setFocusPreset('standard')}
+                    title={isArabic ? 'إجابة علمية شاملة متوازنة' : 'Balanced standard response'}
+                  >
+                    🌐 {isArabic ? 'شامل متوازن' : 'Balanced'}
+                  </button>
+                  <button 
+                    type="button" 
+                    className={`focus-btn ${focusPreset === 'focused' ? 'active' : ''}`}
+                    onClick={() => setFocusPreset('focused')}
+                    title={isArabic ? 'إجابة تنفيذية مركزة بالأرقام والنتائج المباشرة' : 'Executive direct takeaway'}
+                  >
+                    🎯 {isArabic ? 'إجابة مركزة' : 'Executive'}
+                  </button>
+                  <button 
+                    type="button" 
+                    className={`focus-btn ${focusPreset === 'benchmark' ? 'active' : ''}`}
+                    onClick={() => setFocusPreset('benchmark')}
+                    title={isArabic ? 'جدول مقارنة كمي رقمي للبارامترات والمدى المثالي' : 'Quantitative parameter table'}
+                  >
+                    📊 {isArabic ? 'جدول معايير' : 'Parameters'}
+                  </button>
+                  <button 
+                    type="button" 
+                    className={`focus-btn ${focusPreset === 'protocol' ? 'active' : ''}`}
+                    onClick={() => setFocusPreset('protocol')}
+                    title={isArabic ? 'بروتوكول معملي إجرائي SOP خطوة بخطوة بالتركيزات' : 'Step-by-step SOP'}
+                  >
+                    🔬 {isArabic ? 'بروتوكول SOP' : 'Protocol'}
+                  </button>
+                  <button 
+                    type="button" 
+                    className={`focus-btn ${focusPreset === 'qc' ? 'active' : ''}`}
+                    onClick={() => setFocusPreset('qc')}
+                    title={isArabic ? 'ضوابط ومحاذير الجودة ونقاط الفشل الحرجة' : 'Critical QC & failure modes'}
+                  >
+                    ⚠️ {isArabic ? 'محاذير وضوابط' : 'QC & Pitfalls'}
+                  </button>
                 </div>
 
                 {/* Input Bar */}
