@@ -52,9 +52,59 @@ export function ResearcherProfileModal({ isOpen, onClose, onAddPaper }: Research
 
   if (!isOpen || !user) return null;
 
+const DEMO_BENCHMARK_PAPERS = [
+  {
+    id: 999001,
+    title: 'Optimization of Biomass and Phycocyanin Production from Arthrospira platensis Using Low-Cost Zarrouk Medium',
+    titleArabic: 'تحسين إنتاجية الكتلة الحيوية والفيكوسيانين من طحلب السبيرولينا باستخدام بيئة زاروك الاقتصادية',
+    authors: 'Moghazy, R. M., & Abomohra, A. E.',
+    year: 2023,
+    category: 'Applied Phycology & Biotechnology',
+    journal: 'Egyptian Journal of Phycology',
+    volume: '24',
+    issue: '2',
+    pages: '115-132',
+    doi: '10.21608/egyjs.2023.284910',
+    algaeType: 'Arthrospira platensis (Spirulina)',
+    summary_ar: 'دراسة حركية لتحسين إنتاجية الصبغات المضادة للأكسدة والبروتين من طحلب السبيرولينا تحت ظروف الإجهاد الضوئي والملحي.',
+    ownerId: 'demo-user'
+  },
+  {
+    id: 999002,
+    title: 'Phycoremediation of Industrial Effluents and Heavy Metals Biosorption by Immobilized Microalgae Consortium',
+    titleArabic: 'المعالجة الحيوية لمياه الصرف الصناعي وامتزاز المعادن الثقيلة بواسطة اتحاد الطحالب الدقيقة المثبتة',
+    authors: 'Moghazy, R. M., El-Sheekh, M. M., & Ismail, G. A.',
+    year: 2022,
+    category: 'Wastewater Treatment & Bioremediation',
+    journal: 'Journal of Applied Phycology',
+    volume: '34',
+    issue: '4',
+    pages: '1890-1904',
+    doi: '10.1007/s10811-022-02741-x',
+    algaeType: 'Chlorella vulgaris & Scenedesmus obliquus',
+    summary_ar: 'تقييم كفاءة إزالة النيتروجين والفوسفور والكروم السداسي من مياه الصرف بنسبة إزالة تتجاوز 92% مع إعادة تدوير الكتلة الحيوية كوقود حيوي.',
+    ownerId: 'demo-user'
+  },
+  {
+    id: 999003,
+    title: 'Bio-fixation of Flue Gas CO2 and Biodiesel Synthesis Using High-Rate Algal Pond Photobioreactors',
+    titleArabic: 'التثبيت الحيوي لغاز ثاني أكسيد الكربون وإنتاج الديزل الحيوي باستخدام مفاعلات البرك الطحلبية عالية الكفاءة',
+    authors: 'Moghazy, R. M., & Shanab, S. M.',
+    year: 2021,
+    category: 'Carbon Capture & Bio-fixation',
+    journal: 'Algal Research',
+    volume: '58',
+    pages: '102389',
+    doi: '10.1016/j.algal.2021.102389',
+    algaeType: 'Chlorella sorokiniana',
+    summary_ar: 'تحديد معدل تثبيت الكربون اليومي وحساب رصيد شهادات الكربون المكافئة مع استخلاص الدهون المحايدة لصناعة وقود الديزل الحيوي.',
+    ownerId: 'demo-user'
+  }
+];
+
   // Filter papers for this researcher
   const userPapers = useMemo(() => {
-    return resources.filter((r) => {
+    const matched = resources.filter((r) => {
       if (r.ownerId === user.id) return true;
       if (user.name && r.authors && r.authors.toLowerCase().includes(user.name.toLowerCase())) return true;
       // For demo user, associate with top benchmark papers
@@ -67,6 +117,11 @@ export function ResearcherProfileModal({ isOpen, onClose, onAddPaper }: Research
       }
       return false;
     });
+
+    if (user.id === 'demo-user' && matched.length === 0) {
+      return DEMO_BENCHMARK_PAPERS;
+    }
+    return matched;
   }, [resources, user]);
 
   // Derived metrics
