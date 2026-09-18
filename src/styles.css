@@ -46,6 +46,51 @@ footer p { max-width: 900px; margin: .4rem 0; }
 .notice, .error { color: #a33b2e; background: #fff0ed; padding: .8rem; border-radius: 8px; }
 .paper-form { background: #fff; border-radius: 12px; padding: 1.5rem; }
 .paper-form textarea { min-height: 150px; }
+
+/* YouTube Link & Academic Social Styles */
+.youtube-header-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  text-decoration: none;
+  transition: all .2s ease;
+}
+.youtube-header-btn:hover {
+  background: #dc2626;
+  color: white;
+  border-color: #dc2626;
+  box-shadow: 0 4px 12px #dc262633;
+  transform: translateY(-1px);
+}
+[data-theme="dark"] .youtube-header-btn {
+  background: #450a0a;
+  color: #f87171;
+  border-color: #7f1d1d;
+}
+[data-theme="dark"] .youtube-header-btn:hover {
+  background: #ef4444;
+  color: white;
+  border-color: #ef4444;
+}
+.footer-youtube-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  color: #ff8b8b !important;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color .2s ease;
+}
+.footer-youtube-link:hover {
+  color: #ffffff !important;
+  text-decoration: underline;
+}
 /* ============================================================
    UPGRADED ALGAL RESEARCH AI ASSISTANT STYLES
    ============================================================ */

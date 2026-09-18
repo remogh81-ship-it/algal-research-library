@@ -1,5 +1,7 @@
 import { useI18n } from '../i18n';
-import { BookOpen, ExternalLink, ShieldCheck } from 'lucide-react';
+import { BookOpen, ExternalLink, ShieldCheck, Youtube } from 'lucide-react';
+
+const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@%D8%A7%D9%84%D8%AC%D9%85%D8%B9%D9%8A%D8%A9%D8%A7%D9%84%D9%85%D8%B5%D8%B1%D9%8A%D8%A9%D9%84%D9%84%D8%B7%D8%AD%D8%A7%D9%84%D8%A8';
 
 export function Footer() {
   const { t, language } = useI18n();
@@ -32,6 +34,11 @@ export function Footer() {
             <li>
               <a href="https://www.ekb.eg/" target="_blank" rel="noopener noreferrer">
                 <ExternalLink size={14} /> {t('footer.ekbLink')}
+              </a>
+            </li>
+            <li>
+              <a href={YOUTUBE_CHANNEL_URL} target="_blank" rel="noopener noreferrer" className="footer-youtube-link">
+                <Youtube size={15} color="#ef4444" /> {t('footer.youtubeLink')}
               </a>
             </li>
           </ul>

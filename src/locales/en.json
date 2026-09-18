@@ -58,11 +58,14 @@
     "Applied Phycology": "Applied Phycology"
   },
   "quickFilters": "Quick filters",
+  "youtube": "YouTube",
+  "youtubeChannel": "Official Society YouTube Channel",
   "footer": {
     "copyright": "© Egyptian Phycological Society. Prepared by Prof. Dr. Reda Mohamed Moghazy, Professor of Phycology, National Research Centre.",
     "academicResources": "Academic Resources",
     "journalLink": "The Egyptian Journal of Phycology (EKB)",
     "ekbLink": "Egyptian Knowledge Bank (EKB)",
+    "youtubeLink": "Egyptian Phycological Society YouTube Channel (Lectures & Seminars)",
     "officialBadge": "Official Research & Education Portal"
   },
   "main_title": "Integrated Algae Research Library",

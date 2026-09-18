@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { BookOpen, FilePlus2, LogIn, Moon, Plus, Sun, UserRound } from 'lucide-react';
+import { BookOpen, FilePlus2, LogIn, Moon, Plus, Sun, UserRound, Youtube } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { LanguageSwitcher } from './LanguageSwitcher';
+
+const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@%D8%A7%D9%84%D8%AC%D9%85%D8%B9%D9%8A%D8%A9%D8%A7%D9%84%D9%85%D8%B5%D8%B1%D9%8A%D8%A9%D9%84%D9%84%D8%B7%D8%AD%D8%A7%D9%84%D8%A8';
 
 type HeaderProps = {
   dark: boolean;
@@ -36,6 +38,16 @@ export function Header({ dark, onToggleDark, user, mineOnly, onToggleMine, onLog
       </div>
     </div>
     <nav className="nav-actions">
+      <a 
+        href={YOUTUBE_CHANNEL_URL} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="icon-button youtube-header-btn" 
+        title={t('youtubeChannel')} 
+        aria-label={t('youtubeChannel')}
+      >
+        <Youtube size={19} />
+      </a>
       <button className="icon-button" onClick={onToggleDark} aria-label="Toggle theme">{dark ? <Sun size={18} /> : <Moon size={18} />}</button>
       <LanguageSwitcher />
       {user ? <div className="account-menu">
