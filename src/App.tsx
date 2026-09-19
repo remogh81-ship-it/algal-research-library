@@ -20,6 +20,9 @@ import { BookmarksModal } from './components/BookmarksModal';
 import { AlgaeStrainsAtlasModal } from './components/AlgaeStrainsAtlasModal';
 import { GrowthMediaModal } from './components/GrowthMediaModal';
 import { PaperComparisonModal } from './components/PaperComparisonModal';
+import { SopDirectoryModal } from './components/SopDirectoryModal';
+import { ConferencesAgendaModal } from './components/ConferencesAgendaModal';
+import { CollaborationSystemModal } from './components/CollaborationSystemModal';
 import type { Resource } from './types/resource';
 
 export default function App() {
@@ -33,6 +36,9 @@ export default function App() {
   const [mediaModalOpen, setMediaModalOpen] = useState(false);
   const [initialMediumId, setInitialMediumId] = useState<string>('zarrouk');
   const [comparisonOpen, setComparisonOpen] = useState(false);
+  const [sopsOpen, setSopsOpen] = useState(false);
+  const [agendaOpen, setAgendaOpen] = useState(false);
+  const [collabOpen, setCollabOpen] = useState(false);
   const [comparedPaperIds, setComparedPaperIds] = useState<number[]>([]);
   const [quickViewResource, setQuickViewResource] = useState<Resource | null>(null);
   const [isExploring, setIsExploring] = useState(false);
