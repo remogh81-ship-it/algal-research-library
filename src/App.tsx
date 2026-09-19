@@ -270,5 +270,8 @@ export default function App() {
       onClearAll={() => setComparedPaperIds([])}
       onOpenQuickView={(paper) => setQuickViewResource(paper)}
     />
+    <SopDirectoryModal isOpen={sopsOpen} onClose={() => setSopsOpen(false)} />
+    <ConferencesAgendaModal isOpen={agendaOpen} onClose={() => setAgendaOpen(false)} />
+    <CollaborationSystemModal isOpen={collabOpen} onClose={() => setCollabOpen(false)} />
   </div>;
 }
