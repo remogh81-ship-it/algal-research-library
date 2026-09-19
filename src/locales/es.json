@@ -232,5 +232,16 @@
   "sourceJournal": "Revista científica y detalles",
   "publicationYear": "Año de publicación",
   "authorsLabel": "Autores",
-  "citationFormats": "Formatos de citas académicas"
+  "citationFormats": "Formatos de citas académicas",
+  "strainsAtlas": "Atlas de Cepas",
+  "strainsAtlasDesc": "Directorio de cepas, parámetros óptimos y bioproductos",
+  "mediaCalculator": "Calculadora de Medios",
+  "mediaCalculatorDesc": "Recetas de medios de cultivo y cálculo de sales",
+  "comparePapers": "Comparar Artículos",
+  "compare": "Comparar",
+  "compared": "Seleccionado",
+  "addCompare": "Añadir a comparación",
+  "removeCompare": "Quitar de comparación",
+  "comparisonTitle": "Matriz comparativa de investigaciones",
+  "maxCompareReached": "Puede comparar hasta 4 artículos simultáneamente"
 }

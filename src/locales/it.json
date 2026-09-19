@@ -61,5 +61,16 @@
   "sourceJournal": "Rivista scientifica e dettagli",
   "publicationYear": "Anno di pubblicazione",
   "authorsLabel": "Autori",
-  "citationFormats": "Formati di citazione accademica"
+  "citationFormats": "Formati di citazione accademica",
+  "strainsAtlas": "Atlante dei Ceppi",
+  "strainsAtlasDesc": "Directory dei ceppi, parametri ottimali e bioprodotti",
+  "mediaCalculator": "Calcolatore Terreni",
+  "mediaCalculatorDesc": "Formulazioni terreni di coltura e calcolo sali",
+  "comparePapers": "Confronta Articoli",
+  "compare": "Confronta",
+  "compared": "Selezionato",
+  "addCompare": "Aggiungi al confronto",
+  "removeCompare": "Rimuovi dal confronto",
+  "comparisonTitle": "Matrice di confronto delle ricerche",
+  "maxCompareReached": "È possibile confrontare fino a 4 ricerche"
 }

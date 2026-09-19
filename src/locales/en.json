@@ -260,5 +260,16 @@
   "sourceJournal": "Source Journal & Details",
   "publicationYear": "Publication Year",
   "authorsLabel": "Authors",
-  "citationFormats": "Academic Citation Formats"
+  "citationFormats": "Academic Citation Formats",
+  "strainsAtlas": "Strains Atlas",
+  "strainsAtlasDesc": "Directory of strains, optimal parameters & bioproducts",
+  "mediaCalculator": "Media Calculator",
+  "mediaCalculatorDesc": "Culture media recipes & salt preparation calculator",
+  "comparePapers": "Compare Papers",
+  "compare": "Compare",
+  "compared": "Compared",
+  "addCompare": "Add to Compare",
+  "removeCompare": "Remove from Compare",
+  "comparisonTitle": "Research Paper Comparison Matrix",
+  "maxCompareReached": "You can compare up to 4 papers simultaneously"
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Bookmark, BookOpen, FilePlus2, GraduationCap, LogIn, Mail, Moon, Plus, Sun, UserRound, Youtube } from 'lucide-react';
+import { Bookmark, BookOpen, Dna, FilePlus2, FlaskConical, GraduationCap, LogIn, Mail, Moon, Plus, Scale, Sun, UserRound, Youtube } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
@@ -19,9 +19,31 @@ type HeaderProps = {
   onOpenContact?: () => void;
   onOpenBookmarks?: () => void;
   bookmarksCount?: number;
+  onOpenStrainsAtlas?: () => void;
+  onOpenMediaCalculator?: () => void;
+  onOpenComparison?: () => void;
+  comparedCount?: number;
 };
 
-export function Header({ dark, onToggleDark, user, mineOnly, onToggleMine, onLogin, onLogout, onAddResearch, onLibrary, onOpenProfile, onOpenContact, onOpenBookmarks, bookmarksCount = 0 }: HeaderProps) {
+export function Header({ 
+  dark, 
+  onToggleDark, 
+  user, 
+  mineOnly, 
+  onToggleMine, 
+  onLogin, 
+  onLogout, 
+  onAddResearch, 
+  onLibrary, 
+  onOpenProfile, 
+  onOpenContact, 
+  onOpenBookmarks, 
+  bookmarksCount = 0,
+  onOpenStrainsAtlas,
+  onOpenMediaCalculator,
+  onOpenComparison,
+  comparedCount = 0
+}: HeaderProps) {
   const { t } = useI18n();
   const [logoFailed, setLogoFailed] = useState(false);
   const handleLogoError = () => {
@@ -74,6 +96,42 @@ export function Header({ dark, onToggleDark, user, mineOnly, onToggleMine, onLog
           <span className="header-bookmarks-text">{t('bookmarks') || 'المحفوظات'}</span>
           {typeof bookmarksCount === 'number' && bookmarksCount > 0 && (
             <span className="header-bookmarks-badge">{bookmarksCount}</span>
+          )}
+        </button>
+      )}
+      {onOpenStrainsAtlas && (
+        <button 
+          className="header-bookmarks-btn" 
+          onClick={onOpenStrainsAtlas} 
+          title={t('strainsAtlas') || 'أطلس السلالات'} 
+          aria-label={t('strainsAtlas') || 'أطلس السلالات'}
+        >
+          <Dna size={16} />
+          <span className="header-bookmarks-text">{t('strainsAtlas') || 'أطلس السلالات'}</span>
+        </button>
+      )}
+      {onOpenMediaCalculator && (
+        <button 
+          className="header-bookmarks-btn" 
+          onClick={onOpenMediaCalculator} 
+          title={t('mediaCalculator') || 'حاسبة البيئات'} 
+          aria-label={t('mediaCalculator') || 'حاسبة البيئات'}
+        >
+          <FlaskConical size={16} />
+          <span className="header-bookmarks-text">{t('mediaCalculator') || 'حاسبة البيئات'}</span>
+        </button>
+      )}
+      {onOpenComparison && (
+        <button 
+          className="header-bookmarks-btn" 
+          onClick={onOpenComparison} 
+          title={t('comparePapers') || 'مقارنة الأبحاث'} 
+          aria-label={t('comparePapers') || 'مقارنة الأبحاث'}
+        >
+          <Scale size={16} />
+          <span className="header-bookmarks-text">{t('comparePapers') || 'مقارنة'}</span>
+          {typeof comparedCount === 'number' && comparedCount > 0 && (
+            <span className="header-bookmarks-badge">{comparedCount}</span>
           )}
         </button>
       )}

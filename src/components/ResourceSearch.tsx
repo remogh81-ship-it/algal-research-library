@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowUpDown, Bookmark, BookOpen, ChevronDown, ChevronUp, Compass, Copy, Download, ExternalLink, Eye, FileText, Quote, Search } from 'lucide-react';
+import { ArrowUpDown, Bookmark, BookOpen, ChevronDown, ChevronUp, Compass, Copy, Download, ExternalLink, Eye, FileText, Quote, Scale, Search } from 'lucide-react';
 import { downloadRIS, formatAPA, formatBibTeX, formatMLA, formatRIS, useResources, type ResourceFilters, type SortOption } from '../hooks/useResources';
 import type { Resource } from '../types/resource';
 import { useI18n } from '../i18n';
@@ -10,12 +10,16 @@ function CitationButtons({
   resource, 
   onQuickView, 
   isBookmarked, 
-  onToggleBookmark 
+  onToggleBookmark,
+  isCompared,
+  onToggleCompare
 }: { 
   resource: Resource; 
   onQuickView?: (resource: Resource) => void; 
   isBookmarked?: boolean; 
   onToggleBookmark?: (id: number) => void; 
+  isCompared?: boolean;
+  onToggleCompare?: (resource: Resource) => void;
 }) {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
@@ -49,6 +53,17 @@ function CitationButtons({
       >
         <Bookmark size={15} fill={isBookmarked ? 'currentColor' : 'none'} /> 
         <span>{isBookmarked ? t('savedPapers') : t('savePaper')}</span>
+      </button>
+    )}
+    {onToggleCompare && (
+      <button 
+        type="button" 
+        className={`button-link compare-card-btn ${isCompared ? 'active' : ''}`} 
+        onClick={() => onToggleCompare(resource)}
+        title={isCompared ? (t('removeCompare') || 'إزالة من المقارنة') : (t('addCompare') || 'مقارنة')}
+      >
+        <Scale size={15} /> 
+        <span>{isCompared ? (t('compared') || 'تمت الإضافة') : (t('compare') || 'مقارنة')}</span>
       </button>
     )}
     {resource.doi && <a className="button-link" href={resource.doi.startsWith('http') ? resource.doi : `https://doi.org/${resource.doi}`} target="_blank" rel="noreferrer"><ExternalLink size={15} /> {t('doi')}</a>}
@@ -85,6 +100,8 @@ export function ResourceSearch({
   onQuickView,
   isBookmarked,
   onToggleBookmark,
+  isCompared,
+  onToggleCompare,
   isExploring = false,
   onStartExploring,
   onStopExploring,
@@ -97,6 +114,8 @@ export function ResourceSearch({
   onQuickView?: (resource: Resource) => void;
   isBookmarked?: (id: number) => boolean;
   onToggleBookmark?: (id: number) => void;
+  isCompared?: (id: number) => boolean;
+  onToggleCompare?: (resource: Resource) => void;
   isExploring?: boolean;
   onStartExploring?: () => void;
   onStopExploring?: () => void;
@@ -263,6 +282,8 @@ export function ResourceSearch({
             onQuickView={onQuickView}
             isBookmarked={isBookmarked?.(resource.id)}
             onToggleBookmark={onToggleBookmark}
+            isCompared={isCompared?.(resource.id)}
+            onToggleCompare={onToggleCompare}
           />
         </article>)}</div>
         {totalPages > 1 && <nav className="pagination" aria-label={t('page', { page, total: totalPages })}><button disabled={page === 1} onClick={() => setPage(page - 1)}>{t('previous')}</button><span>{t('page', { page, total: totalPages })}</span><button disabled={page === totalPages} onClick={() => setPage(page + 1)}>{t('next')}</button></nav>}

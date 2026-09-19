@@ -232,5 +232,16 @@
   "sourceJournal": "Revue scientifique & Détails",
   "publicationYear": "Année de publication",
   "authorsLabel": "Auteurs",
-  "citationFormats": "Formats de citation académique"
+  "citationFormats": "Formats de citation académique",
+  "strainsAtlas": "Atlas des Souches",
+  "strainsAtlasDesc": "Répertoire des souches, paramètres et bioproduits",
+  "mediaCalculator": "Calculateur de Milieux",
+  "mediaCalculatorDesc": "Recettes de milieux de culture et calcul des sels",
+  "comparePapers": "Comparer les Études",
+  "compare": "Comparer",
+  "compared": "Sélectionné",
+  "addCompare": "Ajouter au comparateur",
+  "removeCompare": "Retirer du comparateur",
+  "comparisonTitle": "Matrice de comparaison des publications",
+  "maxCompareReached": "Vous pouvez comparer jusqu’à 4 études simultanément"
 }

@@ -260,5 +260,16 @@
   "sourceJournal": "المجلة العلمية والبيانات",
   "publicationYear": "سنة النشر",
   "authorsLabel": "المؤلفون",
-  "citationFormats": "صيغ التوثيق والاقتباس الأكاديمي"
+  "citationFormats": "صيغ التوثيق والاقتباس الأكاديمي",
+  "strainsAtlas": "أطلس السلالات",
+  "strainsAtlasDesc": "دليل السلالات وخصائص النمو والمخرجات الحيوية",
+  "mediaCalculator": "حاسبة بيئات النمو",
+  "mediaCalculatorDesc": "تراكيب الأوساط القياسية وحاسبة تحضير الأملاح",
+  "comparePapers": "مقارنة الأبحاث",
+  "compare": "مقارنة",
+  "compared": "محدد للمقارنة",
+  "addCompare": "إضافة للمقارنة",
+  "removeCompare": "إزالة من المقارنة",
+  "comparisonTitle": "المقارنة التحليلية بين الأبحاث",
+  "maxCompareReached": "يمكنك مقارنة حتى 4 أبحاث كحد أقصى"
 }

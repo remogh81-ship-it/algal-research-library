@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { 
   X, Bookmark, ExternalLink, FileText, Copy, Download, 
-  BookOpen, Calendar, Users, Award, Check 
+  BookOpen, Calendar, Users, Award, Check, Scale 
 } from 'lucide-react';
 import type { Resource } from '../types/resource';
 import { useI18n } from '../i18n';
@@ -14,6 +14,8 @@ interface QuickViewDrawerProps {
   onClose: () => void;
   isBookmarked: boolean;
   onToggleBookmark: (id: number) => void;
+  isCompared?: boolean;
+  onToggleCompare?: (resource: Resource) => void;
 }
 
 export function QuickViewDrawer({
@@ -22,6 +24,8 @@ export function QuickViewDrawer({
   onClose,
   isBookmarked,
   onToggleBookmark,
+  isCompared,
+  onToggleCompare,
 }: QuickViewDrawerProps) {
   const { t, category, language } = useI18n();
   const [citationTab, setCitationTab] = useState<'APA' | 'MLA' | 'BibTeX' | 'RIS'>('APA');
@@ -153,6 +157,18 @@ export function QuickViewDrawer({
               <Bookmark size={16} fill={isBookmarked ? 'currentColor' : 'none'} />
               <span>{isBookmarked ? t('savedPapers') : t('savePaper')}</span>
             </button>
+
+            {onToggleCompare && (
+              <button
+                type="button"
+                className={`quickview-action-btn compare-action-btn ${isCompared ? 'active' : ''}`}
+                onClick={() => onToggleCompare(resource)}
+                title={isCompared ? (t('removeCompare') || 'إزالة من المقارنة') : (t('addCompare') || 'مقارنة')}
+              >
+                <Scale size={16} />
+                <span>{isCompared ? (t('compared') || 'تمت الإضافة') : (t('compare') || 'مقارنة')}</span>
+              </button>
+            )}
 
             {resource.doi && (
               <a

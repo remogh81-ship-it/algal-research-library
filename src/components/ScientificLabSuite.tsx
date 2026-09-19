@@ -10,7 +10,12 @@ import PigmentCalculator from './PigmentCalculator';
 
 type LabTab = 'growth' | 'biomass' | 'nutrient' | 'pollutant' | 'co2' | 'pigment';
 
-export function ScientificLabSuite() {
+interface ScientificLabSuiteProps {
+  onOpenStrainsAtlas?: () => void;
+  onOpenMediaCalculator?: () => void;
+}
+
+export function ScientificLabSuite({ onOpenStrainsAtlas, onOpenMediaCalculator }: ScientificLabSuiteProps = {}) {
   const { t, language } = useI18n();
   const isRtl = language === 'ar';
   const [activeTab, setActiveTab] = useState<LabTab>('growth');
@@ -33,6 +38,38 @@ export function ScientificLabSuite() {
         </div>
         <h2>{t('labSuite.title')}</h2>
         <p>{t('labSuite.description')}</p>
+
+        {/* Phase 2 Major Reference Launchers */}
+        {(onOpenStrainsAtlas || onOpenMediaCalculator) && (
+          <div className="lab-phase2-launchers">
+            {onOpenStrainsAtlas && (
+              <button 
+                type="button" 
+                className="lab-launcher-card"
+                onClick={onOpenStrainsAtlas}
+              >
+                <div className="lab-launcher-icon">🧬</div>
+                <div className="lab-launcher-info">
+                  <strong>{t('strainsAtlas')}</strong>
+                  <span>{t('strainsAtlasDesc')}</span>
+                </div>
+              </button>
+            )}
+            {onOpenMediaCalculator && (
+              <button 
+                type="button" 
+                className="lab-launcher-card"
+                onClick={onOpenMediaCalculator}
+              >
+                <div className="lab-launcher-icon">🧪</div>
+                <div className="lab-launcher-info">
+                  <strong>{t('mediaCalculator')}</strong>
+                  <span>{t('mediaCalculatorDesc')}</span>
+                </div>
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Nav Tabs */}

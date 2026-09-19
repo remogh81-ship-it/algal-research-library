@@ -90,5 +90,16 @@
   "sourceJournal": "学术期刊与详情",
   "publicationYear": "发表年份",
   "authorsLabel": "作者",
-  "citationFormats": "学术引用格式"
+  "citationFormats": "学术引用格式",
+  "strainsAtlas": "藻种图谱",
+  "strainsAtlasDesc": "微藻菌株目录、最佳生长条件及生物产物",
+  "mediaCalculator": "培养基计算器",
+  "mediaCalculatorDesc": "标准培养基配方与盐分配置计算工具",
+  "comparePapers": "论文对比",
+  "compare": "对比",
+  "compared": "已选择",
+  "addCompare": "加入对比",
+  "removeCompare": "移除对比",
+  "comparisonTitle": "学术论文多维度对比矩阵",
+  "maxCompareReached": "最多可同时对比4篇文献"
 }

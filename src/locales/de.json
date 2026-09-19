@@ -90,5 +90,16 @@
   "sourceJournal": "Fachzeitschrift & Details",
   "publicationYear": "Erscheinungsjahr",
   "authorsLabel": "Autoren",
-  "citationFormats": "Wissenschaftliche Zitierformate"
+  "citationFormats": "Wissenschaftliche Zitierformate",
+  "strainsAtlas": "Stamm-Atlas",
+  "strainsAtlasDesc": "Verzeichnis der Algenstämme und Wachstumsbedingungen",
+  "mediaCalculator": "Nährmedien-Rechner",
+  "mediaCalculatorDesc": "Standardmedien-Rezepturen und Salzrechner",
+  "comparePapers": "Studien vergleichen",
+  "compare": "Vergleichen",
+  "compared": "Ausgewählt",
+  "addCompare": "Zum Vergleich hinzufügen",
+  "removeCompare": "Aus Vergleich entfernen",
+  "comparisonTitle": "Forschungsarbeiten-Vergleichsmatrix",
+  "maxCompareReached": "Maximal 4 Studien gleichzeitig vergleichbar"
 }
