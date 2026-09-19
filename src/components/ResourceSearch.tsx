@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowUpDown, Bookmark, ChevronDown, Copy, Download, ExternalLink, Eye, FileText, Quote, Search } from 'lucide-react';
+import { ArrowUpDown, Bookmark, BookOpen, ChevronDown, ChevronUp, Compass, Copy, Download, ExternalLink, Eye, FileText, Quote, Search } from 'lucide-react';
 import { downloadRIS, formatAPA, formatBibTeX, formatMLA, formatRIS, useResources, type ResourceFilters, type SortOption } from '../hooks/useResources';
 import type { Resource } from '../types/resource';
 import { useI18n } from '../i18n';
@@ -85,6 +85,9 @@ export function ResourceSearch({
   onQuickView,
   isBookmarked,
   onToggleBookmark,
+  isExploring = false,
+  onStartExploring,
+  onStopExploring,
 }: {
   mineOnly?: boolean;
   selectedPaperIds?: number[];
@@ -94,6 +97,9 @@ export function ResourceSearch({
   onQuickView?: (resource: Resource) => void;
   isBookmarked?: (id: number) => boolean;
   onToggleBookmark?: (id: number) => void;
+  isExploring?: boolean;
+  onStartExploring?: () => void;
+  onStopExploring?: () => void;
 }) {
   const { t, category, language } = useI18n();
   const { user } = useAuth();
@@ -119,9 +125,19 @@ export function ResourceSearch({
     }, 300);
     return () => window.clearTimeout(timer);
   }, [searchInput, setSearch, onSearchQueryChange]);
-  const updateFilter = (key: keyof ResourceFilters, value: string) => setFilters({ ...filters, [key]: value });
 
-  return <section className="resource-search" aria-label={t('searchLabel')}>
+  useEffect(() => {
+    if (searchInput.trim()) {
+      onStartExploring?.();
+    }
+  }, [searchInput, onStartExploring]);
+
+  const updateFilter = (key: keyof ResourceFilters, value: string) => {
+    if (value) onStartExploring?.();
+    setFilters({ ...filters, [key]: value });
+  };
+
+  return <section className="resource-search" id="research-discovery" aria-label={t('searchLabel')}>
     <div className="resource-search-header"><div><span className="eyebrow">RESEARCH DISCOVERY</span><h1>{mineOnly ? 'My submissions' : t('explore')}</h1><p>{t('indexed', { count: scopedResources.length.toLocaleString(language) })}</p></div><Search size={27} /></div>
     
     {/* Primary Controls: Search + Category + Year + Sort */}
@@ -182,31 +198,75 @@ export function ResourceSearch({
       </div>
     </div>}
 
-    {isLoading && <p className="loading-message">{t('loading', { phase: progress?.phase ?? 'cache' })}</p>}
-    {error && <p className="error">{error}</p>}
-    {!isLoading && !error && scopedResources.length === 0 && <p className="loading-message">{t('noResults')}</p>}
-    <div className="resource-grid">{visibleResources.filter((resource) => !mineOnly || resource.ownerId === user?.id).map((resource) => <article className="resource-card" key={resource.id}>
-      {onTogglePaper && <label><input type="checkbox" checked={selectedPaperIds.includes(resource.id)} onChange={() => onTogglePaper(resource.id)} /> Select for AI summary</label>}
-      <h2 
-        className="resource-card-title" 
-        onClick={() => onQuickView?.(resource)} 
-        title={onQuickView ? t('quickView') : undefined}
-        style={{ cursor: onQuickView ? 'pointer' : 'default' }}
-      >
-        {resource.title || resource.titleArabic} {language !== 'en' && language !== 'ar' && resource.title && <small className="fallback-indicator">({t('fallback')})</small>}
-      </h2>
-      {resource.titleArabic && resource.title !== resource.titleArabic && <p className="resource-arabic" lang="ar" dir="rtl">{resource.titleArabic}</p>}
-      <p className="resource-meta">{resource.authors || t('unknownAuthors')} · {resource.year || 'n.d.'} · {resource.journal || t('unknownJournal')}</p>
-      {resource.algaeType && <span className="algae-type-badge">{resource.algaeType}</span>}
-      <p className="resource-category">{category(resource.category)}</p>
-      <p className="resource-summary">{getLocalizedSummary(resource, language)}</p>
-      <CitationButtons 
-        resource={resource} 
-        onQuickView={onQuickView}
-        isBookmarked={isBookmarked?.(resource.id)}
-        onToggleBookmark={onToggleBookmark}
-      />
-    </article>)}</div>
-    {totalPages > 1 && <nav className="pagination" aria-label={t('page', { page, total: totalPages })}><button disabled={page === 1} onClick={() => setPage(page - 1)}>{t('previous')}</button><span>{t('page', { page, total: totalPages })}</span><button disabled={page === totalPages} onClick={() => setPage(page + 1)}>{t('next')}</button></nav>}
+    {!isExploring ? (
+      <div className="explore-placeholder-card">
+        <div className="explore-placeholder-icon">
+          <BookOpen size={44} />
+        </div>
+        <h2>{language === 'ar' ? 'قاعدة بيانات أبحاث الطحالب (أكثر من 31,000 دراسة مفهرسة)' : 'Algae Research Database (31,000+ Indexed Studies)'}</h2>
+        <p>
+          {language === 'ar' 
+            ? 'اضغط على زر "ابدأ الاستكشاف" أدناه لعرض وتصفح قائمة الأبحاث العلمية، أو ابحث مباشرة في شريط البحث والفلاتر أعلاه.'
+            : 'Click "Start Exploring" below to browse the research papers, or search directly using the filters above.'}
+        </p>
+        <button 
+          type="button" 
+          className="primary-action explore-start-btn" 
+          onClick={onStartExploring}
+        >
+          <Compass size={18} />
+          <span>{t('hero.cta')}</span>
+        </button>
+      </div>
+    ) : (
+      <>
+        <div className="explore-active-bar">
+          <div className="explore-status-info">
+            <span className="explore-indicator-dot" />
+            <span className="explore-status-text">
+              {language === 'ar' ? '🔍 جاري استعراض وتصفح الأبحاث العلمية:' : '🔍 Browsing Research Database:'}
+            </span>
+          </div>
+          {onStopExploring && (
+            <button 
+              type="button" 
+              className="collapse-explore-btn" 
+              onClick={onStopExploring}
+              title={language === 'ar' ? 'إخفاء الأبحاث' : 'Hide papers'}
+            >
+              <ChevronUp size={16} />
+              <span>{language === 'ar' ? 'إنهاء / إخفاء الأبحاث' : 'Hide Research Papers'}</span>
+            </button>
+          )}
+        </div>
+
+        {isLoading && <p className="loading-message">{t('loading', { phase: progress?.phase ?? 'cache' })}</p>}
+        {error && <p className="error">{error}</p>}
+        {!isLoading && !error && scopedResources.length === 0 && <p className="loading-message">{t('noResults')}</p>}
+        <div className="resource-grid">{visibleResources.filter((resource) => !mineOnly || resource.ownerId === user?.id).map((resource) => <article className="resource-card" key={resource.id}>
+          {onTogglePaper && <label><input type="checkbox" checked={selectedPaperIds.includes(resource.id)} onChange={() => onTogglePaper(resource.id)} /> Select for AI summary</label>}
+          <h2 
+            className="resource-card-title" 
+            onClick={() => onQuickView?.(resource)} 
+            title={onQuickView ? t('quickView') : undefined}
+            style={{ cursor: onQuickView ? 'pointer' : 'default' }}
+          >
+            {resource.title || resource.titleArabic} {language !== 'en' && language !== 'ar' && resource.title && <small className="fallback-indicator">({t('fallback')})</small>}
+          </h2>
+          {resource.titleArabic && resource.title !== resource.titleArabic && <p className="resource-arabic" lang="ar" dir="rtl">{resource.titleArabic}</p>}
+          <p className="resource-meta">{resource.authors || t('unknownAuthors')} · {resource.year || 'n.d.'} · {resource.journal || t('unknownJournal')}</p>
+          {resource.algaeType && <span className="algae-type-badge">{resource.algaeType}</span>}
+          <p className="resource-category">{category(resource.category)}</p>
+          <p className="resource-summary">{getLocalizedSummary(resource, language)}</p>
+          <CitationButtons 
+            resource={resource} 
+            onQuickView={onQuickView}
+            isBookmarked={isBookmarked?.(resource.id)}
+            onToggleBookmark={onToggleBookmark}
+          />
+        </article>)}</div>
+        {totalPages > 1 && <nav className="pagination" aria-label={t('page', { page, total: totalPages })}><button disabled={page === 1} onClick={() => setPage(page - 1)}>{t('previous')}</button><span>{t('page', { page, total: totalPages })}</span><button disabled={page === totalPages} onClick={() => setPage(page + 1)}>{t('next')}</button></nav>}
+      </>
+    )}
   </section>;
 }

@@ -27,6 +27,7 @@ export default function App() {
   const [contactOpen, setContactOpen] = useState(false);
   const [bookmarksOpen, setBookmarksOpen] = useState(false);
   const [quickViewResource, setQuickViewResource] = useState<Resource | null>(null);
+  const [isExploring, setIsExploring] = useState(false);
   const [mineOnly, setMineOnly] = useState(false);
   const [dark, setDark] = useState(() => localStorage.getItem('library-theme') === 'dark');
   const [selectedPaperIds, setSelectedPaperIds] = useState<number[]>([]);
@@ -36,6 +37,13 @@ export default function App() {
   const { resources } = useResources();
   const { bookmarks, bookmarksCount, toggleBookmark, isBookmarked, clearBookmarks } = useBookmarks();
   const totalCategories = resources.length > 0 ? new Set(resources.map((resource) => resource.category || 'General')).size : 5;
+
+  const handleStartExploring = () => {
+    setIsExploring(true);
+    setTimeout(() => {
+      document.getElementById('research-discovery')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  };
 
   useEffect(() => {
     document.title = `${t('siteTitle')} | ${t('tagline')}`;
@@ -48,7 +56,7 @@ export default function App() {
   if (submit) return <><Header dark={dark} onToggleDark={() => setDark(!dark)} user={user} mineOnly={mineOnly} onToggleMine={() => setMineOnly(!mineOnly)} onLogin={() => setAuthOpen(true)} onLogout={logout} onAddResearch={() => setSubmissionOpen(true)} onLibrary={() => setSubmit(false)} onOpenProfile={() => setProfileOpen(true)} onOpenContact={() => setContactOpen(true)} onOpenBookmarks={() => setBookmarksOpen(true)} bookmarksCount={bookmarksCount} /><button className="library-return" onClick={() => setSubmit(false)}>{t('library')}</button><SubmitResearch /><Footer onOpenContact={() => setContactOpen(true)} />{contactOpen && <ContactModal isOpen={contactOpen} onClose={() => setContactOpen(false)} />}</>;
   return <div>
     <Header dark={dark} onToggleDark={() => setDark(!dark)} user={user} mineOnly={mineOnly} onToggleMine={() => setMineOnly(!mineOnly)} onLogin={() => setAuthOpen(true)} onLogout={logout} onAddResearch={() => user ? setSubmissionOpen(true) : setAuthOpen(true)} onLibrary={() => setSubmit(false)} onOpenProfile={() => setProfileOpen(true)} onOpenContact={() => setContactOpen(true)} onOpenBookmarks={() => setBookmarksOpen(true)} bookmarksCount={bookmarksCount} />
-    <section className="portal-hero"><div className="hero-content"><span className="eyebrow">{t('hero.motto')}</span><h1 className="hero-heading">{t('hero.heading')}</h1><p>{t('hero.description')}</p><button className="primary-action" onClick={() => document.querySelector('.resource-query input')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>{t('hero.cta')} <Plus size={16} /></button></div><div className="hero-visual"><div className="hero-image-card"><img src="/assets/hero-photobioreactor.jpg" alt="Futuristic photobioreactor research laboratory for microalgae biotechnology" /><span className="visual-badge">Microalgae research</span></div><div className="hero-image-card hero-image-card--secondary"><img src="/assets/microscope-chlorella.jpg" alt="Fluorescence microscopy of microalgae cells" /><span className="visual-badge">Bioenergy lab</span></div></div><div className="hero-stat"><strong>{resources.length > 0 ? resources.length.toLocaleString(language) : '30,000+'}</strong><span>{t('hero.resources_label')}</span><strong>{totalCategories}</strong><span>{t('hero.categories_label')}</span></div></section>
+    <section className="portal-hero"><div className="hero-content"><span className="eyebrow">{t('hero.motto')}</span><h1 className="hero-heading">{t('hero.heading')}</h1><p>{t('hero.description')}</p><button className="primary-action" onClick={handleStartExploring}>{t('hero.cta')} <Plus size={16} /></button></div><div className="hero-visual"><div className="hero-image-card"><img src="/assets/hero-photobioreactor.jpg" alt="Futuristic photobioreactor research laboratory for microalgae biotechnology" /><span className="visual-badge">Microalgae research</span></div><div className="hero-image-card hero-image-card--secondary"><img src="/assets/microscope-chlorella.jpg" alt="Fluorescence microscopy of microalgae cells" /><span className="visual-badge">Bioenergy lab</span></div></div><div className="hero-stat"><strong>{resources.length > 0 ? resources.length.toLocaleString(language) : '30,000+'}</strong><span>{t('hero.resources_label')}</span><strong>{totalCategories}</strong><span>{t('hero.categories_label')}</span></div></section>
     <div className="quick-filters">
       <span>{t('quickFilters')}</span>
       {[
@@ -66,8 +74,11 @@ export default function App() {
           className={searchQuery === filter ? 'active' : ''}
           onClick={() => {
             setMineOnly(false);
+            setIsExploring(true);
             setSearchQuery(filter);
-            document.querySelector('.resource-query input')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => {
+              document.getElementById('research-discovery')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 50);
           }}
         >
           {t(`categories.${filter}`) || filter}
@@ -87,6 +98,9 @@ export default function App() {
         onQuickView={(res) => setQuickViewResource(res)}
         isBookmarked={isBookmarked}
         onToggleBookmark={toggleBookmark}
+        isExploring={isExploring}
+        onStartExploring={() => setIsExploring(true)}
+        onStopExploring={() => setIsExploring(false)}
       />
       <ScientificLabSuite />
       <JournalPromotionSection />
