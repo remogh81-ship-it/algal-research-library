@@ -39,41 +39,11 @@ export function ScientificLabSuite({ onOpenStrainsAtlas, onOpenMediaCalculator }
         <h2>{t('labSuite.title')}</h2>
         <p>{t('labSuite.description')}</p>
 
-        {/* Phase 2 Major Reference Launchers */}
-        {(onOpenStrainsAtlas || onOpenMediaCalculator) && (
-          <div className="lab-phase2-launchers">
-            {onOpenStrainsAtlas && (
-              <button 
-                type="button" 
-                className="lab-launcher-card"
-                onClick={onOpenStrainsAtlas}
-              >
-                <div className="lab-launcher-icon">🧬</div>
-                <div className="lab-launcher-info">
-                  <strong>{t('strainsAtlas')}</strong>
-                  <span>{t('strainsAtlasDesc')}</span>
-                </div>
-              </button>
-            )}
-            {onOpenMediaCalculator && (
-              <button 
-                type="button" 
-                className="lab-launcher-card"
-                onClick={onOpenMediaCalculator}
-              >
-                <div className="lab-launcher-icon">🧪</div>
-                <div className="lab-launcher-info">
-                  <strong>{t('mediaCalculator')}</strong>
-                  <span>{t('mediaCalculatorDesc')}</span>
-                </div>
-              </button>
-            )}
-          </div>
-        )}
+
       </div>
 
       {/* Nav Tabs */}
-      <nav className="lab-suite-tabs" role="tablist">
+      <nav style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '2rem' }} role="tablist">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -82,11 +52,13 @@ export function ScientificLabSuite({ onOpenStrainsAtlas, onOpenMediaCalculator }
               key={tab.id}
               role="tab"
               aria-selected={isActive}
-              className={`lab-tab-btn ${isActive ? 'active' : ''}`}
+              className={`phase2-feature-btn ${isActive ? 'active-lab-tab' : ''}`}
               onClick={() => setActiveTab(tab.id)}
             >
-              <Icon size={16} />
-              <span>{t(tab.labelKey)}</span>
+              <span className="phase2-btn-icon"><Icon size={24} color={isActive ? '#0d7c78' : 'currentColor'} /></span>
+              <div className="phase2-btn-text">
+                <strong style={{ fontSize: '0.95rem' }}>{t(tab.labelKey)}</strong>
+              </div>
             </button>
           );
         })}

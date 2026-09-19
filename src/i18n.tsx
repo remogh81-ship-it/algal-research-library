@@ -21,7 +21,7 @@ function readPath(source: Translation, key: string): unknown {
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
     const saved = localStorage.getItem('library-language');
-    return saved && saved in translations ? saved as Language : 'en';
+    return saved && saved in translations ? saved as Language : 'ar';
   });
   const setLanguage = (next: Language) => { setLanguageState(next); localStorage.setItem('library-language', next); };
   useEffect(() => {
