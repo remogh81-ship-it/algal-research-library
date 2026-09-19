@@ -44,7 +44,7 @@ export function Header({
   onOpenComparison,
   comparedCount = 0
 }: HeaderProps) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const [logoFailed, setLogoFailed] = useState(false);
   const handleLogoError = () => {
     console.warn('Developer: Upload the society logo to public/eps-logo.png');
@@ -52,15 +52,18 @@ export function Header({
   };
   return <header className="topbar">
     <div className="brand">
-      {/* Developer: Upload the society logo to public/eps-logo.png */}
-      {logoFailed ? <span className="society-logo society-logo-fallback" role="img" aria-label="Egyptian Phycological Society">EPS</span> : <img className="society-logo" src="/eps-logo.png" alt="Egyptian Phycological Society" onError={handleLogoError} />}
+      <div className="society-logo-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+        <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--brand-text, #047857)', opacity: 0.8 }}>
+          {language === 'ar' ? '(تحت رعاية)' : '(Under Patronage of)'}
+        </span>
+        {logoFailed ? <span className="society-logo society-logo-fallback" role="img" aria-label="Egyptian Phycological Society">EPS</span> : <img className="society-logo" src="/eps-logo.png" alt="Egyptian Phycological Society" onError={handleLogoError} />}
+      </div>
       <span className="brand-mark"><BookOpen size={23} /></span>
       <div className="brand-copy">
         <div className="brand-title-row">
           <strong>{t('main_title')}</strong>
           <span className="society-patronage-badge">{t('society_title')}</span>
         </div>
-        <span className="prepared-by">{t('prepared_by')}</span>
       </div>
     </div>
     <nav className="nav-actions">
