@@ -100,7 +100,11 @@ export function JournalPromotionSection() {
             <div className="academic-credit-box">
               <Sparkles size={16} className="credit-sparkle" />
               <div>
-                <strong>{t('prepared_by')}</strong>
+                <strong>
+                  {language === 'ar' 
+                    ? 'رئيس تحرير المجلة: أ.د. مصطفى الشيخ، أستاذ الطحالب بجامعة طنطا' 
+                    : 'Editor-in-Chief: Prof. Dr. Mostafa El-Sheekh, Professor of Phycology, Tanta University'}
+                </strong>
               </div>
             </div>
           </div>

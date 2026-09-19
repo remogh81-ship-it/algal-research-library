@@ -271,5 +271,11 @@
   "addCompare": "Add to Compare",
   "removeCompare": "Remove from Compare",
   "comparisonTitle": "Research Paper Comparison Matrix",
-  "maxCompareReached": "You can compare up to 4 papers simultaneously"
+  "maxCompareReached": "You can compare up to 4 papers simultaneously",
+  "sopsDir": "Lab Protocols",
+  "sopsDirDesc": "Standard Operating Protocols Directory (SOPs)",
+  "agenda": "Grants & Agenda",
+  "agendaDesc": "Conferences & International Research Grants",
+  "collab": "Collaboration",
+  "collabDesc": "Collaboration Request & Strain Exchange System"
 }

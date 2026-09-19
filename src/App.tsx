@@ -135,6 +135,28 @@ export default function App() {
           <span className="phase2-count-badge">{comparedPaperIds.length}</span>
         )}
       </button>
+      <button 
+        type="button" 
+        className="phase2-feature-btn" 
+        onClick={() => setSopsOpen(true)}
+      >
+        <span className="phase2-btn-icon">📋</span>
+        <div className="phase2-btn-text">
+          <strong>{language === 'ar' ? 'بروتوكولات المعامل' : 'Lab Protocols'}</strong>
+          <small>{language === 'ar' ? 'دليل البروتوكولات المعملية القياسية' : 'Standard Operating Protocols Directory'}</small>
+        </div>
+      </button>
+      <button 
+        type="button" 
+        className="phase2-feature-btn" 
+        onClick={() => setCollabOpen(true)}
+      >
+        <span className="phase2-btn-icon">🤝</span>
+        <div className="phase2-btn-text">
+          <strong>{language === 'ar' ? 'نظام التعاون' : 'Collaboration'}</strong>
+          <small>{language === 'ar' ? 'نظام طلب التعاون وتبادل السلالات' : 'Collaboration Request & Strain Exchange'}</small>
+        </div>
+      </button>
     </div>
 
     <div className="quick-filters">
