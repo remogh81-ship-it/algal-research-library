@@ -1,7 +1,9 @@
 :root { font-family: "Cairo", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #17324d; background: #f5f8fa; line-height: 1.6; }
 [data-theme="dark"] { color: #e5eef3; background: #101c26; }
 * { box-sizing: border-box; }
-body { margin: 0; background: inherit; }
+body { margin: 0; background-color: inherit; background-image: url('/algae-watermark.jpg'); background-attachment: fixed; background-size: cover; background-position: center; background-blend-mode: overlay; }
+#root { background-color: rgba(245, 248, 250, 0.85); min-height: 100vh; }
+[data-theme="dark"] #root { background-color: rgba(16, 28, 38, 0.90); }
 button, input, select, textarea { font: inherit; }
 button { cursor: pointer; border: 0; border-radius: 8px; padding: .55rem .9rem; background: #0d7c78; color: white; display: inline-flex; gap: .4rem; align-items: center; justify-content: center; transition: transform .2s, box-shadow .2s, background .2s; }
 button:hover { transform: translateY(-1px); box-shadow: 0 6px 16px #0d7c7830; }

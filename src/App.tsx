@@ -23,6 +23,8 @@ import { PaperComparisonModal } from './components/PaperComparisonModal';
 import { SopDirectoryModal } from './components/SopDirectoryModal';
 import { ConferencesAgendaModal } from './components/ConferencesAgendaModal';
 import { CollaborationSystemModal } from './components/CollaborationSystemModal';
+import { AlgaeTaxonomyModal } from './components/AlgaeTaxonomyModal';
+import { GlobalSearchModal } from './components/GlobalSearchModal';
 import type { Resource } from './types/resource';
 
 export default function App() {
@@ -39,6 +41,8 @@ export default function App() {
   const [sopsOpen, setSopsOpen] = useState(false);
   const [agendaOpen, setAgendaOpen] = useState(false);
   const [collabOpen, setCollabOpen] = useState(false);
+  const [taxonomyOpen, setTaxonomyOpen] = useState(false);
+  const [globalSearchOpen, setGlobalSearchOpen] = useState(false);
   const [comparedPaperIds, setComparedPaperIds] = useState<number[]>([]);
   const [quickViewResource, setQuickViewResource] = useState<Resource | null>(null);
   const [isExploring, setIsExploring] = useState(false);
@@ -163,6 +167,20 @@ export default function App() {
           <small>{language === 'ar' ? 'نظام طلب التعاون وتبادل السلالات' : 'Collaboration Request & Strain Exchange'}</small>
         </div>
       </button>
+      <button type="button" className="phase2-feature-btn" onClick={() => setTaxonomyOpen(true)} style={{ background: 'linear-gradient(135deg, #166534, #15803d)', color: 'white' }}>
+        <span className="phase2-btn-icon">🧬</span>
+        <div className="phase2-btn-text">
+          <strong>{language === 'ar' ? 'دليل تصنيف الطحالب' : 'Taxonomy Directory'}</strong>
+          <small>{language === 'ar' ? 'المرجع التصنيفي الشامل' : 'Comprehensive taxonomic reference'}</small>
+        </div>
+      </button>
+      <button type="button" className="phase2-feature-btn" onClick={() => setGlobalSearchOpen(true)} style={{ background: 'linear-gradient(135deg, #a16207, #ca8a04)', color: 'white' }}>
+        <span className="phase2-btn-icon">🌍</span>
+        <div className="phase2-btn-text">
+          <strong>{language === 'ar' ? 'البحث العلمي المفتوح' : 'Global Search Engine'}</strong>
+          <small>{language === 'ar' ? 'بحث في قواعد البيانات العالمية' : 'Search in global scientific databases'}</small>
+        </div>
+      </button>
     </div>
 
     <div className="quick-filters">
@@ -279,5 +297,7 @@ export default function App() {
     <SopDirectoryModal isOpen={sopsOpen} onClose={() => setSopsOpen(false)} />
     <ConferencesAgendaModal isOpen={agendaOpen} onClose={() => setAgendaOpen(false)} />
     <CollaborationSystemModal isOpen={collabOpen} onClose={() => setCollabOpen(false)} />
+    <AlgaeTaxonomyModal isOpen={taxonomyOpen} onClose={() => setTaxonomyOpen(false)} />
+    <GlobalSearchModal isOpen={globalSearchOpen} onClose={() => setGlobalSearchOpen(false)} />
   </div>;
 }

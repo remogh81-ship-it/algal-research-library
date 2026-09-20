@@ -1,15 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useI18n } from '../i18n';
 import { COLLAB_DATA } from '../data/collaborationData';
 
-// Use a module-level variable to persist additions across modal opens/closes without a backend.
-let runtimeCollabData = [...COLLAB_DATA];
+const LOCAL_STORAGE_KEY = 'algae_collab_data';
+
+// Function to initialize data from localStorage or fallback to default
+const getInitialData = () => {
+  try {
+    const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch (e) {
+    console.error("Failed to parse collab data", e);
+  }
+  return [...COLLAB_DATA];
+};
 
 export const CollaborationSystemModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
   const { language } = useI18n();
   const lang = language === 'ar' ? 'ar' : 'en';
   const [activeTab, setActiveTab] = useState<'marketplace' | 'register-strain' | 'register-collab'>('marketplace');
-  const [items, setItems] = useState(runtimeCollabData);
+  const [items, setItems] = useState(getInitialData);
+
+  // Sync to localStorage whenever items change
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(items));
+  }, [items]);
 
   // Form states for strain
   const [strainName, setStrainName] = useState('');
@@ -32,8 +49,8 @@ export const CollaborationSystemModal: React.FC<{ isOpen: boolean; onClose: () =
       desc: { en: strainFeatures, ar: strainFeatures },
       contact: strainEmail
     };
-    runtimeCollabData = [newItem, ...runtimeCollabData];
-    setItems(runtimeCollabData);
+    
+    setItems((prev: any[]) => [newItem, ...prev]);
     alert(lang === 'ar' ? 'تم تسجيل السلالة بنجاح!' : 'Strain registered successfully!');
     setActiveTab('marketplace');
     setStrainName(''); setStrainFeatures(''); setStrainEmail('');
@@ -48,8 +65,8 @@ export const CollaborationSystemModal: React.FC<{ isOpen: boolean; onClose: () =
       desc: { en: collabDesc, ar: collabDesc },
       contact: collabEmail
     };
-    runtimeCollabData = [newItem, ...runtimeCollabData];
-    setItems(runtimeCollabData);
+    
+    setItems((prev: any[]) => [newItem, ...prev]);
     alert(lang === 'ar' ? 'تم تسجيل طلب التعاون بنجاح!' : 'Collaboration request registered successfully!');
     setActiveTab('marketplace');
     setCollabTitle(''); setCollabDesc(''); setCollabEmail('');
@@ -93,7 +110,7 @@ export const CollaborationSystemModal: React.FC<{ isOpen: boolean; onClose: () =
         <div className="p2-modal-body" style={{ padding: '2rem' }}>
           {activeTab === 'marketplace' && (
             <div style={{ display: 'grid', gap: '1.5rem' }}>
-              {items.map(item => (
+              {items.map((item: any) => (
                 <div key={item.id} style={{ border: '1px solid #cbd5e1', padding: '1.5rem', borderRadius: '12px', background: '#f8fafc', position: 'relative' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <h3 style={{ marginTop: 0, color: '#1e293b' }}>{item.title[lang]}</h3>
