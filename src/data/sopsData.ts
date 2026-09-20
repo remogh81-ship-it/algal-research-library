@@ -1,61 +1,63 @@
 export const SOPS_DATA = [
   {
-    id: 'lipid-extraction',
-    title: { en: 'Total Lipid Extraction (Modified Bligh & Dyer)', ar: 'استخلاص الدهون الكلية (طريقة بليغ وداير المعدلة)' },
-    category: { en: 'Lipids & Biofuels', ar: 'الدهون والوقود الحيوي' },
-    difficulty: { en: 'Intermediate', ar: 'متوسط' },
-    duration: { en: '4 Hours', ar: '4 ساعات' },
-    safety: { en: 'BSL-1, Fume Hood Required', ar: 'مستوى أمان حيوي 1، يلزم غطاء دخان' },
-    description: { en: 'Standard gravimetric protocol for extracting and quantifying total neutral and polar lipids from microalgae biomass using Chloroform:Methanol.', ar: 'بروتوكول قياسي لاستخلاص وكمية الدهون من الكتلة الحيوية الدقيقة للطحالب باستخدام المذيبات.' },
-    url: 'https://doi.org/10.1139/y59-099',
-    reagents: [
-      { name: 'Chloroform', qty: '1', unit: 'vol' },
-      { name: 'Methanol', qty: '2', unit: 'vol' },
-      { name: 'Distilled Water', qty: '0.8', unit: 'vol' }
-    ],
-    steps: [
-      { en: 'Harvest 50-100 mg of freeze-dried biomass.', ar: 'احصد 50-100 مجم من الكتلة الحيوية المجففة بالتبريد.' },
-      { en: 'Add 3 mL of Chloroform:Methanol (1:2 v/v) and vortex for 5 mins.', ar: 'أضف 3 مل من الكلوروفورم:ميثانول ورج لمدة 5 دقائق.' },
-      { en: 'Add 1 mL Chloroform, 1 mL Water to induce phase separation. Centrifuge.', ar: 'أضف 1 مل كلوروفورم و 1 مل ماء لفصل الطبقات. استخدم جهاز الطرد المركزي.' },
-      { en: 'Recover lower phase, evaporate solvent under N2, and weigh.', ar: 'استرجع الطبقة السفلية، بخر المذيب، ثم زن الدهون.' }
-    ]
-  },
-  {
-    id: 'cell-counting',
-    title: { en: 'Cell Counting via Hemocytometer', ar: 'عد الخلايا بواسطة شريحة هيموسيتوميتر' },
-    category: { en: 'Isolation & Cultivation', ar: 'العزل والاستزراع' },
-    difficulty: { en: 'Beginner', ar: 'مبتدئ' },
-    duration: { en: '30 Mins', ar: '30 دقيقة' },
-    safety: { en: 'BSL-1', ar: 'مستوى أمان حيوي 1' },
-    description: { en: 'Standard cell counting procedure for tracking microalgae growth curves using a Neubauer chamber.', ar: 'إجراء قياسي لعد الخلايا وتتبع منحنى نمو الطحالب باستخدام شريحة نيوباور.' },
-    url: 'https://www.protocols.io/view/microalgae-cell-counting-using-a-hemocytometer-bjxzkpn6',
-    reagents: [
-      { name: 'Lugols Iodine (Optional)', qty: '1', unit: 'drop' }
-    ],
-    steps: [
-      { en: 'Clean the Neubauer chamber and place the coverslip.', ar: 'نظف شريحة نيوباور وضع الغطاء.' },
-      { en: 'Pipette 10 µL of well-mixed culture under the coverslip.', ar: 'ضع 10 ميكرولتر من المزرعة المختلطة.' },
-      { en: 'Count cells in the 4 corner squares and central square.', ar: 'عد الخلايا في المربعات الأربعة والمربع المركزي.' },
-      { en: 'Calculate cells/mL = Total count x 10^4 / number of squares.', ar: 'احسب عدد الخلايا/مل = العدد الكلي × 10^4 / عدد المربعات.' }
-    ]
-  },
-  {
-    id: 'chlorophyll-extraction',
-    title: { en: 'Chlorophyll & Carotenoid Quantification', ar: 'تقدير كمية الكلوروفيل والكاروتينات' },
+    id: 'apha-10200-h',
+    title: { en: 'Chlorophyll Determination (APHA 10200 H)', ar: 'تقدير الكلوروفيل (طريقة APHA 10200 H)' },
     category: { en: 'Pigments & Bioactives', ar: 'الصبغات والمركبات الحيوية' },
-    difficulty: { en: 'Beginner', ar: 'مبتدئ' },
-    duration: { en: '2 Hours', ar: 'ساعتان' },
-    safety: { en: 'BSL-1, Fume Hood Recommended', ar: 'مستوى أمان 1، يوصى بغطاء دخان' },
-    description: { en: 'Spectrophotometric quantification of Chlorophyll a, b, and total carotenoids using 80% Acetone or Methanol (Lichtenthaler equations).', ar: 'التقدير الطيفي للكلوروفيل أ، ب، والكاروتينات الكلية باستخدام الأسيتون أو الميثانول.' },
-    url: 'https://doi.org/10.1016/0027-5107(87)90259-7',
+    difficulty: { en: 'Intermediate', ar: 'متوسط' },
+    duration: { en: '3-4 Hours', ar: '3-4 ساعات' },
+    safety: { en: 'BSL-1, Fume Hood', ar: 'مستوى أمان 1، يلزم غطاء دخان' },
+    description: { en: 'Standard APHA method for the extraction and spectrophotometric/fluorometric determination of chlorophyll a, b, and c in phytoplankton using 90% aqueous acetone.', ar: 'طريقة APHA القياسية لاستخلاص وتقدير الكلوروفيل أ، ب، وجـ في الهائمات النباتية باستخدام الأسيتون المائي بتركيز 90%.' },
+    url: 'https://www.standardmethods.org/doi/10.2105/SMWW.2882.208',
     reagents: [
-      { name: '80% Acetone or 100% Methanol', qty: '5', unit: 'mL' }
+      { name: '90% Aqueous Acetone', qty: 'Varies', unit: 'mL' },
+      { name: 'Magnesium Carbonate (MgCO3) suspension', qty: '1', unit: 'mL' }
     ],
     steps: [
-      { en: 'Centrifuge culture to pellet cells and discard supernatant.', ar: 'اطرد المزرعة مركزياً وتخلص من الجزء العلوي.' },
-      { en: 'Add 5 mL of solvent, vortex, and incubate in dark at 4°C for 24h.', ar: 'أضف 5 مل من المذيب، ورج المزيج، ثم حضنه في الظلام عند 4 درجات مئوية لمدة 24 ساعة.' },
-      { en: 'Centrifuge again and read absorbance at 663, 645, and 470 nm.', ar: 'اطرد مركزياً مرة أخرى واقرأ الامتصاص عند 663، 645، و 470 نانومتر.' },
-      { en: 'Apply Lichtenthaler (1987) equations to calculate pigment concentrations.', ar: 'استخدم معادلات Lichtenthaler لحساب تركيزات الصبغات.' }
+      { en: 'Concentrate sample by centrifuging or filtering through a glass fiber filter.', ar: 'ركز العينة عن طريق الطرد المركزي أو الترشيح باستخدام فلتر ألياف زجاجية.' },
+      { en: 'Grind the filter/pellet in 90% acetone with a tissue grinder.', ar: 'اطحن الفلتر/الكتلة في 90% أسيتون باستخدام مطحنة الأنسجة.' },
+      { en: 'Steep the samples overnight at 4°C in the dark.', ar: 'انقع العينات طوال الليل عند 4 درجات مئوية في الظلام.' },
+      { en: 'Clarify by centrifugation, then measure optical density at 664, 647, 630, and 750 nm.', ar: 'اطرد مركزياً لترويق المستخلص، ثم قس الامتصاص الضوئي عند 664، 647، 630، و 750 نانومتر.' },
+      { en: 'Calculate pigment concentrations using the Trichromatic equations.', ar: 'احسب تركيزات الصبغات باستخدام معادلات Trichromatic القياسية.' }
+    ]
+  },
+  {
+    id: 'apha-10200-f',
+    title: { en: 'Phytoplankton Counting (APHA 10200 F)', ar: 'عد الهائمات النباتية (طريقة APHA 10200 F)' },
+    category: { en: 'Isolation & Cultivation', ar: 'العزل والاستزراع' },
+    difficulty: { en: 'Intermediate', ar: 'متوسط' },
+    duration: { en: '1-2 Hours', ar: '1-2 ساعة' },
+    safety: { en: 'BSL-1', ar: 'مستوى أمان حيوي 1' },
+    description: { en: 'Standard APHA microscopic techniques for counting phytoplankton/microalgae, utilizing Sedgwick-Rafter cell, Palmer-Maloney nannoplankton cell, or inverted microscope.', ar: 'الطرق الميكروسكوبية القياسية لجمعية APHA لعد الطحالب والهائمات النباتية، باستخدام خلايا عد Sedgwick-Rafter أو Palmer-Maloney.' },
+    url: 'https://www.standardmethods.org/doi/10.2105/SMWW.2882.208',
+    reagents: [
+      { name: 'Lugol’s Iodine Solution (Preservative)', qty: '1', unit: 'mL / 100mL' }
+    ],
+    steps: [
+      { en: 'Preserve the sample immediately with Lugol’s solution if not examined fresh.', ar: 'احفظ العينة فوراً بمحلول لوجول إذا لم تفحص طازجة.' },
+      { en: 'Transfer a well-mixed sample aliquot to the counting chamber (e.g., Sedgwick-Rafter).', ar: 'انقل جزءاً من العينة المخلوطة جيداً إلى شريحة العد (مثل Sedgwick-Rafter).' },
+      { en: 'Allow cells to settle (approx. 15 mins for Sedgwick-Rafter).', ar: 'اترك الخلايا لتترسب (حوالي 15 دقيقة).' },
+      { en: 'Enumerate cells across at least 10 random fields or random strips.', ar: 'قم بعد الخلايا في 10 حقول عشوائية أو شرائط عرضية على الأقل.' },
+      { en: 'Calculate cell density (cells/mL) based on chamber volume and magnification.', ar: 'احسب كثافة الخلايا (خلية/مل) بناءً على حجم غرفة العد والتكبير.' }
+    ]
+  },
+  {
+    id: 'apha-2540-d',
+    title: { en: 'Microalgal Biomass / TSS (APHA 2540 D)', ar: 'كتلة الطحالب / المواد الصلبة العالقة (APHA 2540 D)' },
+    category: { en: 'Lipids & Biofuels', ar: 'الدهون والوقود الحيوي' },
+    difficulty: { en: 'Beginner', ar: 'مبتدئ' },
+    duration: { en: '2 Hours (Plus Drying)', ar: 'ساعتان (+ وقت التجفيف)' },
+    safety: { en: 'BSL-1, Thermal Hazard', ar: 'مستوى أمان 1، خطر حراري' },
+    description: { en: 'Determination of Total Suspended Solids (TSS) adapted for estimating microalgae dry weight biomass. Involves filtration and oven drying at 103-105°C.', ar: 'تقدير المواد الصلبة العالقة الكلية (TSS) المعدلة لحساب الوزن الجاف لكتلة الطحالب الحيوية بالتجفيف عند 103-105 درجة مئوية.' },
+    url: 'https://www.standardmethods.org/doi/10.2105/SMWW.2882.030',
+    reagents: [
+      { name: 'Deionized Water (for washing)', qty: '20', unit: 'mL' }
+    ],
+    steps: [
+      { en: 'Prepare and pre-weigh a glass-fiber filter (e.g., GF/C) after drying at 103°C.', ar: 'قم بإعداد وزن فلتر ألياف زجاجية مسبقاً بعد تجفيفه عند 103 درجة مئوية.' },
+      { en: 'Filter a known volume of the microalgal culture through the filter under vacuum.', ar: 'رشح حجماً معروفاً من مزرعة الطحالب عبر الفلتر باستخدام التفريغ.' },
+      { en: 'Wash the filter with three successive 10-mL volumes of DI water to remove salts.', ar: 'اغسل الفلتر بـ 3 دفعات (10 مل لكل دفعة) من الماء المقطر لإزالة الأملاح.' },
+      { en: 'Dry the filter with biomass in an oven at 103–105°C for at least 1 hour.', ar: 'جفف الفلتر مع الكتلة الحيوية في فرن عند 103-105 مئوية لمدة ساعة على الأقل.' },
+      { en: 'Cool in a desiccator, weigh, and calculate dry weight per liter.', ar: 'برده في مجفف، ثم زنه، واحسب الوزن الجاف لكل لتر.' }
     ]
   }
 ];
