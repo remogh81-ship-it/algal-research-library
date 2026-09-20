@@ -25,6 +25,7 @@ import { ConferencesAgendaModal } from './components/ConferencesAgendaModal';
 import { CollaborationSystemModal } from './components/CollaborationSystemModal';
 import { AlgaeTaxonomyModal } from './components/AlgaeTaxonomyModal';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
+import { AlgaeCultivationModal } from './components/AlgaeCultivationModal';
 import type { Resource } from './types/resource';
 
 export default function App() {
@@ -43,6 +44,7 @@ export default function App() {
   const [collabOpen, setCollabOpen] = useState(false);
   const [taxonomyOpen, setTaxonomyOpen] = useState(false);
   const [globalSearchOpen, setGlobalSearchOpen] = useState(false);
+  const [cultivationOpen, setCultivationOpen] = useState(false);
   const [comparedPaperIds, setComparedPaperIds] = useState<number[]>([]);
   const [quickViewResource, setQuickViewResource] = useState<Resource | null>(null);
   const [isExploring, setIsExploring] = useState(false);
@@ -175,10 +177,17 @@ export default function App() {
         </div>
       </button>
       <button type="button" className="phase2-feature-btn" onClick={() => setGlobalSearchOpen(true)} style={{ background: 'linear-gradient(135deg, #a16207, #ca8a04)', color: 'white' }}>
-        <span className="phase2-btn-icon">🌍</span>
+        <span className="phase2-btn-icon">🔍</span>
         <div className="phase2-btn-text">
-          <strong>{language === 'ar' ? 'البحث العلمي المفتوح' : 'Global Search Engine'}</strong>
-          <small>{language === 'ar' ? 'بحث في قواعد البيانات العالمية' : 'Search in global scientific databases'}</small>
+          <strong>{language === 'ar' ? 'البحث العلمي المفتوح' : 'Global Search'}</strong>
+          <small>{language === 'ar' ? 'البحث في قواعد البيانات العالمية' : 'Search global academic databases'}</small>
+        </div>
+      </button>
+      <button type="button" className="phase2-feature-btn" onClick={() => setCultivationOpen(true)} style={{ background: 'linear-gradient(135deg, #1e3a8a, #1d4ed8)', color: 'white' }}>
+        <span className="phase2-btn-icon">🏭</span>
+        <div className="phase2-btn-text">
+          <strong>{language === 'ar' ? 'تطبيقات وأنظمة الاستزراع' : 'Cultivation Apps & Systems'}</strong>
+          <small>{language === 'ar' ? 'تصميمات المزارع الطحلبية والتطبيقات' : 'PBR designs and industrial applications'}</small>
         </div>
       </button>
     </div>
@@ -299,5 +308,7 @@ export default function App() {
     <CollaborationSystemModal isOpen={collabOpen} onClose={() => setCollabOpen(false)} />
     <AlgaeTaxonomyModal isOpen={taxonomyOpen} onClose={() => setTaxonomyOpen(false)} />
     <GlobalSearchModal isOpen={globalSearchOpen} onClose={() => setGlobalSearchOpen(false)} />
-  </div>;
+    <AlgaeCultivationModal isOpen={cultivationOpen} onClose={() => setCultivationOpen(false)} />
+    </div>
+  );
 }
