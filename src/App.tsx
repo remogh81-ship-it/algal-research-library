@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
 import { AiChatWidget } from './components/AiChatWidget';
 import { Footer } from './components/Footer';
@@ -118,7 +118,7 @@ export default function App() {
         className="phase2-feature-btn" 
         onClick={() => setStrainsAtlasOpen(true)}
       >
-        <span className="phase2-btn-icon">ðŸ§¬</span>
+        <span className="phase2-btn-icon">🧬</span>
         <div className="phase2-btn-text">
           <strong>{t('strainsAtlas')}</strong>
           <small>{t('strainsAtlasDesc')}</small>
@@ -129,7 +129,7 @@ export default function App() {
         className="phase2-feature-btn" 
         onClick={() => { setInitialMediumId('zarrouk'); setMediaModalOpen(true); }}
       >
-        <span className="phase2-btn-icon">ðŸ§ª</span>
+        <span className="phase2-btn-icon">⚗️</span>
         <div className="phase2-btn-text">
           <strong>{t('mediaCalculator')}</strong>
           <small>{t('mediaCalculatorDesc')}</small>
@@ -140,7 +140,7 @@ export default function App() {
         className="phase2-feature-btn" 
         onClick={() => setComparisonOpen(true)}
       >
-        <span className="phase2-btn-icon">âš–ï¸</span>
+        <span className="phase2-btn-icon">📊</span>
         <div className="phase2-btn-text">
           <strong>{t('comparePapers')}</strong>
           <small>{comparedPaperIds.length > 0 ? `${comparedPaperIds.length} ${t('compared')}` : t('comparisonTitle')}</small>
@@ -154,10 +154,10 @@ export default function App() {
         className="phase2-feature-btn" 
         onClick={() => setSopsOpen(true)}
       >
-        <span className="phase2-btn-icon">ðŸ“‹</span>
+        <span className="phase2-btn-icon">🧪</span>
         <div className="phase2-btn-text">
-          <strong>{language === 'ar' ? 'Ø¨Ø±ÙˆØªÙˆÙƒÙˆÙ„Ø§Øª Ø§Ù„Ù…Ø¹Ø§Ù…Ù„' : 'Lab Protocols'}</strong>
-          <small>{language === 'ar' ? 'Ø¯Ù„ÙŠÙ„ Ø§Ù„Ø¨Ø±ÙˆØªÙˆÙƒÙˆÙ„Ø§Øª Ø§Ù„Ù…Ø¹Ù…Ù„ÙŠØ© Ø§Ù„Ù‚ÙŠØ§Ø³ÙŠØ©' : 'Standard Operating Protocols Directory'}</small>
+          <strong>{language === 'ar' ? 'بروتوكولات المعمل' : 'Lab Protocols'}</strong>
+          <small>{language === 'ar' ? 'دليل إجراءات التشغيل القياسية (SOPs)' : 'Standard Operating Protocols Directory'}</small>
         </div>
       </button>
       <button 
@@ -165,38 +165,38 @@ export default function App() {
         className="phase2-feature-btn" 
         onClick={() => setCollabOpen(true)}
       >
-        <span className="phase2-btn-icon">ðŸ¤</span>
+        <span className="phase2-btn-icon">🤝</span>
         <div className="phase2-btn-text">
-          <strong>{language === 'ar' ? 'Ù†Ø¸Ø§Ù… Ø§Ù„ØªØ¹Ø§ÙˆÙ†' : 'Collaboration'}</strong>
-          <small>{language === 'ar' ? 'Ù†Ø¸Ø§Ù… Ø·Ù„Ø¨ Ø§Ù„ØªØ¹Ø§ÙˆÙ† ÙˆØªØ¨Ø§Ø¯Ù„ Ø§Ù„Ø³Ù„Ø§Ù„Ø§Øª' : 'Collaboration Request & Strain Exchange'}</small>
+          <strong>{language === 'ar' ? 'نظام التعاون' : 'Collaboration'}</strong>
+          <small>{language === 'ar' ? 'طلب تعاون وتبادل السلالات الطحلبية' : 'Collaboration Request & Strain Exchange'}</small>
         </div>
       </button>
       <button type="button" className="phase2-feature-btn" onClick={() => setTaxonomyOpen(true)} style={{ background: 'linear-gradient(135deg, #166534, #15803d)', color: 'white' }}>
-        <span className="phase2-btn-icon">ðŸ§¬</span>
+        <span className="phase2-btn-icon">🌿</span>
         <div className="phase2-btn-text">
-          <strong>{language === 'ar' ? 'Ø¯Ù„ÙŠÙ„ ØªØµÙ†ÙŠÙ Ø§Ù„Ø·Ø­Ø§Ù„Ø¨' : 'Taxonomy Directory'}</strong>
-          <small>{language === 'ar' ? 'Ø§Ù„Ù…Ø±Ø¬Ø¹ Ø§Ù„ØªØµÙ†ÙŠÙÙŠ Ø§Ù„Ø´Ø§Ù…Ù„' : 'Comprehensive taxonomic reference'}</small>
+          <strong>{language === 'ar' ? 'دليل التصنيف' : 'Taxonomy Directory'}</strong>
+          <small>{language === 'ar' ? 'المرجع الشامل لتصنيف الطحالب' : 'Comprehensive taxonomic reference'}</small>
         </div>
       </button>
       <button type="button" className="phase2-feature-btn" onClick={() => setGlobalSearchOpen(true)} style={{ background: 'linear-gradient(135deg, #a16207, #ca8a04)', color: 'white' }}>
-        <span className="phase2-btn-icon">ðŸ”</span>
+        <span className="phase2-btn-icon">🌍</span>
         <div className="phase2-btn-text">
-          <strong>{language === 'ar' ? 'Ø§Ù„Ø¨Ø­Ø« Ø§Ù„Ø¹Ù„Ù…ÙŠ Ø§Ù„Ù…ÙØªÙˆØ­' : 'Global Search'}</strong>
-          <small>{language === 'ar' ? 'Ø§Ù„Ø¨Ø­Ø« ÙÙŠ Ù‚ÙˆØ§Ø¹Ø¯ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø¹Ø§Ù„Ù…ÙŠØ©' : 'Search global academic databases'}</small>
+          <strong>{language === 'ar' ? 'البحث العالمي' : 'Global Search'}</strong>
+          <small>{language === 'ar' ? 'البحث في قواعد البيانات الأكاديمية العالمية' : 'Search global academic databases'}</small>
         </div>
       </button>
       <button type="button" className="phase2-feature-btn" onClick={() => setCultivationOpen(true)} style={{ background: 'linear-gradient(135deg, #1e3a8a, #1d4ed8)', color: 'white' }}>
-        <span className="phase2-btn-icon">ðŸ­</span>
+        <span className="phase2-btn-icon">🏭</span>
         <div className="phase2-btn-text">
-          <strong>{language === 'ar' ? 'ØªØ·Ø¨ÙŠÙ‚Ø§Øª ÙˆØ£Ù†Ø¸Ù…Ø© Ø§Ù„Ø§Ø³ØªØ²Ø±Ø§Ø¹' : 'Cultivation Apps & Systems'}</strong>
-          <small>{language === 'ar' ? 'ØªØµÙ…ÙŠÙ…Ø§Øª Ø§Ù„Ù…Ø²Ø§Ø±Ø¹ Ø§Ù„Ø·Ø­Ù„Ø¨ÙŠØ© ÙˆØ§Ù„ØªØ·Ø¨ÙŠÙ‚Ø§Øª' : 'PBR designs and industrial applications'}</small>
+          <strong>{language === 'ar' ? 'تطبيقات وأنظمة الاستزراع' : 'Cultivation Apps & Systems'}</strong>
+          <small>{language === 'ar' ? 'تصميمات المزارع الطحلبية والتطبيقات' : 'PBR designs and industrial applications'}</small>
         </div>
       </button>
       <button type="button" className="phase2-feature-btn" onClick={() => setJournalFinderOpen(true)} style={{ background: 'linear-gradient(135deg, #fef3c7, #fde68a)', color: '#92400e' }}>
-        <span className="phase2-btn-icon">ðŸ“‘</span>
+        <span className="phase2-btn-icon">📑</span>
         <div className="phase2-btn-text">
-          <strong>{language === 'ar' ? 'Ø§Ù„Ø¨Ø§Ø­Ø« Ø¹Ù† Ø§Ù„Ù…Ø¬Ù„Ø§Øª' : 'Journal Finder'}</strong>
-          <small>{language === 'ar' ? 'Ø¥ÙŠØ¬Ø§Ø¯ Ø£Ù†Ø³Ø¨ Ù…Ø¬Ù„Ø© Ù„Ù„Ù†Ø´Ø±' : 'Find suitable journals for publishing'}</small>
+          <strong>{language === 'ar' ? 'الباحث عن المجلات' : 'Journal Finder'}</strong>
+          <small>{language === 'ar' ? 'إيجاد أنسب مجلة للنشر' : 'Find suitable journals for publishing'}</small>
         </div>
       </button>
     </div>
