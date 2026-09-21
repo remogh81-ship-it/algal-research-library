@@ -166,6 +166,7 @@ export const ALGAE_STRAINS: AlgaeStrain[] = [
   },
   {
     id: 'haematococcus-pluvialis',
+    imageUrl: '/atlas_haematococcus.jpg',
     scientificName: 'Haematococcus pluvialis',
     commonName: {
       ar: 'هيماتوكوكس (طحلب أستازانتين)',
@@ -247,6 +248,7 @@ export const ALGAE_STRAINS: AlgaeStrain[] = [
   },
   {
     id: 'nannochloropsis-oculata',
+    imageUrl: '/atlas_nannochloropsis.jpg',
     scientificName: 'Nannochloropsis oculata',
     commonName: {
       ar: 'نانوكلوروبسيس بحرية',
@@ -328,6 +330,7 @@ export const ALGAE_STRAINS: AlgaeStrain[] = [
   },
   {
     id: 'ulva-lactuca',
+    imageUrl: '/atlas_ulva.jpg',
     scientificName: 'Ulva lactuca',
     commonName: {
       ar: 'خس البحر (طحلب ماكرو أخضر)',
@@ -368,6 +371,7 @@ export const ALGAE_STRAINS: AlgaeStrain[] = [
   },
   {
     id: 'sargassum-cinereum',
+    imageUrl: '/atlas_sargassum.jpg',
     scientificName: 'Sargassum sp. (Sargassum cinereum)',
     commonName: {
       ar: 'سارجاسوم (طحلب بني بحري)',
@@ -408,6 +412,7 @@ export const ALGAE_STRAINS: AlgaeStrain[] = [
   },
   {
     id: 'nostoc-commune',
+    imageUrl: '/atlas_nostoc.jpg',
     scientificName: 'Nostoc commune',
     commonName: {
       ar: 'نوستوك المستعمر (كبسولة الجفاف)',
@@ -448,6 +453,7 @@ export const ALGAE_STRAINS: AlgaeStrain[] = [
   },
   {
     id: 'euglena-gracilis',
+    imageUrl: '/atlas_euglena.jpg',
     scientificName: 'Euglena gracilis',
     commonName: {
       ar: 'يوجلينا رشيقة',
@@ -488,6 +494,7 @@ export const ALGAE_STRAINS: AlgaeStrain[] = [
   },
   {
     id: 'porphyridium-cruentum',
+    imageUrl: '/atlas_porphyridium.jpg',
     scientificName: 'Porphyridium cruentum (P. purpureum)',
     commonName: {
       ar: 'بورفيريديوم (طحلب أحمر دقيق)',

@@ -26,6 +26,7 @@ import { CollaborationSystemModal } from './components/CollaborationSystemModal'
 import { AlgaeTaxonomyModal } from './components/AlgaeTaxonomyModal';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { AlgaeCultivationModal } from './components/AlgaeCultivationModal';
+import { JournalFinderModal } from './components/JournalFinderModal';
 import type { Resource } from './types/resource';
 
 export default function App() {
@@ -45,6 +46,7 @@ export default function App() {
   const [taxonomyOpen, setTaxonomyOpen] = useState(false);
   const [globalSearchOpen, setGlobalSearchOpen] = useState(false);
   const [cultivationOpen, setCultivationOpen] = useState(false);
+  const [journalFinderOpen, setJournalFinderOpen] = useState(false);
   const [comparedPaperIds, setComparedPaperIds] = useState<number[]>([]);
   const [quickViewResource, setQuickViewResource] = useState<Resource | null>(null);
   const [isExploring, setIsExploring] = useState(false);
@@ -384,6 +386,13 @@ export default function App() {
           <small>{language === 'ar' ? 'تصميمات المزارع الطحلبية والتطبيقات' : 'PBR designs and industrial applications'}</small>
         </div>
       </button>
+      <button type="button" className="phase2-feature-btn" onClick={() => setJournalFinderOpen(true)} style={{ background: 'linear-gradient(135deg, #fef3c7, #fde68a)', color: '#92400e' }}>
+        <span className="phase2-btn-icon">📑</span>
+        <div className="phase2-btn-text">
+          <strong>{language === 'ar' ? 'الباحث عن المجلات' : 'Journal Finder'}</strong>
+          <small>{language === 'ar' ? 'إيجاد أنسب مجلة للنشر' : 'Find suitable journals for publishing'}</small>
+        </div>
+      </button>
     </div>
 
     <div className="quick-filters">
@@ -503,5 +512,6 @@ export default function App() {
     <AlgaeTaxonomyModal isOpen={taxonomyOpen} onClose={() => setTaxonomyOpen(false)} />
     <GlobalSearchModal isOpen={globalSearchOpen} onClose={() => setGlobalSearchOpen(false)} />
     <AlgaeCultivationModal isOpen={cultivationOpen} onClose={() => setCultivationOpen(false)} />
+    <JournalFinderModal isOpen={journalFinderOpen} onClose={() => setJournalFinderOpen(false)} />
   </div>;
 }
