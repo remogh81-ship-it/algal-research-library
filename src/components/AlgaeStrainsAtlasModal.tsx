@@ -112,7 +112,7 @@ export const AlgaeStrainsAtlasModal: React.FC<AlgaeStrainsAtlasModalProps> = ({
           ) : (
             <div className="strains-cards-grid">
               {filteredStrains.map(strain => (
-                <div key={strain.id} className="strain-card">
+                <div key={strain.id} className="strain-card" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   <div className="strain-card-header">
                     <div>
                       <h3 className="strain-latin-name">{strain.scientificName}</h3>
@@ -120,6 +120,12 @@ export const AlgaeStrainsAtlasModal: React.FC<AlgaeStrainsAtlasModalProps> = ({
                     </div>
                     <span className="strain-division-badge">{strain.division[currentLang]}</span>
                   </div>
+
+                  {strain.imageUrl && (
+                    <div style={{ width: '100%', height: '200px', overflow: 'hidden', borderRadius: '8px' }}>
+                      <img src={strain.imageUrl} alt={strain.scientificName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                  )}
 
                   <p className="strain-desc">{strain.description[currentLang]}</p>
 

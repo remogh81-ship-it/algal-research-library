@@ -1,5 +1,6 @@
 export interface AlgaeStrain {
   id: string;
+  imageUrl?: string;
   scientificName: string;
   commonName: {
     ar: string;
@@ -42,6 +43,7 @@ export interface AlgaeStrain {
 export const ALGAE_STRAINS: AlgaeStrain[] = [
   {
     id: 'arthrospira-platensis',
+    imageUrl: '/atlas_spirulina.jpg',
     scientificName: 'Arthrospira platensis (Spirulina)',
     commonName: {
       ar: 'سبيرولينا (طحلب حلزوني)',
@@ -82,6 +84,7 @@ export const ALGAE_STRAINS: AlgaeStrain[] = [
   },
   {
     id: 'chlorella-vulgaris',
+    imageUrl: '/atlas_chlorella.jpg',
     scientificName: 'Chlorella vulgaris',
     commonName: {
       ar: 'كلوريلا الشائعة',
@@ -122,6 +125,7 @@ export const ALGAE_STRAINS: AlgaeStrain[] = [
   },
   {
     id: 'dunaliella-salina',
+    imageUrl: '/atlas_dunaliella.jpg',
     scientificName: 'Dunaliella salina',
     commonName: {
       ar: 'دوناليلا الملاحات',
@@ -202,6 +206,7 @@ export const ALGAE_STRAINS: AlgaeStrain[] = [
   },
   {
     id: 'scenedesmus-obliquus',
+    imageUrl: '/atlas_scenedesmus.jpg',
     scientificName: 'Scenedesmus obliquus (Tetradesmus obliquus)',
     commonName: {
       ar: 'سينيديزموس مائل',
@@ -282,6 +287,7 @@ export const ALGAE_STRAINS: AlgaeStrain[] = [
   },
   {
     id: 'phaeodactylum-tricornutum',
+    imageUrl: '/atlas_diatoms.jpg',
     scientificName: 'Phaeodactylum tricornutum',
     commonName: {
       ar: 'داياتوم فيوداكتيلوم',
